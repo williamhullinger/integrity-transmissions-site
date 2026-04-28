@@ -947,3 +947,13 @@ button:focus-visible,
   }
 }
 
+@media (max-width: 768px) {
+  .site-nav {
+    display: none;
+  }
+
+  .site-nav.is-open {
+    display: flex;
+    flex-direction: column;
+  }
+}
