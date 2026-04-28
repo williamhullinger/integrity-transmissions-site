@@ -12,7 +12,7 @@
   --accent-dark: #cb5f0d;
   --accent-soft: rgba(244, 123, 32, 0.14);
   --white: #ffffff;
-  --shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+  --shadow: 0 20px 50px rgba(19, 3, 3, 0.35);
   --radius: 18px;
   --radius-lg: 26px;
   --max-width: 1220px;
@@ -347,6 +347,7 @@ h1 {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    position: relative;
   }
 
   .nav-toggle {
@@ -357,10 +358,10 @@ h1 {
     display: none;
 
     position: absolute;
-    top: calc(100% + 10px);
+    top: 100%;
     right: 0;
 
-    width: min(260px, 100%);
+    width: 260px;
     padding: 14px;
 
     background: rgba(10, 10, 10, 0.98);
@@ -371,7 +372,7 @@ h1 {
     flex-direction: column;
     gap: 8px;
 
-    z-index: 1000;
+    z-index: 999;
   }
 
   .site-nav.is-open {
@@ -395,7 +396,6 @@ h1 {
     text-align: center;
   }
 }
-
 /* =========================
    HERO
 ========================== */
@@ -944,16 +944,5 @@ button:focus-visible,
 
   .footer-grid {
     padding-top: 42px;
-  }
-}
-
-@media (max-width: 768px) {
-  .site-nav {
-    display: none;
-  }
-
-  .site-nav.is-open {
-    display: flex;
-    flex-direction: column;
   }
 }
