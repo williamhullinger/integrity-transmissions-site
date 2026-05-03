@@ -1,0 +1,110 @@
+/* =========================================================
+  THANK YOU PAGE
+========================================================= */
+
+.thank-you-page {
+  position: relative;
+  overflow: hidden;
+  min-height: 72vh;
+  display: grid;
+  place-items: center;
+  padding: clamp(4rem, 8vw, 8rem) 0;
+}
+
+.thank-you-page::before {
+  content: "";
+  position: absolute;
+  top: 4rem;
+  right: -14rem;
+  width: 36rem;
+  height: 36rem;
+  background: radial-gradient(circle, rgba(244, 123, 32, 0.18), transparent 68%);
+  border-radius: 999px;
+  pointer-events: none;
+  filter: blur(6px);
+  opacity: 0.9;
+}
+
+.thank-you-page::after {
+  content: "";
+  position: absolute;
+  left: -16rem;
+  bottom: -18rem;
+  width: 38rem;
+  height: 38rem;
+  background: radial-gradient(circle, rgba(0, 0, 0, 0.08), transparent 68%);
+  border-radius: 999px;
+  pointer-events: none;
+  filter: blur(8px);
+  opacity: 0.6;
+}
+
+.thank-you-card {
+  position: relative;
+  max-width: 920px;
+  margin: 0 auto;
+  padding: clamp(1.5rem, 4vw, 3rem);
+  text-align: center;
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  backdrop-filter: blur(18px);
+}
+
+.thank-you-card h1 {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: clamp(3rem, 9vw, 6rem);
+  line-height: 0.88;
+  letter-spacing: -0.06em;
+  text-transform: uppercase;
+}
+
+.thank-you-card p:not(.eyebrow) {
+  max-width: 680px;
+  margin: 1.25rem auto 0;
+  color: var(--text-soft);
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  line-height: 1.7;
+}
+
+.thank-you-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.85rem;
+  margin-top: 2rem;
+}
+
+@media (max-width: 680px) {
+  .thank-you-page {
+    min-height: 68vh;
+    padding: 3.5rem 0;
+  }
+
+  .thank-you-card {
+    border-radius: 24px;
+  }
+
+  .thank-you-card h1 {
+    font-size: clamp(3rem, 14vw, 4.6rem);
+  }
+
+  .thank-you-actions {
+    flex-direction: column;
+  }
+}
+
+.thank-you-card {
+  animation: thankYouFade 500ms ease forwards;
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+@keyframes thankYouFade {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
