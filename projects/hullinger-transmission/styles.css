@@ -792,18 +792,3 @@ ol {
   }
 }
 
-@media (max-width: 760px) {
-  .topbar__links {
-    display: flex;
-    justify-content: center;
-    gap: 0.75rem;
-  }
-
-  .topbar__links a {
-    width: 32px;
-    height: 32px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-  }
-}
