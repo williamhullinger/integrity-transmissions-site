@@ -480,7 +480,7 @@
     </section>
 
     <!-- PHOTO / GALLERY AREA -->
-<section class="section gallery-section">
+<section class="section gallery-section" id="real-work-gallery">
   <div class="container gallery-shell">
     <div class="gallery-content">
       <p class="eyebrow">Real Work Gallery</p>
@@ -499,62 +499,110 @@
       </div>
     </div>
 
-    <div class="gallery-grid">
-      <figure class="gallery-card gallery-card--featured">
-        <img
-          src="images/assembled-valve-body-with-torque-paint-marks.jpeg"
-          alt="Clean transmission valve body installed with torque marks"
-        >
-        <figcaption>
-          <strong>Clean Assembly</strong>
-          <span>Valve body reinstalled with visible torque marks and clean final assembly.</span>
-        </figcaption>
-      </figure>
+    <div class="gallery-carousel" data-gallery-carousel aria-label="Real transmission and drivetrain work photo carousel">
+      <div class="gallery-carousel__viewport">
+        <div class="gallery-carousel__track" data-gallery-track>
+          <figure class="gallery-card gallery-card--active" data-gallery-slide>
+            <img
+              src="images/assembled-valve-body-with-torque-paint-marks.jpeg"
+              alt="Clean transmission valve body installed with visible torque paint marks"
+            >
+            <figcaption>
+              <strong>Clean Assembly</strong>
+              <span>Valve body reinstalled with visible torque marks and clean final assembly.</span>
+            </figcaption>
+          </figure>
 
-      <figure class="gallery-card">
-        <img
-          src="images/inside-case-clean-assembly.jpeg"
-          alt="Clean transmission case during internal inspection and assembly"
-        >
-        <figcaption>
-          <strong>Internal Inspection</strong>
-          <span>Inside the case during inspection, cleaning, and reassembly.</span>
-        </figcaption>
-      </figure>
+          <figure class="gallery-card" data-gallery-slide>
+            <img
+              src="images/inside-case-clean-assembly.jpeg"
+              alt="Clean transmission case during internal inspection and assembly"
+            >
+            <figcaption>
+              <strong>Internal Inspection</strong>
+              <span>Inside the case during inspection, cleaning, and reassembly.</span>
+            </figcaption>
+          </figure>
 
-      <figure class="gallery-card">
-        <img
-          src="images/dirty-oil-pan.jpeg"
-          alt="Dirty transmission pan showing fluid contamination and debris"
-        >
-        <figcaption>
-          <strong>Pan Contamination</strong>
-          <span>Fluid, debris, and pan condition can tell a lot about what failed inside.</span>
-        </figcaption>
-      </figure>
+          <figure class="gallery-card" data-gallery-slide>
+            <img
+              src="images/dirty-oil-pan.jpeg"
+              alt="Dirty transmission pan showing fluid contamination and debris"
+            >
+            <figcaption>
+              <strong>Pan Contamination</strong>
+              <span>Fluid, debris, and pan condition can tell a lot about what failed inside.</span>
+            </figcaption>
+          </figure>
 
-      <figure class="gallery-card">
-        <img
-          src="images/sperator-plate-damage.jpeg"
-          alt="Damaged transmission separator plate found during teardown"
-        >
-        <figcaption>
-          <strong>Separator Plate Damage</strong>
-          <span>Small internal damage can create major shift, pressure, and reliability problems.</span>
-        </figcaption>
-      </figure>
+          <figure class="gallery-card" data-gallery-slide>
+            <img
+              src="images/seperator-plate-damage.jpeg"
+              alt="Damaged transmission separator plate found during teardown"
+            >
+            <figcaption>
+              <strong>Separator Plate Damage</strong>
+              <span>Small internal damage can create major shift, pressure, and reliability problems.</span>
+            </figcaption>
+          </figure>
 
-      <figure class="gallery-card">
-        <img
-          src="images/pump-assembled.jpeg"
-          alt="Damaged transmission separator plate found during teardown"
-        >
-        <figcaption>
-          <strong>Oil Pump Assembled</strong>
-          <span>Small improvements make big differences.</span>
-        </figcaption>
-      </figure>
+          <figure class="gallery-card" data-gallery-slide>
+            <img
+              src="images/seperator-plate-with-checkballs.jpeg"
+              alt="Transmission separator plate with check balls verified before valve body installation"
+            >
+            <figcaption>
+              <strong>Everything Double-Checked</strong>
+              <span>Check ball placement, separator plate condition, and valve body details are verified before final assembly.</span>
+            </figcaption>
+          </figure>
 
+          <figure class="gallery-card" data-gallery-slide>
+            <img
+              src="images/finished-tans-converter.jpeg"
+              alt="Transmission separator plate with check balls verified before valve body installation"
+            >
+            <figcaption>
+              <strong>Ready For Pickup</strong>
+              <span>Final assembly complete, cleaned up, and ready for customer pickup.</span>
+            </figcaption>
+          </figure>
+
+          <figure class="gallery-card" data-gallery-slide>
+            <img
+              src="images/3-4-clutch-assembled.jpeg"
+              alt="Transmission separator plate with check balls verified before valve body installation"
+            >
+            <figcaption>
+              <strong>Critical Wear Parts Rreplaced</strong>
+            <span>The 3-4 clutch pack is a high-stress area, so stack-up and clearance are checked carefully during rebuild.</span>
+            </figcaption>
+          </figure>
+
+        </div>
+      </div>
+
+      <div class="gallery-carousel__controls" aria-label="Gallery controls">
+        <button
+          class="gallery-carousel__button"
+          type="button"
+          aria-label="Show previous gallery photo"
+          data-gallery-prev
+        >
+          <span aria-hidden="true">‹</span>
+        </button>
+
+        <div class="gallery-carousel__dots" data-gallery-dots aria-label="Gallery slide indicators"></div>
+
+        <button
+          class="gallery-carousel__button"
+          type="button"
+          aria-label="Show next gallery photo"
+          data-gallery-next
+        >
+          <span aria-hidden="true">›</span>
+        </button>
+      </div>
     </div>
   </div>
 </section>
