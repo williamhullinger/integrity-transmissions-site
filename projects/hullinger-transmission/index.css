@@ -912,3 +912,85 @@
     height: 44px;
   }
 }
+
+/* =========================================================
+  MOBILE GALLERY CAROUSEL CONTROL FIX
+  Forces carousel arrows/dots to show on mobile
+========================================================= */
+
+.gallery-carousel__controls {
+  position: relative;
+  z-index: 20;
+  display: grid !important;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.85rem;
+  align-items: center;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.gallery-carousel__button {
+  display: grid !important;
+  place-items: center;
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.gallery-carousel__dots {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 0;
+  opacity: 1;
+  visibility: visible;
+}
+
+.gallery-carousel__dot {
+  display: inline-block !important;
+  flex-shrink: 0;
+  opacity: 1;
+  visibility: visible;
+}
+
+@media (max-width: 720px) {
+  .gallery-carousel {
+    display: block;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .gallery-carousel__viewport {
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .gallery-carousel__track {
+    display: flex !important;
+  }
+
+  .gallery-carousel .gallery-card {
+    flex: 0 0 100% !important;
+    width: 100% !important;
+  }
+
+  .gallery-carousel__controls {
+    display: grid !important;
+    grid-template-columns: 44px 1fr 44px;
+    margin-top: 0.9rem;
+  }
+
+  .gallery-carousel__button {
+    display: grid !important;
+    width: 44px;
+    height: 44px;
+  }
+
+  .gallery-carousel__dots {
+    display: flex !important;
+  }
+}
