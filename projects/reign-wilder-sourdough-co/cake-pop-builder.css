@@ -335,6 +335,10 @@ html {
   color: #fff;
 }
 
+.cake-builder-btn[hidden] {
+  display: none !important;
+}
+
 .cake-builder-group__grid,
 .cake-builder-event-details__grid {
   display: grid;
@@ -496,6 +500,10 @@ html {
 .cake-builder-summary__note {
   font-size: 0.94rem;
   color: #7a6654;
+}
+
+.cake-builder-summary__row[hidden] {
+  display: none !important;
 }
 
 .cake-builder-faq__list {

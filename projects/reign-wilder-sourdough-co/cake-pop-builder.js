@@ -13,7 +13,18 @@ const BALANCE = document.getElementById("summary-balance");
 
 const REVIEW_MESSAGE = document.getElementById("quote-review-message");
 
+const ADD_TO_CART_BUTTON = document.getElementById("add-cake-pops-to-cart-button");
+const SUMMARY_NOTE = document.getElementById("cake-builder-summary-note");
+
+const DEPOSIT_ROW = document.querySelector(".cake-builder-summary__deposit-row");
+const BALANCE_ROW = document.querySelector(".cake-builder-summary__balance-row");
+
+const PAY_FULL_BUTTON = document.getElementById("pay-full-button");
+
+const EDIT_ID = new URLSearchParams(window.location.search).get("edit");
+
 let groups = [];
+let editingCartItemId = null;
 
 const BASE_PRICE = 3;
 
@@ -128,8 +139,10 @@ function updateSummary() {
     subtotal += total;
 
     if (g.complexity === "luxury" || g.quantity > 100) {
-      requiresReview = true;
+      requiresReview = true;      
     }
+
+
 
     const div = document.createElement("div");
     div.className = "cake-builder-summary__group";
@@ -145,6 +158,42 @@ function updateSummary() {
     SUMMARY_GROUPS.appendChild(div);
   });
 
+  const isEverydayOrder = totalQty <= 48 && !requiresReview;
+const isDepositOrder = totalQty > 48 && !requiresReview;
+
+if (ADD_TO_CART_BUTTON) {
+  ADD_TO_CART_BUTTON.hidden = !isEverydayOrder;
+}
+
+if (document.getElementById("reserve-order-button")) {
+  document.getElementById("reserve-order-button").hidden = !isDepositOrder;
+}
+
+if (PAY_FULL_BUTTON) {
+  PAY_FULL_BUTTON.hidden = !isDepositOrder;
+}
+
+if (document.getElementById("request-review-button")) {
+  document.getElementById("request-review-button").hidden = !requiresReview;
+}
+
+if (SUMMARY_NOTE) {
+  if (isEverydayOrder) {
+    SUMMARY_NOTE.textContent = "This looks like a smaller everyday cake pop order. Add it to your cart and checkout normally.";
+  } else if (isDepositOrder) {
+    SUMMARY_NOTE.textContent = "This looks like a larger event order. A 50% deposit reserves your date, with the remaining balance due before pickup or delivery.";
+  } else {
+    SUMMARY_NOTE.textContent = "This order may need review because of quantity, timeline, or design complexity. Submit it for review and we will follow up to confirm details.";
+  }
+  if (DEPOSIT_ROW) {
+  DEPOSIT_ROW.hidden = !isDepositOrder;
+}
+
+if (BALANCE_ROW) {
+  BALANCE_ROW.hidden = !isDepositOrder;
+}
+}
+
   const deposit = subtotal * 0.5;
   const balance = subtotal - deposit;
 
@@ -158,14 +207,183 @@ function updateSummary() {
 
 ADD_GROUP_BTN.addEventListener("click", createGroup);
 
+function populateGroupFields(groupEl, groupData) {
+  groupEl.querySelector(".group-quantity").value = groupData.quantity;
+  groupEl.querySelector(".group-flavor").value = groupData.flavor;
+  groupEl.querySelector(".group-coating").value = groupData.coating;
+  groupEl.querySelector(".group-theme").value = groupData.theme;
+  groupEl.querySelector(".group-finish-1").value = groupData.finish1;
+  groupEl.querySelector(".group-finish-2").value = groupData.finish2;
+  groupEl.querySelector(".group-complexity").value = groupData.complexity;
+  groupEl.querySelector(".group-packaging").value = groupData.packaging;
+  groupEl.querySelector(".group-note").value = groupData.note;
+
+  updateGroupTotal(groupEl, groupData);
+}
+
+function loadEditOrder() {
+  const editData = localStorage.getItem("editCakeOrder");
+  if (!editData) return false;
+
+  const parsed = JSON.parse(editData);
+  editingCartItemId = parsed.id;
+
+  if (!parsed.builderData) return false;
+
+  groups = [];
+
+  GROUPS_CONTAINER.innerHTML = "";
+
+  parsed.builderData.forEach(groupData => {
+    const clone = GROUP_TEMPLATE.content.cloneNode(true);
+    const groupEl = clone.querySelector(".cake-builder-group");
+
+    groupEl.dataset.id = groupData.id;
+
+    populateGroupFields(groupEl, groupData);
+    attachEvents(groupEl, groupData);
+
+    GROUPS_CONTAINER.appendChild(groupEl);
+    groups.push(groupData);
+  });
+
+  updateSummary();
+
+  localStorage.removeItem("editCakeOrder");
+
+  return true;
+}
+
 // INITIAL STATE
-createGroup();
+if (!loadEditOrder()) {
+  createGroup();
+}
 
 // ACTION BUTTONS (stub for now)
 document.getElementById("reserve-order-button").addEventListener("click", () => {
-  alert("Next step: connect to Square checkout.");
+  const cart = JSON.parse(localStorage.getItem("reignWilderCart")) || [];
+
+  const subtotal = groups.reduce((total, group) => {
+    return total + calculateGroupTotal(group);
+  }, 0);
+
+  const deposit = subtotal * 0.5;
+  const remainingBalance = subtotal - deposit;
+
+  const totalQty = groups.reduce((total, group) => {
+    return total + Number(group.quantity || 0);
+  }, 0);
+
+  const orderDetails = groups.map((group, index) => {
+    return `Group ${index + 1}: ${group.quantity} pops, Flavor: ${group.flavor}, Coating: ${group.coating}, Theme: ${group.theme || "None"}, Finish: ${group.finish1}${group.finish2 ? " + " + group.finish2 : ""}, Complexity: ${group.complexity}, Wrapped: ${group.packaging}, Note: ${group.note || "None"}`;
+  }).join("<br>");
+
+  if (editingCartItemId) {
+  const existingIndex = cart.findIndex((item) => item.id === editingCartItemId);
+
+  if (existingIndex !== -1) {
+    cart.splice(existingIndex, 1);
+  }
+}
+
+  cart.push({
+    id: `cake-pop-deposit-${Date.now()}`,
+    name: `Cake Pop Order (Deposit) - ${totalQty} pops`,
+    price: deposit,
+    image: "images/cake-pops-assorted.jpg",
+    quantity: 1,
+    details: `${orderDetails}<br>Full Order Total: $${subtotal.toFixed(2)}<br>Deposit Paid Today: $${deposit.toFixed(2)}<br>Remaining Balance Due: $${remainingBalance.toFixed(2)}`,
+    builderData: JSON.parse(JSON.stringify(groups)),
+  });
+
+  localStorage.setItem("reignWilderCart", JSON.stringify(cart));
+
+  window.location.href = "cart.html";
 });
 
 document.getElementById("request-review-button").addEventListener("click", () => {
   alert("Next step: submit form for manual review.");
 });
+
+if (ADD_TO_CART_BUTTON) {
+  ADD_TO_CART_BUTTON.addEventListener("click", () => {
+    const cart = JSON.parse(localStorage.getItem("reignWilderCart")) || [];
+
+    const subtotal = groups.reduce((total, group) => {
+      return total + calculateGroupTotal(group);
+    }, 0);
+
+    const totalQty = groups.reduce((total, group) => {
+      return total + Number(group.quantity || 0);
+    }, 0);
+
+    const orderDetails = groups.map((group, index) => {
+      return `Group ${index + 1}: ${group.quantity} pops, Flavor: ${group.flavor}, Coating: ${group.coating}, Theme: ${group.theme || "None"}, Finish: ${group.finish1}${group.finish2 ? " + " + group.finish2 : ""}, Complexity: ${group.complexity}, Wrapped: ${group.packaging}, Note: ${group.note || "None"}`;
+    }).join("<br>");
+
+    if (editingCartItemId) {
+  const existingIndex = cart.findIndex((item) => item.id === editingCartItemId);
+
+  if (existingIndex !== -1) {
+    cart.splice(existingIndex, 1);
+  }
+}
+
+    cart.push({
+      id: `cake-pops-${Date.now()}`,
+      name: `Custom Cake Pops - ${totalQty} pops`,
+      price: subtotal,
+      image: "images/cake-pops-assorted.jpg",
+      quantity: 1,
+      details: orderDetails,
+      builderData: JSON.parse(JSON.stringify(groups))
+    });
+
+    localStorage.setItem("reignWilderCart", JSON.stringify(cart));
+
+    window.location.href = "cart.html";
+  });
+}
+
+if (PAY_FULL_BUTTON) {
+  PAY_FULL_BUTTON.addEventListener("click", () => {
+    const cart = JSON.parse(localStorage.getItem("reignWilderCart")) || [];
+
+    const subtotal = groups.reduce((total, group) => {
+      return total + calculateGroupTotal(group);
+    }, 0);
+
+    const totalQty = groups.reduce((total, group) => {
+      return total + Number(group.quantity || 0);
+    }, 0);
+
+    const orderDetails = groups.map((group, index) => {
+      return `Group ${index + 1}: ${group.quantity} pops, Flavor: ${group.flavor}, Coating: ${group.coating}, Theme: ${group.theme || "None"}, Finish: ${group.finish1}${group.finish2 ? " + " + group.finish2 : ""}, Complexity: ${group.complexity}, Wrapped: ${group.packaging}, Note: ${group.note || "None"}`;
+    }).join(" | ");
+
+    if (editingCartItemId) {
+  const existingIndex = cart.findIndex((item) => item.id === editingCartItemId);
+
+  if (existingIndex !== -1) {
+    cart.splice(existingIndex, 1);
+  }
+}
+
+    cart.push({
+      id: `cake-pops-paid-full-${Date.now()}`,
+      name: `Cake Pops Paid in Full - ${totalQty} pops`,
+      price: subtotal,
+      image: "images/cake-pops-assorted.jpg",
+      quantity: 1,
+      details: `${orderDetails} | Paid in Full: $${subtotal.toFixed(2)}`,
+      builderData: JSON.parse(JSON.stringify(groups))
+    });
+
+    localStorage.setItem("reignWilderCart", JSON.stringify(cart));
+
+    editingCartItemId = null;
+    localStorage.removeItem("editCakeOrder");
+
+    window.location.href = "cart.html";
+  });
+}

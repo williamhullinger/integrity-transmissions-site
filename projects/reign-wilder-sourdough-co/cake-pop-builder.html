@@ -415,12 +415,12 @@
                   <strong id="summary-subtotal">$0.00</strong>
                 </div>
 
-                <div class="cake-builder-summary__row">
+                <div class="cake-builder-summary__row cake-builder-summary__deposit-row">
                   <span>Deposit Due Today</span>
                   <strong id="summary-deposit">$0.00</strong>
                 </div>
 
-                <div class="cake-builder-summary__row">
+                <div class="cake-builder-summary__row cake-builder-summary__balance-row">
                   <span>Estimated Remaining Balance</span>
                   <strong id="summary-balance">$0.00</strong>
                 </div>
@@ -434,16 +434,25 @@
               </div>
 
               <div class="cake-builder-summary__actions">
+                <button type="button" class="cake-builder-btn cake-builder-btn--primary" id="add-cake-pops-to-cart-button">
+                  Add to Cart
+                </button>
+
                 <button type="button" class="cake-builder-btn cake-builder-btn--primary" id="reserve-order-button">
                   Reserve with Deposit
                 </button>
+
+                <button type="button" class="cake-builder-btn cake-builder-btn--secondary" id="pay-full-button">
+                  Pay in Full
+                </button>
+                
                 <button type="button" class="cake-builder-btn cake-builder-btn--secondary" id="request-review-button">
                   Submit for Review
                 </button>
               </div>
 
-              <p class="cake-builder-summary__note">
-                A 50% deposit reserves your date. Remaining balance is due before pickup or delivery unless otherwise arranged.
+              <p class="cake-builder-summary__note" id="cake-builder-summary-note">
+                Smaller everyday orders can be added directly to cart. Larger event orders or detailed custom designs may require a deposit or review before confirmation.
               </p>
             </div>
           </aside>

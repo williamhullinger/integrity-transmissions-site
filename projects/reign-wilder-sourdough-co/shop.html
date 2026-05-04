@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="styles.css">
 <link rel="stylesheet" href="shop.css">
 <script src="script.js" defer></script>
+<script src="cart.js" defer></script>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
@@ -95,10 +96,10 @@
 
         <div class="shop-featured__content">
           <p class="shop-featured__eyebrow">Featured Item</p>
-          <h3 class="shop-featured__title">Custom Cake Pops</h3>
-          <p class="shop-featured__price">Starting at $3 each • Multi-packs available • Custom pricing for events</p>
+          <h3 class="shop-featured__title">Cake Pops</h3>
+          <p class="shop-featured__price">$3 each • 12 minimum • Custom event options available</p>
           <p class="shop-featured__text">
-            One of our most requested and fastest-growing offerings. Perfect for birthdays, weddings, showers, holidays, and custom events, our cake pops are made fresh, finished by hand, and designed to stand out.
+            Order simple everyday cake pops quickly, or build a custom order for birthdays, weddings, showers, holidays, and events.
           </p>
 
           <div class="shop-featured__meta">
@@ -107,10 +108,15 @@
             <p><strong>Order Notes:</strong> Custom and event orders are secured with a deposit to reserve your date.</p>
           </div>
 
-          <div class="shop-featured__actions">
-            <button class="shop-btn shop-btn--primary" type="button">Add to Cart</button>
-            <a href="#custom-order-form" class="shop-btn shop-btn--secondary">Request Custom Quote</a>
-          </div>
+         <div class="shop-featured__actions">
+  <a href="cake-pop-builder.html" class="shop-btn shop-btn--primary">
+    Build Cake Pop Order
+  </a>
+
+  <a href="#custom-order-form" class="shop-btn shop-btn--secondary">
+    Request Custom Quote
+  </a>
+</div>
         </div>
       </div>
 
@@ -122,18 +128,17 @@
         </div>
 
         <div class="shop-grid">
+
           <article class="shop-card" id="classic-sourdough-loaf">
             <div class="shop-card__badge">Fresh Item</div>
             <img src="images/sourdough-loaf-round.webp" alt="Classic sourdough loaf from Reign and Wilder" loading="lazy">
             <div class="shop-card__body">
               <h4>Classic Sourdough Loaf</h4>
               <p class="shop-card__price">$8</p>
-              <p class="shop-card__text">
-                Traditional slow-fermented sourdough with a crisp crust, soft interior, and balanced tang.
-              </p>
+              <p class="shop-card__text">Traditional slow-fermented sourdough with a crisp crust, soft interior, and balanced tang.</p>
               <p class="shop-card__availability">Available for pickup on select bake days</p>
               <div class="shop-card__actions">
-                <button class="shop-btn shop-btn--primary" type="button">Add to Cart</button>
+                <button class="shop-btn shop-btn--primary" type="button" data-add-to-cart data-id="classic-sourdough-loaf" data-name="Classic Sourdough Loaf" data-price="8" data-image="images/sourdough-loaf-round.webp">Add to Cart</button>
               </div>
             </div>
           </article>
@@ -144,12 +149,10 @@
             <div class="shop-card__body">
               <h4>Jalapeño Cheddar Sourdough</h4>
               <p class="shop-card__price">$10</p>
-              <p class="shop-card__text">
-                A bold, savory loaf with sharp cheddar and jalapeño baked into naturally fermented sourdough.
-              </p>
+              <p class="shop-card__text">A bold, savory loaf with sharp cheddar and jalapeño baked into naturally fermented sourdough.</p>
               <p class="shop-card__availability">Available for pickup on select bake days</p>
               <div class="shop-card__actions">
-                <button class="shop-btn shop-btn--primary" type="button">Add to Cart</button>
+                <button class="shop-btn shop-btn--primary" type="button" data-add-to-cart data-id="jalapeno-cheddar-sourdough" data-name="Jalapeño Cheddar Sourdough" data-price="10" data-image="images/jalapeno-chaddar.jpg">Add to Cart</button>
               </div>
             </div>
           </article>
@@ -160,9 +163,7 @@
             <div class="shop-card__body">
               <h4>Custom Artisan Loaf</h4>
               <p class="shop-card__price">Custom Quote</p>
-              <p class="shop-card__text">
-                Seasonal flavors, gift loaves, and custom add-ins based on availability and order timing.
-              </p>
+              <p class="shop-card__text">Seasonal flavors, gift loaves, and custom add-ins based on availability and order timing.</p>
               <p class="shop-card__availability">Made to order</p>
               <div class="shop-card__actions">
                 <a href="#custom-order-form" class="shop-btn shop-btn--secondary">Request Custom Quote</a>
@@ -176,12 +177,10 @@
             <div class="shop-card__body">
               <h4>Sourdough Sandwich Loaf</h4>
               <p class="shop-card__price">$6</p>
-              <p class="shop-card__text">
-                Soft, airy sandwich loaf with a distinctive sourdough flavor, perfect for everyday use.
-              </p>
+              <p class="shop-card__text">Soft, airy sandwich loaf with a distinctive sourdough flavor, perfect for everyday use.</p>
               <p class="shop-card__availability">Available for pickup on select bake days</p>
               <div class="shop-card__actions">
-                <button class="shop-btn shop-btn--primary" type="button">Add to Cart</button>
+                <button class="shop-btn shop-btn--primary" type="button" data-add-to-cart data-id="sourdough-sandwich-loaf" data-name="Sourdough Sandwich Loaf" data-price="6" data-image="images/reign-wilder-sourdough-sandwich-loaf.jpeg">Add to Cart</button>
               </div>
             </div>
           </article>
@@ -192,12 +191,10 @@
             <div class="shop-card__body">
               <h4>Garlic Sea Salt Focaccia</h4>
               <p class="shop-card__price">$10</p>
-              <p class="shop-card__text">
-                Soft, airy focaccia with garlic, sea salt, and a golden finish.
-              </p>
+              <p class="shop-card__text">Soft, airy focaccia with garlic, sea salt, and a golden finish.</p>
               <p class="shop-card__availability">Available for pickup on select bake days</p>
               <div class="shop-card__actions">
-                <button class="shop-btn shop-btn--primary" type="button">Add to Cart</button>
+                <button class="shop-btn shop-btn--primary" type="button" data-add-to-cart data-id="garlic-sea-salt-focaccia" data-name="Garlic Sea Salt Focaccia" data-price="10" data-image="images/garlic-foccacia.jpg">Add to Cart</button>
               </div>
             </div>
           </article>
@@ -208,15 +205,14 @@
             <div class="shop-card__body">
               <h4>Custom Focaccia</h4>
               <p class="shop-card__price">Custom Quote</p>
-              <p class="shop-card__text">
-                Seasonal toppings and event-focused focaccia made to order when available.
-              </p>
+              <p class="shop-card__text">Seasonal toppings and event-focused focaccia made to order when available.</p>
               <p class="shop-card__availability">Made to order</p>
               <div class="shop-card__actions">
                 <a href="#custom-order-form" class="shop-btn shop-btn--secondary">Request Custom Quote</a>
               </div>
             </div>
           </article>
+
         </div>
       </div>
 
@@ -228,6 +224,7 @@
         </div>
 
         <div class="shop-grid">
+
           <article class="shop-card" id="cinnamon-rolls">
             <div class="shop-card__badge">Fresh Item</div>
             <img src="images/cinnamon-rolls-on-plate.jpg" alt="Cinnamon rolls" loading="lazy">
@@ -237,7 +234,7 @@
               <p class="shop-card__text">Soft sourdough cinnamon rolls with rich flavor and bakery-style texture.</p>
               <p class="shop-card__availability">Available on select bake days</p>
               <div class="shop-card__actions">
-                <button class="shop-btn shop-btn--primary" type="button">Add to Cart</button>
+                <button class="shop-btn shop-btn--primary" type="button" data-add-to-cart data-id="cinnamon-rolls" data-name="Cinnamon Rolls" data-price="7" data-image="images/cinnamon-rolls-on-plate.jpg">Add to Cart</button>
               </div>
             </div>
           </article>
@@ -251,7 +248,7 @@
               <p class="shop-card__text">Rich, buttery cookies with gooey chocolate and deep brown sugar flavor.</p>
               <p class="shop-card__availability">Available on select bake days</p>
               <div class="shop-card__actions">
-                <button class="shop-btn shop-btn--primary" type="button">Add to Cart</button>
+                <button class="shop-btn shop-btn--primary" type="button" data-add-to-cart data-id="brown-butter-chocolate-chip-cookie" data-name="Brown Butter Chocolate Chip Cookie" data-price="2" data-image="images/brown-butter-chocolate-chip-cookies.jpg">Add to Cart</button>
               </div>
             </div>
           </article>
@@ -265,7 +262,7 @@
               <p class="shop-card__text">A buttery cookie with white chocolate sweetness and toasted pecan flavor.</p>
               <p class="shop-card__availability">Available on select bake days</p>
               <div class="shop-card__actions">
-                <button class="shop-btn shop-btn--primary" type="button">Add to Cart</button>
+                <button class="shop-btn shop-btn--primary" type="button" data-add-to-cart data-id="white-chocolate-pecan-cookie" data-name="White Chocolate Pecan Cookie" data-price="2" data-image="images/white-chocolate-pecan-cookies.jpg">Add to Cart</button>
               </div>
             </div>
           </article>
@@ -279,7 +276,7 @@
               <p class="shop-card__text">Layered, flaky sourdough croissants with rich flavor and delicate texture.</p>
               <p class="shop-card__availability">Available on select bake days</p>
               <div class="shop-card__actions">
-                <button class="shop-btn shop-btn--primary" type="button">Add to Cart</button>
+                <button class="shop-btn shop-btn--primary" type="button" data-add-to-cart data-id="sourdough-croissant" data-name="Sourdough Croissant" data-price="5" data-image="images/sourdough-croissant.jpg">Add to Cart</button>
               </div>
             </div>
           </article>
@@ -293,7 +290,7 @@
               <p class="shop-card__text">Tender sourdough scones with rotating flavors depending on season and availability.</p>
               <p class="shop-card__availability">Available on select bake days</p>
               <div class="shop-card__actions">
-                <button class="shop-btn shop-btn--primary" type="button">Add to Cart</button>
+                <button class="shop-btn shop-btn--primary" type="button" data-add-to-cart data-id="sourdough-scones" data-name="Sourdough Scones" data-price="3" data-image="images/sourdough-scones.jpg">Add to Cart</button>
               </div>
             </div>
           </article>
@@ -311,6 +308,7 @@
               </div>
             </div>
           </article>
+
         </div>
       </div>
     </div>
@@ -334,6 +332,7 @@
         </div>
 
         <div class="shop-grid">
+
           <article class="shop-card" id="buttermilk-pancake-mix">
             <div class="shop-card__badge shop-card__badge--shipping">Shippable</div>
             <img src="images/reign-wilder-buttermilk-pancake-mix.webp" alt="Buttermilk pancake mix" loading="lazy">
@@ -342,7 +341,7 @@
               <p class="shop-card__price">From $8</p>
               <p class="shop-card__text">A classic, fluffy pancake mix with bakery-quality results at home.</p>
               <div class="shop-card__actions">
-                <button class="shop-btn shop-btn--primary" type="button">Add to Cart</button>
+                <button class="shop-btn shop-btn--primary" type="button" data-add-to-cart data-id="buttermilk-pancake-mix" data-name="Buttermilk Pancake Mix" data-price="8" data-image="images/reign-wilder-buttermilk-pancake-mix.webp">Add to Cart</button>
               </div>
             </div>
           </article>
@@ -355,7 +354,7 @@
               <p class="shop-card__price">From $8</p>
               <p class="shop-card__text">A family-friendly mix with sweet chocolate chip flavor and a fun bakery feel.</p>
               <div class="shop-card__actions">
-                <button class="shop-btn shop-btn--primary" type="button">Add to Cart</button>
+                <button class="shop-btn shop-btn--primary" type="button" data-add-to-cart data-id="chocolate-chip-pancake-mix" data-name="Chocolate Chip Pancake Mix" data-price="8" data-image="images/reign-wilder-sourdough-chocolate-chip-pancake-mix.webp">Add to Cart</button>
               </div>
             </div>
           </article>
@@ -368,7 +367,7 @@
               <p class="shop-card__price">From $8</p>
               <p class="shop-card__text">A colorful, giftable pancake mix for birthdays, celebrations, and fun mornings.</p>
               <div class="shop-card__actions">
-                <button class="shop-btn shop-btn--primary" type="button">Add to Cart</button>
+                <button class="shop-btn shop-btn--primary" type="button" data-add-to-cart data-id="unicorn-sprinkle-pancake-mix" data-name="Unicorn Sprinkle Pancake Mix" data-price="8" data-image="images/reign-wilder-sourdough-unicorn-pancake-mix.webp">Add to Cart</button>
               </div>
             </div>
           </article>
@@ -385,6 +384,7 @@
               </div>
             </div>
           </article>
+
         </div>
       </div>
 
@@ -395,6 +395,7 @@
         </div>
 
         <div class="shop-grid">
+
           <article class="shop-card" id="classic-honey-oat-granola">
             <div class="shop-card__badge shop-card__badge--shipping">Shippable</div>
             <img src="images/reign-wilder-sourdough-harvest-granola.jpeg" alt="Classic honey oat granola" loading="lazy">
@@ -403,7 +404,7 @@
               <p class="shop-card__price">From $8</p>
               <p class="shop-card__text">Crunchy, lightly sweet granola with toasted oats, honey, cinnamon, and nuts.</p>
               <div class="shop-card__actions">
-                <button class="shop-btn shop-btn--primary" type="button">Add to Cart</button>
+                <button class="shop-btn shop-btn--primary" type="button" data-add-to-cart data-id="classic-honey-oat-granola" data-name="Classic Honey Oat Granola" data-price="8" data-image="images/reign-wilder-sourdough-harvest-granola.jpeg">Add to Cart</button>
               </div>
             </div>
           </article>
@@ -433,6 +434,7 @@
               </div>
             </div>
           </article>
+
         </div>
       </div>
 
@@ -451,7 +453,7 @@
               <p class="shop-card__price">From $10</p>
               <p class="shop-card__text">Choose fresh starter for local pickup or dehydrated starter for storage, gifting, and shipping.</p>
               <div class="shop-card__actions">
-                <button class="shop-btn shop-btn--primary" type="button">Add to Cart</button>
+                <button class="shop-btn shop-btn--primary" type="button" data-add-to-cart data-id="fresh-or-dehydrated-starter" data-name="Fresh or Dehydrated Starter" data-price="10" data-image="images/sourdough-starter-jar-dehydrated-starter-reign-wilder.jpeg">Add to Cart</button>
               </div>
             </div>
           </article>

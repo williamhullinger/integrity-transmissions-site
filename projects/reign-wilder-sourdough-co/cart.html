@@ -1,0 +1,183 @@
+Use this for cart.html.
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cart & Checkout | Reign & Wilder Sourdough Co.</title>
+  <meta
+    name="description"
+    content="Review your Reign & Wilder order, update quantities, add pickup details, and continue to checkout for fresh baked goods, cake pops, sourdough bread, pancake mix, granola, and starter."
+  >
+  <link rel="canonical" href="https://reignandwilder.com/cart.html">
+  <meta property="og:title" content="Cart & Checkout | Reign & Wilder Sourdough Co.">
+  <meta property="og:description" content="Review your Reign & Wilder bakery order and continue to checkout.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://reignandwilder.com/cart.html">
+  <meta property="og:image" content="https://reignandwilder.com/images/cake-pops-assorted.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Cart & Checkout | Reign & Wilder Sourdough Co.">
+  <meta name="twitter:description" content="Review your Reign & Wilder bakery order and continue to checkout.">
+  <meta name="twitter:image" content="https://reignandwilder.com/images/cake-pops-assorted.jpg">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="cart.css">
+  <script src="script.js" defer></script>
+  <script src="cart.js" defer></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+  <!-- navbar -->
+  <div id="header-placeholder"></div>
+  <main>
+    <!-- CART HERO -->
+    <section class="cart-hero">
+      <div class="container">
+        <p class="cart-hero__eyebrow">Checkout</p>
+        <h1 class="cart-hero__title">Review Your Order</h1>
+        <p class="cart-hero__text">
+          Review your Reign &amp; Wilder baked goods, update quantities, choose pickup or delivery preferences, and continue to checkout.
+        </p>
+      </div>
+    </section>
+    <!-- CART PAGE -->
+    <section class="cart-page">
+      <div class="container cart-page__layout">
+        <!-- CART ITEMS -->
+        <section class="cart-panel" aria-labelledby="cart-items-title">
+          <div class="cart-panel__header">
+            <h2 id="cart-items-title">Your Cart</h2>
+            <p>Items added from the Shop page will appear here.</p>
+          </div>
+          <div id="cart-empty" class="cart-empty">
+            <h3>Your cart is empty</h3>
+            <p>Browse the shop and add fresh baked goods, pantry items, or cake pops to your cart.</p>
+            <a href="shop.html" class="cart-btn cart-btn--primary">Return to Shop</a>
+          </div>
+          <div id="cart-items" class="cart-items" aria-live="polite">
+            <!-- JS injects cart items here -->
+          </div>
+        </section>
+        <!-- ORDER SUMMARY -->
+        <aside class="cart-summary" aria-labelledby="cart-summary-title">
+          <div class="cart-summary__header">
+            <h2 id="cart-summary-title">Order Summary</h2>
+            <p>Confirm your totals and checkout details.</p>
+          </div>
+          <div class="cart-summary__totals">
+            <div class="cart-summary__row">
+              <span>Subtotal</span>
+              <strong id="cart-subtotal">$0.00</strong>
+            </div>
+            <div class="cart-summary__row">
+              <span>Estimated Tax</span>
+              <strong id="cart-tax">$0.00</strong>
+            </div>
+            <div class="cart-summary__row">
+              <span>Estimated Total</span>
+              <strong id="cart-total">$0.00</strong>
+            </div>
+          </div>
+          <div class="cart-summary__notice">
+            <p>
+              Final tax, pickup, delivery, and availability details may be confirmed during checkout.
+            </p>
+          </div>
+          <button id="cart-checkout-button" class="cart-btn cart-btn--primary" type="button">
+            Continue to Checkout
+          </button>
+          <a href="shop.html" class="cart-btn cart-btn--secondary">
+            Keep Shopping
+          </a>
+        </aside>
+      </div>
+    </section>
+    <!-- CUSTOMER DETAILS -->
+    <section class="cart-details">
+      <div class="container">
+        <div class="cart-details__header">
+          <p class="cart-details__eyebrow">Order Details</p>
+          <h2>Pickup, Delivery, and Contact Information</h2>
+          <p>
+            Add your preferred order details below. This helps us confirm timing and availability for fresh baked goods.
+          </p>
+        </div>
+        <form class="cart-form" id="cart-details-form" name="cart-details" method="POST" data-netlify="true">
+          <input type="hidden" name="form-name" value="cart-details">
+          <input type="hidden" id="cart-order-data" name="cart_order_data">
+          <div class="cart-form__grid">
+            <div class="cart-form__group">
+              <label for="cart-name">Name</label>
+              <input id="cart-name" name="name" type="text" autocomplete="name" required>
+            </div>
+            <div class="cart-form__group">
+              <label for="cart-email">Email</label>
+              <input id="cart-email" name="email" type="email" autocomplete="email" required>
+            </div>
+            <div class="cart-form__group">
+              <label for="cart-phone">Phone</label>
+              <input id="cart-phone" name="phone" type="tel" autocomplete="tel">
+            </div>
+            <div class="cart-form__group">
+              <label for="cart-fulfillment">Pickup or Delivery</label>
+              <select id="cart-fulfillment" name="fulfillment_preference" required>
+                <option value="">Select one</option>
+                <option value="pickup">Local Pickup</option>
+                <option value="delivery">Local Delivery</option>
+                <option value="discuss">Need to Discuss</option>
+              </select>
+            </div>
+            <div class="cart-form__group">
+              <label for="cart-date">Preferred Date</label>
+              <input id="cart-date" name="preferred_date" type="date">
+            </div>
+            <div class="cart-form__group">
+              <label for="cart-time">Preferred Time Window</label>
+              <select id="cart-time" name="preferred_time">
+                <option value="">Select one</option>
+                <option value="morning">Morning</option>
+                <option value="midday">Midday</option>
+                <option value="afternoon">Afternoon</option>
+                <option value="evening">Evening</option>
+                <option value="flexible">Flexible</option>
+              </select>
+            </div>
+          </div>
+          <div class="cart-form__group">
+            <label for="cart-notes">Order Notes</label>
+            <textarea
+              id="cart-notes"
+              name="order_notes"
+              rows="5"
+              placeholder="Add pickup notes, delivery questions, special instructions, event timing, or anything else we should know."
+            ></textarea>
+          </div>
+        </form>
+      </div>
+    </section>
+    <!-- CHECKOUT HELP -->
+    <section class="cart-help">
+      <div class="container cart-help__grid">
+        <article class="cart-help__item">
+          <h2>Fresh Items</h2>
+          <p>Some bakery items are made on select bake days and may require confirmation before pickup or delivery.</p>
+        </article>
+        <article class="cart-help__item">
+          <h2>Custom Orders</h2>
+          <p>Custom cake pops, breads, and cookies may require a deposit or final confirmation before production.</p>
+        </article>
+        <article class="cart-help__item">
+          <h2>Secure Checkout</h2>
+          <p>Checkout will be handled securely through Square once payment integration is connected.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+  <!-- footer -->
+  <div id="footer-placeholder"></div>
+</body>
+</html>
