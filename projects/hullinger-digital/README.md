@@ -1,58 +1,90 @@
 # Hullinger Digital
 
-Modern Websites & Smart Automation for Growing Businesses.
+Hullinger Digital is a small-business focused web development project built to deliver modern, clean websites that help businesses present themselves professionally online and convert visitors into customers.
 
-This repository contains the initial launch version of the Hullinger Digital landing page. The purpose of this build is to establish brand positioning, present a defined service offer, and create a conversion-focused structure for client acquisition.
-
----
+This repository contains the source code for the Hullinger Digital website.
 
 ## Live Site
 
-Deployment in progress.
+https://hullingerdigital.com
 
----
+## Overview
 
-## Objective
+Hullinger Digital is a real business website designed to showcase services, present portfolio work, and generate qualified client inquiries.
 
-The site was built to:
+The project demonstrates how a clear structure, modern design, and simple systems can help small businesses establish a stronger online presence.
 
-- Define clear positioning
-- Present a structured service offer
-- Guide visitors toward a single primary action
-- Serve as the foundation for future portfolio expansion
+The site was built from scratch using semantic HTML and structured CSS without frameworks or templates.
 
-This project was built from scratch using semantic HTML and structured CSS. No templates or frameworks were used.
+## Features
 
----
+- Multi-page website architecture
+- Conversion-focused layout and messaging
+- Mobile-responsive design
+- Lightweight build with minimal dependencies
+- Portfolio project showcase
+- Netlify form integration for lead capture
+- Dedicated project request intake form
+- Direct contact and scheduling options
 
-## Structure
+## Pages
 
-- Hero (Positioning + Primary Call to Action)
-- Value Signals
-- Process Section
-- Problem Definition
-- Solution Overview
-- Offer / Closing Call to Action
-- Minimal Footer
+### Home
 
----
+Introduces the brand and service offering while guiding visitors toward requesting a website review or project quote.
+
+Sections include:
+
+- Hero
+- Value signals
+- Process / How It Works
+- Problem definition
+- Solution overview
+- Call-to-action section
+
+### Portfolio
+
+Showcases development work and systems projects that demonstrate practical web development capabilities.
+
+### About
+
+Provides background on the business and explains the approach to building effective websites for real businesses.
+
+### Contact
+
+Offers multiple ways to reach out including direct contact information and a structured contact form.
+
+### Project Request Form
+
+A dedicated intake page where potential clients can submit project details such as business type, timeline, budget range, and goals.
+
+### Thank You Page
+
+Confirmation page displayed after successful form submission.
 
 ## Tech Stack
 
 - HTML5
 - CSS3
 - Git
-- GitHub Pages
+- GitHub
+- Netlify
+- Google Analytics
 
----
+## Development
 
-## Status
+The project is maintained using a simple Git workflow.
 
-Phase 1 Complete  
-Deployment Pending  
-Analytics Pending  
-Booking Integration Pending  
+1. Local development and testing
+2. Commit changes
+3. Push updates to GitHub
+4. Automatic deployment via Netlify
 
----
+## Author
 
-© 2026 Hullinger Digital
+William Hullinger  
+Founder — Hullinger Digital
+
+## License
+
+© 2026 Hullinger Digital. All rights reserved.

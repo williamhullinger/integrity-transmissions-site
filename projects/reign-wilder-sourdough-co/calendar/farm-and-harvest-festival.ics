@@ -1,0 +1,14 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Reign & Wilder Sourdough Co.//Events//EN
+CALSCALE:GREGORIAN
+BEGIN:VEVENT
+UID:farm-and-harvest-festival@reignandwilder.com
+DTSTAMP:20260328T000000Z
+DTSTART:20261017T090000
+DTEND:20261017T140000
+SUMMARY:Farm & Harvest Festival - Reign & Wilder
+LOCATION:Rogersville City Park, Rogersville, MO
+DESCRIPTION:Find Reign & Wilder at the Rogersville Farm & Harvest Festival for fresh sourdough bread and baked goods.
+END:VEVENT
+END:VCALENDAR

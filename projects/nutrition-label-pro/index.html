@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Nutrition Facts</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+
+  <body>
+    <main class="nutrition-label" aria-label="Nutrition Facts">
+      <header class="nutrition-label__header">
+        <h1 class="nutrition-label__title">Nutrition Facts</h1>
+
+        <p class="nutrition-label__servings">8 servings per container</p>
+
+        <p class="nutrition-label__serving-size">
+          <strong>Serving size</strong>
+          <span>2/3 cup (55g)</span>
+        </p>
+      </header>
+
+      <hr class="rule rule--thick" />
+
+      <section class="nutrition-label__calories" aria-label="Calories">
+        <p class="nutrition-label__amount-per-serving">Amount per serving</p>
+
+        <div class="nutrition-label__calories-row">
+          <p class="nutrition-label__calories-label">Calories</p>
+          <p class="nutrition-label__calories-value">230</p>
+        </div>
+      </section>
+
+      <hr class="rule rule--medium" />
+
+      <section class="nutrition-label__daily-value" aria-label="Daily Values">
+        <p class="nutrition-label__dv-header">
+          <strong>% Daily Value*</strong>
+        </p>
+
+        <ul class="nutrients" role="list">
+          <li class="nutrient">
+            <div class="nutrient__row">
+              <p class="nutrient__name"><strong>Total Fat</strong> 8g</p>
+              <p class="nutrient__percent"><strong>10%</strong></p>
+            </div>
+          </li>
+
+          <li class="nutrient nutrient--indent">
+            <div class="nutrient__row">
+              <p class="nutrient__name">Saturated Fat 1g</p>
+              <p class="nutrient__percent"><strong>5%</strong></p>
+            </div>
+          </li>
+
+          <li class="nutrient nutrient--indent">
+            <div class="nutrient__row">
+              <p class="nutrient__name"><em>Trans</em> Fat 0g</p>
+              <p class="nutrient__percent"></p>
+            </div>
+          </li>
+
+          <li class="nutrient nutrient--rule">
+            <div class="nutrient__row">
+              <p class="nutrient__name"><strong>Cholesterol</strong> 0mg</p>
+              <p class="nutrient__percent"><strong>0%</strong></p>
+            </div>
+          </li>
+
+          <li class="nutrient nutrient--rule">
+            <div class="nutrient__row">
+              <p class="nutrient__name"><strong>Sodium</strong> 160mg</p>
+              <p class="nutrient__percent"><strong>7%</strong></p>
+            </div>
+          </li>
+
+          <li class="nutrient nutrient--rule">
+            <div class="nutrient__row">
+              <p class="nutrient__name"><strong>Total Carbohydrate</strong> 37g</p>
+              <p class="nutrient__percent"><strong>13%</strong></p>
+            </div>
+          </li>
+
+          <li class="nutrient nutrient--indent">
+            <div class="nutrient__row">
+              <p class="nutrient__name">Dietary Fiber 4g</p>
+              <p class="nutrient__percent"></p>
+            </div>
+          </li>
+
+          <li class="nutrient nutrient--rule nutrient--indent">
+            <div class="nutrient__row">
+              <p class="nutrient__name">Total Sugars 12g</p>
+              <p class="nutrient__percent"></p>
+            </div>
+          </li>
+
+          <li class="nutrient nutrient--double-indent">
+            <div class="nutrient__row">
+              <p class="nutrient__name">Includes 10g Added Sugars</p>
+              <p class="nutrient__percent"><strong>20%</strong></p>
+            </div>
+          </li>
+
+          <li class="nutrient nutrient--rule">
+            <div class="nutrient__row">
+              <p class="nutrient__name"><strong>Protein</strong> 3g</p>
+              <p class="nutrient__percent"></p>
+            </div>
+          </li>
+        </ul>
+      </section>
+
+      <hr class="rule rule--thick" />
+
+      <section class="nutrition-label__micros" aria-label="Vitamins and minerals">
+        <ul class="micros" role="list">
+          <li class="micro">
+            <p class="micro__name">Vitamin D 2mcg</p>
+            <p class="micro__percent">10%</p>
+          </li>
+          <li class="micro">
+            <p class="micro__name">Calcium 260mg</p>
+            <p class="micro__percent">20%</p>
+          </li>
+          <li class="micro">
+            <p class="micro__name">Iron 8mg</p>
+            <p class="micro__percent">45%</p>
+          </li>
+          <li class="micro">
+            <p class="micro__name">Potassium 235mg</p>
+            <p class="micro__percent">6%</p>
+          </li>
+        </ul>
+      </section>
+
+      <footer class="nutrition-label__footer">
+        <p class="nutrition-label__footnote">
+          * The % Daily Value tells you how much a nutrient in a serving of food contributes to a daily diet.
+        </p>
+      </footer>
+    </main>
+  </body>
+</html>

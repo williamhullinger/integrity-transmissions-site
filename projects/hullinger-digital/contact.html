@@ -17,54 +17,95 @@
   </script>
 </head>
 
-<body>
+<body class="page page--contact">
 
   <!-- Header / Navigation -->
   <header class="site-header">
     <nav class="nav">
-      <a class="nav__brand" href="index.html">Hullinger Digital</a>
 
-      <div class="nav__links">
-        <a href="work.html">Work</a>
-        <a href="about.html">About</a>
-        <a href="contact.html">Contact</a>
-      </div>
-
-      <a class="btn btn--primary"
-         href="https://calendly.com/william-hullingerdigital/30min"
-         target="_blank"
-         rel="noopener">
-        Book Free Review
+      <a class="nav__brand" href="index.html">
+      <img src="images/Hullinger-Digital-logo.png" alt="Hullinger Digital">
       </a>
+
+    <ul class="nav__links">
+      <li class="nav__item"><a class="nav__link" href="portfolio.html">Portfolio</a></li>
+      <li class="nav__item"><a class="nav__link" href="about.html">About</a></li>
+      <li class="nav__item"><a class="nav__link" href="reviews.html">Reviews</a></li>
+      <li class="nav__item"><a class="nav__link" href="contact.html">Contact</a></li>
+    </ul>
+
+      <a class="nav__phone" href="tel:+14174131473">Call (417) 413-1473</a>
+
     </nav>
   </header>
 
   <!-- Contact -->
   <main class="contact">
 
-    <section class="contact__hero">
+    <section class="hero">
       <div class="container">
-        <h1>Let’s Build Something That Performs</h1>
-        <p>
-          Whether you need a new website or want to improve the one you have, let’s talk strategy.
+        <h1 class="hero__title">Get in touch</h1>
+        <p class="section__text about-hero__text">
+          Whether you need a new website or want to improve the one you have, shoot me a message, we'll talk strategy.
         </p>
       </div>
     </section>
 
-    
-<body class="page page--contact">
 
-<section class="section section--page">
-  <div class="container">
-    <header class="section__header">
-      <h1 class="section__title">Schedule a Free Website Review</h1>
-      <p class="section__lead">The fastest way to get started is to book a free strategy call. We’ll review your current online presence and identify clear next steps.</p>
+    <section class="contact-direct section-card">
+      <div class="container contact-direct__content">
 
-      <a class="btn btn--primary" href="https://calendly.com/william-hullingerdigital/30min" target="_blank" rel="noopener">Book Your Free Review</a>
-      <h2 class="section__subtitle">Send a Message</h2>
-    </header>
+        <h2 class="contact-direct__title">Prefer to reach out directly?</h2>
 
-    <form class="form form--contact" action="thanks.html" method="get">
+        <p class="contact-direct__text">
+        Call or text anytime and I'll get back to you as soon as possible.
+        </p>
+
+        <p class="contact-direct__item">
+        <strong>Call or Text:</strong>
+        <a href="tel:+14174131473">(417) 413-1473</a>
+        </p>
+
+        <p class="contact-direct__item">
+        <strong>Email:</strong>
+        <a href="mailto:william@hullinger.dev">william@hullinger.dev</a>
+        </p>
+
+        <p class="contact-direct__item">
+          <strong> Location:</strong> Springfield, Missouri
+        </p>
+
+        </div>
+    </section>
+
+
+    <section class="section section--page section-card">
+      <div class="container container-layout">
+        <header class="section__header">
+          <h1 class="section__title">Schedule Your Free Website Review</h1>
+          <p class="section__lead">The fastest way to get started is to book a free strategy call. We’ll review your current online presence and identify clear next steps.</p>
+
+          <h2 class="section__subtitle">Send a Message</h2>
+        </header>
+      </div>
+
+      <div class="contact-form">
+      <form class="form" 
+          action="/thank-you.html" 
+          method="POST" 
+          name="contact" 
+          data-netlify="true" 
+          data-netlify-honeypot="bot-field"
+          >
+      <input type="hidden" name="form-name" value="contact">
+      <input type="hidden" name="lead_source" value="promo">
+
+      <div hidden>
+        <label>Don't fill this out if you're human: 
+        <input name="bot-field">
+        </label>
+      </div>
+
       <div class="form__group">
         <label class="form__label" for="name">Name *</label>
         <input class="form__input" type="text" id="name" name="name" required>
@@ -92,13 +133,26 @@
 
   </main>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="container">
-      <p>© 2026 Hullinger Digital. All rights reserved.</p>
-    </div>
-  </footer>
+ <!-- footer section-->
+    <footer class="footer">
+      <div class="container">
+       <p>
+        © <span id="year"></span> Hullinger Digital. All rights reserved
+      </p>
 
+      <p>
+        Modern Websites & Smart Automation for Growing Businesses
+      </p>
+      </div>
+    </footer>
+
+  <script>
+
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+  </script>
+
+  <script src="script.js" defer></script>
 </body>
 </html>
         

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Client Reviews | Hullinger Digital</title>
+  <link rel="stylesheet" href="reviews.css"/>
+  <link rel="stylesheet" href="reviews-from.css"/> 
+
+  <meta name="description" content="See what clients say about working with Hullinger Digital. Real feedback from businesses that improved their websites, SEO, and online presence.">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles.css">
+
+</head>
+
+<body>
+
+  <main>
+
+<nav class="case-study__nav">
+  <a href="../portfolio.html" class="back-link">← Back to Portfolio</a>
+</nav>
+
+    <section class="section section--page">
+  <div class="container">
+
+    <header class="section__header">
+      <h1 class="section__title">Leave a Review</h1>
+
+      <p class="section__lead">
+        If we’ve worked together, I’d appreciate your feedback. Reviews help other businesses understand what it’s like to work with Hullinger Digital.
+      </p>
+
+      <p class="form__note">
+        This form is short and should only take a couple minutes.
+      </p>
+    </header>
+
+    <form
+  class="form form--review"
+  name="client-review"
+  method="POST"
+  action="/thank-you.html"
+  data-netlify="true"
+  data-netlify-honeypot="bot-field"
+>
+  <input type="hidden" name="form-name" value="client-review">
+  <input type="hidden" name="lead_source" value="review-form">
+
+  <div hidden>
+    <label>
+      Don't fill this out if you’re human:
+      <input name="bot-field">
+    </label>
+  </div>
+
+  <div class="form__group">
+    <label class="form__label" for="name">Your Name *</label>
+    <input class="form__input" type="text" id="name" name="name" required>
+  </div>
+
+  <div class="form__group">
+    <label class="form__label" for="business">Business Name *</label>
+    <input class="form__input" type="text" id="business" name="business" required>
+  </div>
+
+  <div class="form__group">
+    <label class="form__label" for="email">Email *</label>
+    <input class="form__input" type="email" id="email" name="email" required>
+  </div>
+
+  <div class="form__group">
+    <label class="form__label" for="project_type">Project Type *</label>
+    <select class="form__select" id="project_type" name="project_type" required>
+      <option value="">Select one</option>
+      <option value="website-design">Website Design</option>
+      <option value="website-redesign">Website Redesign</option>
+      <option value="landing-page">Landing Page</option>
+      <option value="local-seo">Local SEO Optimization</option>
+      <option value="website-audit">Website Audit / Strategy</option>
+      <option value="other">Other</option>
+    </select>
+  </div>
+
+  <div class="form__group">
+    <label class="form__label" for="rating">Overall Experience *</label>
+    <select class="form__select" id="rating" name="rating" required>
+      <option value="">Select one</option>
+      <option value="5-stars">5 Stars</option>
+      <option value="4-stars">4 Stars</option>
+      <option value="3-stars">3 Stars</option>
+      <option value="2-stars">2 Stars</option>
+      <option value="1-star">1 Star</option>
+    </select>
+  </div>
+
+  <div class="form__group">
+    <label class="form__label" for="goal">What problem or goal led you to work with Hullinger Digital?</label>
+    <textarea class="form__textarea" id="goal" name="goal" rows="4"></textarea>
+  </div>
+
+  <div class="form__group">
+    <label class="form__label" for="result">How did the work help your business?</label>
+    <textarea class="form__textarea" id="result" name="result" rows="4"></textarea>
+  </div>
+
+  <div class="form__group">
+    <label class="form__label" for="favorite_part">What part of the process stood out most to you?</label>
+    <textarea class="form__textarea" id="favorite_part" name="favorite_part" rows="4"></textarea>
+  </div>
+
+  <div class="form__group">
+    <label class="form__label" for="review">Short Review for Website *</label>
+    <textarea class="form__textarea" id="review" name="review" rows="5" required></textarea>
+    <small class="form__hint">
+      Example: 2-4 sentences about your experience, results, or what it was like working together.
+    </small>
+  </div>
+
+  <div class="form__group">
+    <label class="form__label" for="permission">Permission to Publish *</label>
+    <select class="form__select" id="permission" name="permission" required>
+      <option value="">Select one</option>
+      <option value="yes">Yes, you may publish my review on the website or portfolio</option>
+      <option value="no">No, please keep my review private</option>
+    </select>
+  </div>
+
+  <div class="form__group form__group--actions">
+    <button class="btn btn--primary" type="submit">Submit Review</button>
+  </div>
+
+  <p class="form__note">
+    Reviews may be lightly edited for spelling, grammar, or length without changing the meaning.
+  </p>
+</form>
+  </div>
+
+</main>
+
+
+  <!-- =========================
+       FOOTER
+  ========================== -->
+
+  <footer class="site-footer">
+
+    <div class="container">
+
+      <p>
+        © <span id="year"></span> Hullinger Digital. All rights reserved
+      </p>
+
+      <p>
+        Modern Websites & Smart Automation for Growing Businesses
+      </p>
+
+    </div>
+
+  </footer>
+
+  <script>
+
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+  </script>
+
+
+</body>
+
+</html>
+
+  </div>
+</section>
+  </main>

@@ -1,0 +1,215 @@
+/* =========================
+   REVIEWS PAGE
+   Hullinger Digital
+========================= */
+
+/* Base page spacing */
+.reviews-hero,
+.reviews,
+.leave-review {
+  margin: 1.5rem auto;
+}
+
+/* =========================
+   HERO
+========================= */
+
+.reviews-hero {
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  color: #ffffff;
+  border-radius: 14px;
+  padding: 5rem 2rem;
+  text-align: center;
+  box-shadow: 0 12px 35px rgba(15, 23, 42, 0.18);
+}
+
+.reviews-hero h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  letter-spacing: -1px;
+  margin-bottom: 1rem;
+}
+
+.reviews-hero__subtitle {
+  max-width: 720px;
+  margin: 0 auto;
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+/* =========================
+   REVIEWS SECTION
+========================= */
+
+.reviews {
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 8px 25px rgba(15, 23, 42, 0.06);
+  padding: 3rem 2rem;
+}
+
+.reviews__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+/* =========================
+   REVIEW CARD
+========================= */
+
+.review-card {
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  border-radius: 14px;
+  padding: 1.5rem;
+  text-align: left;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.05);
+}
+
+.review-card__stars {
+  font-size: 1.25rem;
+  letter-spacing: 0.08em;
+  color: #f59e0b;
+  margin-bottom: 1rem;
+}
+
+.review-card__text {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: rgba(15, 23, 42, 0.85);
+  margin-bottom: 1.25rem;
+}
+
+.review-card__author {
+  padding-top: 1rem;
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.review-card__name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 0.25rem;
+}
+
+.review-card__project {
+  font-size: 0.95rem;
+  color: rgba(15, 23, 42, 0.65);
+}
+
+/* =========================
+   LEAVE REVIEW CTA
+========================= */
+
+.leave-review {
+  background: #0f172a;
+  color: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 12px 35px rgba(15, 23, 42, 0.22);
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.leave-review h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.leave-review p {
+  max-width: 680px;
+  margin: 0 auto 1rem;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.leave-review .btn-primary {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 12px 20px;
+  border-radius: 8px;
+  background: #2563eb;
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 600;
+  box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+.leave-review .btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 35px rgba(37, 99, 235, 0.4);
+  opacity: 0.95;
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+.site-footer {
+  background: #ffffff;
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
+  margin-top: 1.5rem;
+}
+
+.site-footer .container {
+  padding: 1.25rem 0;
+  text-align: center;
+}
+
+.site-footer p {
+  color: rgba(15, 23, 42, 0.6);
+  font-size: 0.95rem;
+  margin: 0.2rem 0;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (min-width: 760px) {
+  .reviews__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .reviews__grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .reviews-hero {
+    padding: 4rem 1.5rem;
+  }
+
+  .reviews {
+    padding: 2rem 1.25rem;
+  }
+
+  .leave-review {
+    padding: 3rem 1.5rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .reviews-hero h1 {
+    font-size: 2.2rem;
+    line-height: 1.2;
+  }
+
+  .reviews-hero__subtitle {
+    font-size: 1rem;
+  }
+
+  .review-card {
+    padding: 1.25rem;
+  }
+
+  .leave-review h2 {
+    font-size: 1.65rem;
+  }
+}

@@ -1,0 +1,275 @@
+/* -------------------------
+ABOUT HERO / STORY
+------------------------- */
+
+.about {
+  padding: 80px 0;
+  background: #efe7da;
+}
+
+.about__layout {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 50px;
+  align-items: center;
+}
+
+.about__content {
+  font-size: 1.2rem;
+}
+
+.about__eyebrow {
+  margin: 0 0 12px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #8d5c2c;
+}
+
+.about__title {
+  margin: 0 0 22px;
+  font-size: 4rem;
+  line-height: 1.05;
+}
+
+.about__content p {
+  margin: 0 0 20px;
+  line-height: 1.8;
+}
+
+.about__actions {
+  margin-top: 28px;
+}
+
+.about__image img {
+  width: 100%;
+  border-radius: 16px;
+  object-fit: cover;
+}
+
+/* -------------------------
+CORE VALUES
+------------------------- */
+
+.about-values {
+  padding: 80px 0;
+  background: #faf7f2;
+}
+
+.about-values__layout {
+  display: grid;
+  grid-template-columns: 0.95fr 1.05fr;
+  gap: 50px;
+  align-items: center;
+}
+
+.about-values__image img {
+  width: 100%;
+  border-radius: 16px;
+  object-fit: cover;
+}
+
+.about-values__title {
+  margin: 0 0 20px;
+  font-size: 3rem;
+  line-height: 1.1;
+}
+
+.about-values__content p {
+  margin: 0 0 18px;
+  font-size: 1.15rem;
+  line-height: 1.8;
+}
+
+.about-values__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+  margin-top: 28px;
+}
+
+.about-value-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 24px;
+}
+
+.about-value-card h3 {
+  margin: 0 0 10px;
+  font-size: 1.35rem;
+}
+
+.about-value-card p {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+/* -------------------------
+BENEFITS
+------------------------- */
+
+.about-benefits {
+  padding: 80px 0;
+  background: #553e27;
+  color: #fff;
+  text-align: center;
+}
+
+.about-benefits__eyebrow {
+  color: #e6dfd5;
+}
+
+.about-benefits__title {
+  margin: 0 0 40px;
+  font-size: 3.5rem;
+}
+
+.about-benefits__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.about-benefit-card {
+  background: #a7703a;
+  border-radius: 14px;
+  padding: 30px 24px;
+}
+
+.about-benefit-card h3 {
+  margin: 0 0 12px;
+  font-size: 1.6rem;
+}
+
+.about-benefit-card p {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+/* -------------------------
+CTA
+------------------------- */
+.about-cta__title,
+.about-cta__text,
+.about-benefits__eyebrow {
+  color: #fff;
+}
+
+.about-cta__title,
+.about-cta__text {
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+}
+
+.about-cta {
+  padding: 80px 0;
+  background: 
+  linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.35)),
+  url("images/cookies.webp");
+  background-size: cover;
+  background-position: center 40%;
+  background-repeat: no-repeat;
+
+}
+
+.about-cta__panel {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border-radius: 18px;
+  padding: 50px 30px;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  max-width: 900px;
+  margin: 0 auto;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+}
+
+.about-cta__eyebrow {
+  margin: 0 0 12px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #fff;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
+}
+
+.about-cta__title {
+  margin: 0 0 16px;
+  font-size: 3rem;
+  line-height: 1.1;
+}
+
+.about-cta__text {
+  max-width: 760px;
+  margin: 0 auto 28px;
+  font-size: 1.15rem;
+  line-height: 1.8;
+}
+
+.about-cta__button {
+  background: rgba(255, 255, 255, 0.28);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.about-cta__button:hover {
+  background: rgba(255, 255, 255, 0.35);
+  color: #fff;
+}
+
+/* -------------------------
+RESPONSIVE
+------------------------- */
+
+@media (max-width: 900px) {
+  .about__layout,
+  .about-values__layout,
+  .about-benefits__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .about-values__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .about__title,
+  .about-values__title,
+  .about-benefits__title,
+  .about-cta__title {
+    font-size: 2.6rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .about,
+  .about-values,
+  .about-benefits,
+  .about-cta {
+    padding: 60px 0;
+  }
+
+  .about__content,
+  .about-values__content p,
+  .about-cta__text {
+    font-size: 1rem;
+  }
+
+  .about__title,
+  .about-values__title,
+  .about-benefits__title,
+  .about-cta__title {
+    font-size: 2.2rem;
+  }
+
+  .about-value-card,
+  .about-benefit-card,
+  .about-cta__panel {
+    padding: 24px 20px;
+  }
+}

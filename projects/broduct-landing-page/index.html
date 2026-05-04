@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ForgeBottle | Product Landing Page</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body>
+    <!-- Fixed header required by FCC -->
+    <header id="header">
+      <div class="brand">
+        <img
+          id="header-img"
+          src="https://cdn-icons-png.flaticon.com/512/869/869869.png"
+          alt="ForgeBottle logo"
+        />
+        <span class="brand-name">ForgeBottle</span>
+      </div>
+
+      <nav id="nav-bar" aria-label="Primary navigation">
+        <a class="nav-link" href="#features">Features</a>
+        <a class="nav-link" href="#demo">Demo</a>
+        <a class="nav-link" href="#pricing">Pricing</a>
+      </nav>
+    </header>
+
+    <!-- Spacer so content isn't hidden under fixed header -->
+    <main>
+      <section class="hero">
+        <h1>Hydration built for hard days.</h1>
+        <p>
+          A tough, insulated bottle that stays cold, seals tight, and looks clean on any desk or jobsite.
+        </p>
+
+        <form
+          id="form"
+          action="https://www.freecodecamp.org/email-submit"
+          method="post"
+          class="signup"
+        >
+          <label class="sr-only" for="email">Email address</label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            placeholder="Enter your email to get updates"
+            required
+          />
+          <input id="submit" type="submit" value="Get Early Access" />
+        </form>
+      </section>
+
+      <section id="features" class="section">
+        <h2>Features</h2>
+        <div class="cards">
+          <article class="card">
+            <h3>All-day insulation</h3>
+            <p>Double-wall vacuum insulation keeps drinks cold for hours.</p>
+          </article>
+          <article class="card">
+            <h3>Leak-proof cap</h3>
+            <p>Twist-lock seal so you can toss it in a bag without stress.</p>
+          </article>
+          <article class="card">
+            <h3>Grip + durability</h3>
+            <p>Powder-coated finish with a textured grip that won’t slip.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="demo" class="section">
+        <h2>Demo</h2>
+        <p class="section-lead">Quick look at the build and seal test.</p>
+
+        <!-- FCC accepts video OR iframe with id="video" and src -->
+        <div class="video-wrap">
+          <iframe
+            id="video"
+            src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+            title="Product video"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+          ></iframe>
+        </div>
+      </section>
+
+      <section id="pricing" class="section">
+        <h2>Pricing</h2>
+        <div class="pricing">
+          <article class="price-card">
+            <h3>Starter</h3>
+            <p class="price">$24</p>
+            <ul>
+              <li>18 oz</li>
+              <li>Standard cap</li>
+              <li>1-year warranty</li>
+            </ul>
+            <button type="button">Select</button>
+          </article>
+
+          <article class="price-card featured">
+            <h3>Pro</h3>
+            <p class="price">$34</p>
+            <ul>
+              <li>24 oz</li>
+              <li>Leak-proof cap</li>
+              <li>2-year warranty</li>
+            </ul>
+            <button type="button">Select</button>
+          </article>
+
+          <article class="price-card">
+            <h3>Max</h3>
+            <p class="price">$44</p>
+            <ul>
+              <li>32 oz</li>
+              <li>Leak-proof cap</li>
+              <li>Lifetime warranty</li>
+            </ul>
+            <button type="button">Select</button>
+          </article>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <p>© <span id="year"></span> ForgeBottle. Built for real life.</p>
+      </footer>
+    </main>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shop - Reign & Wilder Sourdough Co.</title>
+<meta name="description" content="Fresh sourdough bread and small-batch baked goods made with simple ingredients and traditional slow fermentation.">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="shop.css">
+<script src="script.js" defer></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+</head>
+
+<body>
+
+<!--navbar-->
+<div id="header-placeholder"></div>
+
+<main>
+
+  <!-- SHOP HERO -->
+  <section class="shop-hero">
+    <div class="container">
+      <p class="shop-hero__eyebrow">Shop Reign &amp; Wilder</p>
+      <h1 class="shop-hero__title">Order Fresh Bakery Favorites, Pantry Staples, and Baking Essentials</h1>
+      <p class="shop-hero__text">
+        Shop local pickup items, shelf-stable favorites, and recommended tools all in one place. Fresh bakery items may be available only on select pickup or delivery days, while pantry items and affiliate tools are organized separately for easy browsing.
+      </p>
+
+      <div class="shop-hero__actions">
+        <a href="#fresh-bakery" class="shop-btn shop-btn--primary">Shop Fresh Bakery</a>
+        <a href="#pantry-shipping" class="shop-btn shop-btn--secondary">Shop Pantry &amp; Shipping</a>
+        <a href="#tools-supplies" class="shop-btn shop-btn--secondary">Shop Tools &amp; Supplies</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- SHOP INFO BAR -->
+  <section class="shop-info-bar">
+    <div class="container shop-info-bar__grid">
+      <article class="shop-info-bar__item">
+        <h2>Local Pickup &amp; Delivery</h2>
+        <p>Fresh bakery items can be scheduled for local pickup or limited local delivery on selected days each week.</p>
+      </article>
+
+      <article class="shop-info-bar__item">
+        <h2>Shipping</h2>
+        <p>Pantry items and select shelf-stable products are better suited for future nationwide shipping.</p>
+      </article>
+
+      <article class="shop-info-bar__item">
+        <h2>Custom Orders</h2>
+        <p>Custom cake pops, breads, cookies, and event orders use a dedicated request form with deposit-based booking.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- QUICK FILTERS -->
+  <section class="shop-filters">
+    <div class="container">
+      <div class="shop-filters__wrap">
+        <a href="#fresh-bakery" class="shop-filter-pill">Fresh Bakery</a>
+        <a href="#cake-pops" class="shop-filter-pill">Cake Pops</a>
+        <a href="#bread-focaccia" class="shop-filter-pill">Bread &amp; Focaccia</a>
+        <a href="#sweets-pastries" class="shop-filter-pill">Sweets</a>
+        <a href="#pantry-shipping" class="shop-filter-pill">Pantry</a>
+        <a href="#starter" class="shop-filter-pill">Starter</a>
+        <a href="#tools-supplies" class="shop-filter-pill">Tools</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FRESH BAKERY -->
+  <section class="shop-section" id="fresh-bakery">
+    <div class="container">
+      <div class="shop-section__header">
+        <p class="shop-section__eyebrow">Fresh Bakery</p>
+        <h2 class="shop-section__title">Fresh Pickup &amp; Local Delivery Items</h2>
+        <p class="shop-section__text">
+          Fresh bakery items are made in small batches and may be available only on selected pickup or delivery days. Availability can vary by production schedule, season, and preorder volume.
+        </p>
+      </div>
+
+      <!-- FEATURED CAKE POPS -->
+      <div class="shop-featured" id="cake-pops">
+        <div class="shop-featured__media">
+          <img src="images/cake-pops-assorted.jpg" alt="Custom cake pops from Reign and Wilder" loading="lazy">
+        </div>
+
+        <div class="shop-featured__content">
+          <p class="shop-featured__eyebrow">Featured Item</p>
+          <h3 class="shop-featured__title">Custom Cake Pops</h3>
+          <p class="shop-featured__price">Starting at $3 each • Multi-packs available • Custom pricing for events</p>
+          <p class="shop-featured__text">
+            One of our most requested and fastest-growing offerings. Perfect for birthdays, weddings, showers, holidays, and custom events, our cake pops are made fresh, finished by hand, and designed to stand out.
+          </p>
+
+          <div class="shop-featured__meta">
+            <p><strong>Core Flavors:</strong> Double Chocolate, Lemon, Strawberry, White Chocolate, Cheesecake, Red Velvet</p>
+            <p><strong>Custom Options:</strong> Colors, themes, drizzle styles, toppings, shell finishes, and event designs</p>
+            <p><strong>Order Notes:</strong> Custom and event orders are secured with a deposit to reserve your date.</p>
+          </div>
+
+          <div class="shop-featured__actions">
+            <button class="shop-btn shop-btn--primary" type="button">Add to Cart</button>
+            <a href="#custom-order-form" class="shop-btn shop-btn--secondary">Request Custom Quote</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- BREAD & FOCACCIA -->
+      <div class="shop-subsection" id="bread-focaccia">
+        <div class="shop-subsection__header">
+          <h3>Bread &amp; Focaccia</h3>
+          <p>Fresh loaves and focaccia for pickup, preorders, and seasonal specials.</p>
+        </div>
+
+        <div class="shop-grid">
+          <article class="shop-card" id="classic-sourdough-loaf">
+            <div class="shop-card__badge">Fresh Item</div>
+            <img src="images/sourdough-loaf-round.webp" alt="Classic sourdough loaf from Reign and Wilder" loading="lazy">
+            <div class="shop-card__body">
+              <h4>Classic Sourdough Loaf</h4>
+              <p class="shop-card__price">$8</p>
+              <p class="shop-card__text">
+                Traditional slow-fermented sourdough with a crisp crust, soft interior, and balanced tang.
+              </p>
+              <p class="shop-card__availability">Available for pickup on select bake days</p>
+              <div class="shop-card__actions">
+                <button class="shop-btn shop-btn--primary" type="button">Add to Cart</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="shop-card" id="jalapeno-cheddar-sourdough">
+            <div class="shop-card__badge">Fresh Item</div>
+            <img src="images/jalapeno-chaddar.jpg" alt="Jalapeño cheddar sourdough loaf" loading="lazy">
+            <div class="shop-card__body">
+              <h4>Jalapeño Cheddar Sourdough</h4>
+              <p class="shop-card__price">$10</p>
+              <p class="shop-card__text">
+                A bold, savory loaf with sharp cheddar and jalapeño baked into naturally fermented sourdough.
+              </p>
+              <p class="shop-card__availability">Available for pickup on select bake days</p>
+              <div class="shop-card__actions">
+                <button class="shop-btn shop-btn--primary" type="button">Add to Cart</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="shop-card" id="custom-artisan-loaf">
+            <div class="shop-card__badge shop-card__badge--custom">Custom</div>
+            <img src="images/custom-sourdough-add-ins.jpg" alt="Custom artisan sourdough loaf" loading="lazy">
+            <div class="shop-card__body">
+              <h4>Custom Artisan Loaf</h4>
+              <p class="shop-card__price">Custom Quote</p>
+              <p class="shop-card__text">
+                Seasonal flavors, gift loaves, and custom add-ins based on availability and order timing.
+              </p>
+              <p class="shop-card__availability">Made to order</p>
+              <div class="shop-card__actions">
+                <a href="#custom-order-form" class="shop-btn shop-btn--secondary">Request Custom Quote</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="shop-card" id="sourdough-sandwich-loaf">
+            <div class="shop-card__badge">Fresh Item</div>
+            <img src="images/reign-wilder-sourdough-sandwich-loaf.jpeg" alt="Sourdough sandwich loaf" loading="lazy">
+            <div class="shop-card__body">
+              <h4>Sourdough Sandwich Loaf</h4>
+              <p class="shop-card__price">$6</p>
+              <p class="shop-card__text">
+                Soft, airy sandwich loaf with a distinctive sourdough flavor, perfect for everyday use.
+              </p>
+              <p class="shop-card__availability">Available for pickup on select bake days</p>
+              <div class="shop-card__actions">
+                <button class="shop-btn shop-btn--primary" type="button">Add to Cart</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="shop-card" id="garlic-sea-salt-focaccia">
+            <div class="shop-card__badge">Fresh Item</div>
+            <img src="images/garlic-foccacia.jpg" alt="Garlic sea salt focaccia" loading="lazy">
+            <div class="shop-card__body">
+              <h4>Garlic Sea Salt Focaccia</h4>
+              <p class="shop-card__price">$10</p>
+              <p class="shop-card__text">
+                Soft, airy focaccia with garlic, sea salt, and a golden finish.
+              </p>
+              <p class="shop-card__availability">Available for pickup on select bake days</p>
+              <div class="shop-card__actions">
+                <button class="shop-btn shop-btn--primary" type="button">Add to Cart</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="shop-card" id="custom-focaccia">
+            <div class="shop-card__badge shop-card__badge--custom">Custom</div>
+            <img src="images/custom-foccacia.jpg" alt="Custom focaccia" loading="lazy">
+            <div class="shop-card__body">
+              <h4>Custom Focaccia</h4>
+              <p class="shop-card__price">Custom Quote</p>
+              <p class="shop-card__text">
+                Seasonal toppings and event-focused focaccia made to order when available.
+              </p>
+              <p class="shop-card__availability">Made to order</p>
+              <div class="shop-card__actions">
+                <a href="#custom-order-form" class="shop-btn shop-btn--secondary">Request Custom Quote</a>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <!-- SWEETS -->
+      <div class="shop-subsection" id="sweets-pastries">
+        <div class="shop-subsection__header">
+          <h3>Sweets &amp; Pastries</h3>
+          <p>Bakery favorites for pickup, seasonal drops, and custom gifting.</p>
+        </div>
+
+        <div class="shop-grid">
+          <article class="shop-card" id="cinnamon-rolls">
+            <div class="shop-card__badge">Fresh Item</div>
+            <img src="images/cinnamon-rolls-on-plate.jpg" alt="Cinnamon rolls" loading="lazy">
+            <div class="shop-card__body">
+              <h4>Cinnamon Rolls</h4>
+              <p class="shop-card__price">From $7</p>
+              <p class="shop-card__text">Soft sourdough cinnamon rolls with rich flavor and bakery-style texture.</p>
+              <p class="shop-card__availability">Available on select bake days</p>
+              <div class="shop-card__actions">
+                <button class="shop-btn shop-btn--primary" type="button">Add to Cart</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="shop-card" id="brown-butter-chocolate-chip-cookie">
+            <div class="shop-card__badge">Fresh Item</div>
+            <img src="images/brown-butter-chocolate-chip-cookies.jpg" alt="Brown butter chocolate chip cookie" loading="lazy">
+            <div class="shop-card__body">
+              <h4>Brown Butter Chocolate Chip Cookie</h4>
+              <p class="shop-card__price">From $2</p>
+              <p class="shop-card__text">Rich, buttery cookies with gooey chocolate and deep brown sugar flavor.</p>
+              <p class="shop-card__availability">Available on select bake days</p>
+              <div class="shop-card__actions">
+                <button class="shop-btn shop-btn--primary" type="button">Add to Cart</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="shop-card" id="white-chocolate-pecan-cookie">
+            <div class="shop-card__badge">Fresh Item</div>
+            <img src="images/white-chocolate-pecan-cookies.jpg" alt="White chocolate pecan cookie" loading="lazy">
+            <div class="shop-card__body">
+              <h4>White Chocolate Pecan Cookie</h4>
+              <p class="shop-card__price">From $2</p>
+              <p class="shop-card__text">A buttery cookie with white chocolate sweetness and toasted pecan flavor.</p>
+              <p class="shop-card__availability">Available on select bake days</p>
+              <div class="shop-card__actions">
+                <button class="shop-btn shop-btn--primary" type="button">Add to Cart</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="shop-card" id="sourdough-croissant">
+            <div class="shop-card__badge">Fresh Item</div>
+            <img src="images/sourdough-croissant.jpg" alt="Sourdough croissant" loading="lazy">
+            <div class="shop-card__body">
+              <h4>Sourdough Croissant</h4>
+              <p class="shop-card__price">From $5</p>
+              <p class="shop-card__text">Layered, flaky sourdough croissants with rich flavor and delicate texture.</p>
+              <p class="shop-card__availability">Available on select bake days</p>
+              <div class="shop-card__actions">
+                <button class="shop-btn shop-btn--primary" type="button">Add to Cart</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="shop-card" id="sourdough-scones">
+            <div class="shop-card__badge">Fresh Item</div>
+            <img src="images/sourdough-scones.jpg" alt="Sourdough scones" loading="lazy">
+            <div class="shop-card__body">
+              <h4>Sourdough Scones</h4>
+              <p class="shop-card__price">From $3</p>
+              <p class="shop-card__text">Tender sourdough scones with rotating flavors depending on season and availability.</p>
+              <p class="shop-card__availability">Available on select bake days</p>
+              <div class="shop-card__actions">
+                <button class="shop-btn shop-btn--primary" type="button">Add to Cart</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="shop-card" id="custom-cookies">
+            <div class="shop-card__badge shop-card__badge--custom">Custom</div>
+            <img src="images/reign-wilder-sourdough-white-chocolate-pecan-cookies-cooling.jpeg" alt="Custom cookies" loading="lazy">
+            <div class="shop-card__body">
+              <h4>Custom Cookies</h4>
+              <p class="shop-card__price">Custom Quote</p>
+              <p class="shop-card__text">Custom cookie orders for events, gifting, themed assortments, and special requests.</p>
+              <p class="shop-card__availability">Made to order</p>
+              <div class="shop-card__actions">
+                <a href="#custom-order-form" class="shop-btn shop-btn--secondary">Request Custom Quote</a>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PANTRY -->
+  <section class="shop-section shop-section--alt" id="pantry-shipping">
+    <div class="container">
+      <div class="shop-section__header">
+        <p class="shop-section__eyebrow">Pantry &amp; Shipping</p>
+        <h2 class="shop-section__title">Shelf-Stable Favorites</h2>
+        <p class="shop-section__text">
+          These items are ideal for gifting, pantry stocking, and future nationwide shipping.
+        </p>
+      </div>
+
+      <div class="shop-subsection">
+        <div class="shop-subsection__header">
+          <h3>Pancake Mix</h3>
+          <p>Easy-to-use sourdough pancake mixes built for home use, gifting, and shipping.</p>
+        </div>
+
+        <div class="shop-grid">
+          <article class="shop-card" id="buttermilk-pancake-mix">
+            <div class="shop-card__badge shop-card__badge--shipping">Shippable</div>
+            <img src="images/reign-wilder-buttermilk-pancake-mix.webp" alt="Buttermilk pancake mix" loading="lazy">
+            <div class="shop-card__body">
+              <h4>Buttermilk Pancake Mix</h4>
+              <p class="shop-card__price">From $8</p>
+              <p class="shop-card__text">A classic, fluffy pancake mix with bakery-quality results at home.</p>
+              <div class="shop-card__actions">
+                <button class="shop-btn shop-btn--primary" type="button">Add to Cart</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="shop-card" id="chocolate-chip-pancake-mix">
+            <div class="shop-card__badge shop-card__badge--shipping">Shippable</div>
+            <img src="images/reign-wilder-sourdough-chocolate-chip-pancake-mix.webp" alt="Chocolate chip pancake mix" loading="lazy">
+            <div class="shop-card__body">
+              <h4>Chocolate Chip Pancake Mix</h4>
+              <p class="shop-card__price">From $8</p>
+              <p class="shop-card__text">A family-friendly mix with sweet chocolate chip flavor and a fun bakery feel.</p>
+              <div class="shop-card__actions">
+                <button class="shop-btn shop-btn--primary" type="button">Add to Cart</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="shop-card" id="unicorn-sprinkle-pancake-mix">
+            <div class="shop-card__badge shop-card__badge--shipping">Shippable</div>
+            <img src="images/reign-wilder-sourdough-unicorn-pancake-mix.webp" alt="Unicorn sprinkle pancake mix" loading="lazy">
+            <div class="shop-card__body">
+              <h4>Unicorn Sprinkle Pancake Mix</h4>
+              <p class="shop-card__price">From $8</p>
+              <p class="shop-card__text">A colorful, giftable pancake mix for birthdays, celebrations, and fun mornings.</p>
+              <div class="shop-card__actions">
+                <button class="shop-btn shop-btn--primary" type="button">Add to Cart</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="shop-card shop-card--unavailable" id="lemon-zest-pancake-mix">
+            <div class="shop-card__badge shop-card__badge--coming-soon">Coming Soon</div>
+            <img src="images/coming-soon-img.jpeg" alt="Lemon zest pancake mix coming soon" loading="lazy">
+            <div class="shop-card__body">
+              <h4>Lemon Zest Pancake Mix</h4>
+              <p class="shop-card__price">Coming Soon</p>
+              <p class="shop-card__text">Bright citrus flavor with a fresh twist on traditional pancakes.</p>
+              <div class="shop-card__actions">
+                <button class="shop-btn shop-btn--disabled" type="button" disabled>Coming Soon</button>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="shop-subsection">
+        <div class="shop-subsection__header">
+          <h3>Granola</h3>
+          <p>Small-batch pantry favorites made with slow-fermented grains.</p>
+        </div>
+
+        <div class="shop-grid">
+          <article class="shop-card" id="classic-honey-oat-granola">
+            <div class="shop-card__badge shop-card__badge--shipping">Shippable</div>
+            <img src="images/reign-wilder-sourdough-harvest-granola.jpeg" alt="Classic honey oat granola" loading="lazy">
+            <div class="shop-card__body">
+              <h4>Classic Honey Oat Granola</h4>
+              <p class="shop-card__price">From $8</p>
+              <p class="shop-card__text">Crunchy, lightly sweet granola with toasted oats, honey, cinnamon, and nuts.</p>
+              <div class="shop-card__actions">
+                <button class="shop-btn shop-btn--primary" type="button">Add to Cart</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="shop-card shop-card--unavailable" id="chocolate-chunk-granola">
+            <div class="shop-card__badge shop-card__badge--coming-soon">Coming Soon</div>
+            <img src="images/coming-soon-img.jpeg" alt="Chocolate chunk granola coming soon" loading="lazy">
+            <div class="shop-card__body">
+              <h4>Chocolate Chunk Granola</h4>
+              <p class="shop-card__price">Coming Soon</p>
+              <p class="shop-card__text">A richer granola with cocoa flavor and chocolate folded into crunchy clusters.</p>
+              <div class="shop-card__actions">
+                <button class="shop-btn shop-btn--disabled" type="button" disabled>Coming Soon</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="shop-card shop-card--unavailable" id="fruit-nut-granola">
+            <div class="shop-card__badge shop-card__badge--coming-soon">Coming Soon</div>
+            <img src="images/coming-soon-img.jpeg" alt="Fruit and nut granola coming soon" loading="lazy">
+            <div class="shop-card__body">
+              <h4>Fruit &amp; Nut Granola</h4>
+              <p class="shop-card__price">Coming Soon</p>
+              <p class="shop-card__text">A hearty blend of dried fruit, nuts, and toasted oats with balanced sweetness.</p>
+              <div class="shop-card__actions">
+                <button class="shop-btn shop-btn--disabled" type="button" disabled>Coming Soon</button>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="shop-subsection" id="starter">
+        <div class="shop-subsection__header">
+          <h3>Sourdough Starter</h3>
+          <p>Reliable starter options for home bakers and gifting.</p>
+        </div>
+
+        <div class="shop-grid shop-grid--single">
+          <article class="shop-card" id="fresh-or-dehydrated-starter">
+            <div class="shop-card__badge shop-card__badge--shipping">Pickup or Shippable</div>
+            <img src="images/sourdough-starter-jar-dehydrated-starter-reign-wilder.jpeg" alt="Fresh or dehydrated sourdough starter" loading="lazy">
+            <div class="shop-card__body">
+              <h4>Fresh or Dehydrated Starter</h4>
+              <p class="shop-card__price">From $10</p>
+              <p class="shop-card__text">Choose fresh starter for local pickup or dehydrated starter for storage, gifting, and shipping.</p>
+              <div class="shop-card__actions">
+                <button class="shop-btn shop-btn--primary" type="button">Add to Cart</button>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TOOLS -->
+  <section class="shop-section" id="tools-supplies">
+    <div class="container">
+      <div class="shop-section__header">
+        <p class="shop-section__eyebrow">Tools &amp; Supplies</p>
+        <h2 class="shop-section__title">Recommended Baking Tools</h2>
+        <p class="shop-section__text">
+          These are Amazon affiliate items selected to support sourdough baking and home kitchen setup. They are separate from Reign &amp; Wilder food purchases.
+        </p>
+      </div>
+
+      <div class="shop-affiliate-note">
+        <p>
+          <strong>Affiliate Note:</strong> Some product links below may be affiliate links. Prices and availability are set by Amazon and may change.
+        </p>
+      </div>
+
+      <div class="shop-grid">
+        <article class="shop-card" id="digital-kitchen-scale">
+          <div class="shop-card__badge shop-card__badge--affiliate">Amazon Affiliate</div>
+          <img src="images/coming-soon-img.jpeg" alt="Digital kitchen scale placeholder image" loading="lazy">
+          <div class="shop-card__body">
+            <h4>Digital Kitchen Scale</h4>
+            <p class="shop-card__price">Amazon</p>
+            <p class="shop-card__text">A must-have for accurate sourdough baking and repeatable results.</p>
+            <div class="shop-card__actions">
+              <a href="#" class="shop-btn shop-btn--affiliate">View on Amazon</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="shop-card" id="starter-jar-kit">
+          <div class="shop-card__badge shop-card__badge--affiliate">Amazon Affiliate</div>
+          <img src="images/coming-soon-img.jpeg" alt="Starter jar kit placeholder image" loading="lazy">
+          <div class="shop-card__body">
+            <h4>Starter Jar Kit</h4>
+            <p class="shop-card__price">Amazon</p>
+            <p class="shop-card__text">Useful for maintaining starter with cleaner feeding and easier tracking.</p>
+            <div class="shop-card__actions">
+              <a href="#" class="shop-btn shop-btn--affiliate">View on Amazon</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="shop-card" id="dough-whisk">
+          <div class="shop-card__badge shop-card__badge--affiliate">Amazon Affiliate</div>
+          <img src="images/coming-soon-img.jpeg" alt="Dough whisk placeholder image" loading="lazy">
+          <div class="shop-card__body">
+            <h4>Dough Whisk</h4>
+            <p class="shop-card__price">Amazon</p>
+            <p class="shop-card__text">A simple tool for mixing doughs, batters, and starter feedings.</p>
+            <div class="shop-card__actions">
+              <a href="#" class="shop-btn shop-btn--affiliate">View on Amazon</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="shop-card" id="bread-lame">
+          <div class="shop-card__badge shop-card__badge--affiliate">Amazon Affiliate</div>
+          <img src="images/coming-soon-img.jpeg" alt="Bread lame placeholder image" loading="lazy">
+          <div class="shop-card__body">
+            <h4>Bread Lame</h4>
+            <p class="shop-card__price">Amazon</p>
+            <p class="shop-card__text">For scoring dough cleanly before baking and improving oven spring.</p>
+            <div class="shop-card__actions">
+              <a href="#" class="shop-btn shop-btn--affiliate">View on Amazon</a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- CUSTOM ORDER FORM -->
+  <section class="shop-section shop-section--alt" id="custom-order-form">
+    <div class="container">
+      <div class="shop-section__header">
+        <p class="shop-section__eyebrow">Custom Orders</p>
+        <h2 class="shop-section__title">Request a Custom Quote</h2>
+        <p class="shop-section__text">
+          Use this form for custom cake pops, breads, cookies, event orders, and specialty requests. This is separate from the general contact page and designed specifically for custom product quoting.
+        </p>
+      </div>
+
+      <form class="shop-custom-form" name="custom-order-request" method="POST" data-netlify="true">
+        <input type="hidden" name="form-name" value="custom-order-request">
+
+        <div class="shop-custom-form__grid">
+          <div class="shop-form-group">
+            <label for="custom-name">Name</label>
+            <input id="custom-name" name="name" type="text" required>
+          </div>
+
+          <div class="shop-form-group">
+            <label for="custom-email">Email</label>
+            <input id="custom-email" name="email" type="email" required>
+          </div>
+
+          <div class="shop-form-group">
+            <label for="custom-phone">Phone</label>
+            <input id="custom-phone" name="phone" type="tel">
+          </div>
+
+          <div class="shop-form-group">
+            <label for="custom-product-type">Product Type</label>
+            <select id="custom-product-type" name="product_type" required>
+              <option value="">Select one</option>
+              <option value="cake-pops">Cake Pops</option>
+              <option value="custom-bread">Custom Bread</option>
+              <option value="custom-cookies">Custom Cookies</option>
+              <option value="custom-focaccia">Custom Focaccia</option>
+              <option value="event-order">Event Order</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="shop-form-group">
+            <label for="custom-event-date">Preferred Date</label>
+            <input id="custom-event-date" name="preferred_date" type="date">
+          </div>
+
+          <div class="shop-form-group">
+            <label for="custom-quantity">Estimated Quantity</label>
+            <input id="custom-quantity" name="quantity" type="text" placeholder="Example: 2 dozen">
+          </div>
+        </div>
+
+        <div class="shop-form-group">
+          <label for="custom-details">Order Details</label>
+          <textarea id="custom-details" name="details" rows="6" placeholder="Tell us about flavors, colors, themes, quantity, event type, inspiration, pickup timing, or anything else we should know." required></textarea>
+        </div>
+
+        <div class="shop-custom-form__actions">
+          <button type="submit" class="shop-btn shop-btn--primary">Submit Custom Quote Request</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- CHECKOUT / DELIVERY NOTE -->
+  <section class="shop-checkout-note">
+    <div class="container">
+      <p>
+        Fresh bakery availability, pickup days, delivery windows, and out-of-stock states can be updated as inventory and weekly production schedules change.
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<!--footer-->
+<div id="footer-placeholder"></div>
+
+
+</body>
+</html>]\

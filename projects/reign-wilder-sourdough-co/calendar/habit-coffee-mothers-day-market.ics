@@ -1,0 +1,14 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Reign & Wilder Sourdough Co.//Events//EN
+CALSCALE:GREGORIAN
+BEGIN:VEVENT
+UID:habit-coffee-mothers-day-market@reignandwilder.com
+DTSTAMP:20260328T000000Z
+DTSTART:20260509T150000
+DTEND:20260509T190000
+SUMMARY:Mother's Day Market - The Habit Coffee Company
+LOCATION:5035 MO-125, Rogersville, MO
+DESCRIPTION:Find Reign & Wilder at The Habit Coffee Company Mother's Day Market featuring local goods, bakers, and community vendors.
+END:VEVENT
+END:VCALENDAR

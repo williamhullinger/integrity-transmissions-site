@@ -1,0 +1,14 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Reign & Wilder Sourdough Co.//Events//EN
+CALSCALE:GREGORIAN
+BEGIN:VEVENT
+UID:rogersville-pop-up-market-may-16@reignandwilder.com
+DTSTAMP:20260328T000000Z
+DTSTART:20260516T150000
+DTEND:20260516T190000
+SUMMARY:Rogersville Pop-Up Market - Reign & Wilder
+LOCATION:314 S Main St, Rogersville, MO
+DESCRIPTION:Find Reign & Wilder at the Rogersville Pop-Up Market for fresh sourdough bread, sweets, and small-batch baked goods.
+END:VEVENT
+END:VCALENDAR

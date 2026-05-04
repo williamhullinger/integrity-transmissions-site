@@ -1,0 +1,346 @@
+/* =========================
+   REVIEWS PAGE
+   Reign & Wilder
+========================= */
+
+/* SAFETY */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+
+/* =========================
+   HERO
+========================= */
+
+.reviews-hero {
+  padding: 5.5rem 0 4.5rem;
+  background:
+    linear-gradient(rgba(250, 245, 238, 0.92), rgba(250, 245, 238, 0.96)),
+    linear-gradient(180deg, #f8f2eb 0%, #fcf8f3 100%);
+  text-align: center;
+  border-top: 1px solid #ece2d6;
+  border-bottom: 1px solid #ece2d6;
+}
+
+.reviews-hero__title {
+  max-width: 900px;
+  margin: 0 auto 1rem;
+  font-size: clamp(2.5rem, 5vw, 4.6rem);
+  line-height: 1.08;
+  color: #2c2018;
+}
+
+.reviews-hero__text {
+  max-width: 760px;
+  margin: 0 auto;
+  font-size: 1.06rem;
+  line-height: 1.85;
+  color: #5f5145;
+}
+
+.reviews-hero__actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+/* =========================
+   INTRO
+========================= */
+
+.reviews-intro {
+  padding: 4.5rem 0 2rem;
+}
+
+/* =========================
+   FEATURED REVIEW
+========================= */
+
+.featured-review {
+  padding: 1rem 0 2.5rem;
+}
+
+.featured-review__card {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2.5rem;
+  background: linear-gradient(180deg, #fffdf9 0%, #f8f0e7 100%);
+  border: 1px solid #e8dccd;
+  border-radius: 28px;
+  text-align: center;
+  box-shadow: 0 18px 40px rgba(64, 45, 28, 0.08);
+}
+
+.review-stars {
+  margin: 0 0 1rem;
+  color: #b0814d;
+  font-size: 1rem;
+  letter-spacing: 0.18em;
+}
+
+.featured-review__quote {
+  margin: 0;
+  font-size: clamp(1.2rem, 2vw, 1.7rem);
+  line-height: 1.7;
+  font-style: italic;
+  color: #3b2d23;
+}
+
+.featured-review__name {
+  margin: 1.25rem 0 0;
+  font-weight: 600;
+  color: #6f5846;
+}
+
+/* =========================
+   REVIEW CARDS
+========================= */
+
+.reviews-section {
+  padding: 2rem 0 5rem;
+}
+
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+.review-card {
+  padding: 1.8rem;
+  background: #fffdfa;
+  border: 1px solid #ebdfd0;
+  border-radius: 22px;
+  box-shadow: 0 10px 24px rgba(65, 47, 29, 0.05);
+}
+
+.review-card__text {
+  margin: 0;
+  line-height: 1.8;
+  color: #4f4136;
+}
+
+.review-card__footer {
+  margin-top: 1.35rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eee3d7;
+}
+
+.review-card__name,
+.review-card__meta {
+  margin: 0;
+}
+
+.review-card__name {
+  font-weight: 700;
+  color: #2f231a;
+}
+
+.review-card__meta {
+  margin-top: 0.25rem;
+  font-size: 0.95rem;
+  color: #7a685a;
+}
+
+/* =========================
+   HIGHLIGHTS
+========================= */
+
+.reviews-highlights {
+  padding: 4.5rem 0;
+  background: #f6eee5;
+  border-top: 1px solid #eadfd3;
+  border-bottom: 1px solid #eadfd3;
+}
+
+.reviews-highlights__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+.highlight-card {
+  padding: 2rem 1.5rem;
+  background: #fffaf4;
+  border: 1px solid #e8d9c8;
+  border-radius: 20px;
+  text-align: center;
+}
+
+.highlight-card__title {
+  margin: 0 0 0.75rem;
+  font-size: 1.2rem;
+  color: #2f231a;
+}
+
+.highlight-card__text {
+  margin: 0;
+  line-height: 1.75;
+  color: #5f5145;
+}
+
+/* =========================
+   CTA
+========================= */
+
+.reviews-cta {
+  padding: 5rem 0;
+}
+
+.reviews-cta__panel {
+  padding: 3rem 2rem;
+  background: linear-gradient(180deg, #7b5d3f 0%, #65472e 100%);
+  border-radius: 28px;
+  text-align: center;
+  box-shadow: 0 18px 40px rgba(58, 38, 22, 0.16);
+}
+
+.reviews-cta__title {
+  margin: 0 0 1rem;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.15;
+  color: #ffffff;
+}
+
+.reviews-cta__text {
+  max-width: 720px;
+  margin: 0 auto;
+  line-height: 1.8;
+  color: #f3e7db;
+}
+
+.reviews-cta__actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+.btn {
+  display: inline-block;
+  padding: 0.95rem 1.5rem;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn--primary {
+  background: #7b5d3f;
+  color: #ffffff;
+}
+
+.btn--primary:hover {
+  background: #946f49;
+}
+
+.btn--secondary {
+  background: transparent;
+  color: #7b5d3f;
+  border: 1px solid #c6ad93;
+}
+
+.btn--secondary:hover {
+  background: rgba(123, 93, 63, 0.08);
+}
+
+.btn--light {
+  background: #ffffff;
+  color: #6a4a31;
+}
+
+.btn--light:hover {
+  background: #f7efe7;
+}
+
+.btn--outline-light {
+  background: transparent;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+}
+
+.btn--outline-light:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* =========================
+   FOOTER SUPPORT
+========================= */
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 950px) {
+  .reviews-grid,
+  .reviews-highlights__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .header-top {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .site-nav {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .nav-toggle {
+    display: none;
+  }
+
+  .nav-list {
+    justify-content: flex-start;
+  }
+
+  .reviews-hero {
+    padding: 4.5rem 0 3.5rem;
+  }
+
+  .featured-review__card,
+  .reviews-cta__panel {
+    padding: 2rem 1.25rem;
+  }
+}
+
+@media (max-width: 700px) {
+  .reviews-grid,
+  .reviews-highlights__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .reviews-hero__actions,
+  .reviews-cta__actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .reviews-hero__actions .btn,
+  .reviews-cta__actions .btn {
+    text-align: center;
+  }
+
+  .review-card,
+  .highlight-card {
+    padding: 1.4rem;
+  }
+}

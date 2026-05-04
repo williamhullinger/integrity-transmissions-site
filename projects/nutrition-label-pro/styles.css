@@ -1,0 +1,140 @@
+/* ===== Base / Reset ===== */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  margin: 0;
+  padding: 24px;
+  font-family: "Open Sans", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: #fff;
+  color: #000;
+}
+
+/* ===== Label Container ===== */
+.nutrition-label {
+  width: 270px;
+  margin: 0 auto;
+  padding: 0 7px;
+  border: 2px solid #000;
+}
+
+/* ===== Header ===== */
+.nutrition-label__title {
+  margin: -4px 0 0;
+  text-align: center;
+  letter-spacing: 0.15px;
+  font-size: 2rem;
+  font-weight: 800;
+}
+
+.nutrition-label__servings,
+.nutrition-label__serving-size {
+  margin: 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.nutrition-label__serving-size strong {
+  font-weight: 800;
+}
+
+/* ===== Rules (Dividers) ===== */
+.rule {
+  border: 0;
+  border-bottom: 1px solid #888989;
+  margin: 2px 0;
+}
+
+.rule--medium {
+  height: 5px;
+  background: #000;
+  margin: 2px 0;
+}
+
+.rule--thick {
+  height: 10px;
+  background: #000;
+  margin: 2px 0;
+}
+
+/* ===== Calories Section ===== */
+.nutrition-label__amount-per-serving {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+.nutrition-label__calories-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.nutrition-label__calories-label {
+  margin: -5px -2px;
+  font-size: 2em;
+  font-weight: 700;
+}
+
+.nutrition-label__calories-value {
+  margin: -7px -2px;
+  font-size: 2.4em;
+  font-weight: 700;
+}
+
+/* ===== Daily Value Header ===== */
+.nutrition-label__dv-header {
+  margin: 0;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* ===== Nutrient Lists ===== */
+.nutrients,
+.micros {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nutrient__row,
+.micro {
+  display: flex;
+  justify-content: space-between;
+}
+
+.nutrient__name,
+.nutrient__percent,
+.micro__name,
+.micro__percent {
+  margin: 0;
+}
+
+/* line between rows (only where needed) */
+.nutrient--rule {
+  border-bottom: 1px solid #888989;
+  padding-bottom: 2px;
+  margin-bottom: 2px;
+}
+
+/* indents */
+.nutrient--indent {
+  padding-left: 1em;
+}
+
+.nutrient--double-indent {
+  padding-left: 2em;
+}
+
+/* ===== Footer Note ===== */
+.nutrition-label__footnote {
+  font-size: 0.6rem;
+  margin: 5px 0;
+  padding: 0 8px;
+  text-indent: -8px;
+}

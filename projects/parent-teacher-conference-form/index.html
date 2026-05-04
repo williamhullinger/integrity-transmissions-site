@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Parent Teacher Conference Form</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <main class="container">
+    <header class="header">
+      <h1 class="title">Parent Teacher Conference Form</h1>
+      <p class="description">
+        Please fill out the form below to help schedule your parent-teacher conference.
+      </p>
+    </header>
+
+    <form class="form" action="#" method="post">
+      <!-- Student Info -->
+      <fieldset class="card">
+        <legend>Student Information</legend>
+
+        <div class="field">
+          <label for="student-name">Student full name</label>
+          <input
+            type="text"
+            id="student-name"
+            name="studentName"
+            required
+            autocomplete="name"
+            placeholder="e.g., Jane Doe"
+          />
+        </div>
+
+        <div class="field">
+          <label for="grade">Student grade</label>
+          <input
+            type="number"
+            id="grade"
+            name="grade"
+            min="1"
+            max="12"
+            required
+            inputmode="numeric"
+            placeholder="e.g., 4"
+          />
+        </div>
+      </fieldset>
+
+      <!-- Parent/Guardian -->
+      <fieldset class="card">
+        <legend>Parent/Guardian Information</legend>
+
+        <div class="field">
+          <label for="parent-name">Parent/guardian name</label>
+          <input
+            type="text"
+            id="parent-name"
+            name="parentName"
+            required
+            autocomplete="name"
+            placeholder="e.g., Nancy Doe"
+          />
+        </div>
+      </fieldset>
+
+      <!-- Contact Method (RADIO BUTTON REFERENCE SECTION) -->
+      <fieldset class="card">
+        <legend>Preferred Contact Method</legend>
+
+        <p class="hint">Choose one option.</p>
+
+        <!-- Real-world, reusable radio pattern:
+             - input first, label second
+             - label wraps the UI/row so it's easy to click
+             - one shared name groups them
+        -->
+        <div class="radio-group" role="radiogroup" aria-label="Preferred contact method">
+          <label class="radio-option" for="contact-email">
+            <input
+              id="contact-email"
+              class="radio"
+              type="radio"
+              name="contactMethod"
+              value="email"
+              checked
+            />
+            <span class="radio-text">Email</span>
+          </label>
+
+          <label class="radio-option" for="contact-phone">
+            <input
+              id="contact-phone"
+              class="radio"
+              type="radio"
+              name="contactMethod"
+              value="phone"
+            />
+            <span class="radio-text">Phone</span>
+          </label>
+        </div>
+      </fieldset>
+
+      <!-- Notes -->
+      <fieldset class="card">
+        <legend>Additional Notes</legend>
+
+        <div class="field">
+          <label for="notes">
+            Any specific concerns or topics you’d like to discuss?
+          </label>
+          <textarea
+            id="notes"
+            name="notes"
+            rows="4"
+            placeholder="Share anything helpful (learning goals, behavior, homework, etc.)"
+          ></textarea>
+        </div>
+      </fieldset>
+
+      <button class="submit-btn" type="submit">Submit Form</button>
+    </form>
+  </main>
+</body>
+</html>

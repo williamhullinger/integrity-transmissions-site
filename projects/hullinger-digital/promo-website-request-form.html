@@ -6,18 +6,26 @@
   <title>Request a Website Quote | Hullinger Digital</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body>
+
+<body class="page page--request">
 
   <header class="site-header">
     <nav class="nav">
-      <a class="nav__brand" href="index.html">Hullinger Digital</a>
 
-      <ul class="nav__links">
-        <li class="nav__item"><a class="nav__link" href="portfolio.html">Portfolio</a></li>
-        <li class="nav__item"><a class="nav__link" href="about.html">About</a></li>
-        <li class="nav__item"><a class="nav__link" href="contact.html">Contact</a></li>
-      </ul>
-      <a class="btn btn--primary" href="request.html">Request a Quote</a>
+      <a class="nav__brand" href="index.html">
+      <img src="images/Hullinger-Digital-logo.png" alt="Hullinger Digital">
+      </a>
+
+    <ul class="nav__links">
+      <li class="nav__item"><a class="nav__link" href="portfolio.html">Portfolio</a></li>
+      <li class="nav__item"><a class="nav__link" href="about.html">About</a></li>
+      <li class="nav__item"><a class="nav__link" href="reviews.html">Reviews</a></li>
+      <li class="nav__item"><a class="nav__link" href="contact.html">Contact</a></li>
+    </ul>
+
+      <a class="nav__phone" href="tel:+14174131473">
+      Call (417) 413-1473
+      </a>
       
     </nav>
   </header>
@@ -35,12 +43,12 @@
     </div>
     </section>
 
-    <section class="section section--page">
+    <section class="section section--page section-card">
       <div class="container">
 
         <!-- section header -->
         <header class="section__header">
-          <h1 class="section__title">Request a Website Project</h1>
+          <h1 class="section__title">Request a Quote</h1>
 
           <p class="section__lead">
             Share a few details and I'll review your request. If it's a good fit, I'll send you a link to schedule a quick call.
@@ -58,17 +66,21 @@
 
         <!--Form section-->
         <form class="form" 
-              name="website-request"
-              method="post"
+              name="promo-quote"
+              method="POST"
+              action="/thank-you.html"
               data-netlify="true"
-              netlify-honeypot="bot-field"
-              action="thanks.html"
+              data-netlify-honeypot="bot-field"
               >
+              <input type="hidden" name="form-name" value="promo-quote">
 
-            <input type="hidden" name="form-name" value="website-request">
-                <p hidden>
-                    <label>Dont fill this out if you're human: </label>
-                </p>
+              <input type="hidden" name="lead_source" value="promo">
+
+                <div hidden>
+                    <label>Dont fill this out if you're human: 
+                      <input name="bot-field">
+                    </label>
+                  </div>
 
           <div class="form__group">
             <label class="form__label" for="name">Name *</label>
@@ -177,12 +189,25 @@
     </section>
   </main>
 
-    <!--Footer-->
-  <footer class="footer">
-    <div class="container footer__container">
-      <p class="site-footer__text">&copy; 2026 Hullinger Digital. All rights reserved</p>
-    </div>
-  </footer>
+   <!-- footer section-->
+    <footer class="footer">
+      <div class="container">
+       <p>
+        © <span id="year"></span> Hullinger Digital. All rights reserved
+      </p>
 
+      <p>
+        Modern Websites & Smart Automation for Growing Businesses
+      </p>
+      </div>
+    </footer>
+
+  <script>
+
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+  </script>
+
+  <script src="script.js" defer></script>
 </body>
 </html>

@@ -1,0 +1,618 @@
+/* -------------------------
+   CAKE POP BUILDER PAGE
+------------------------- */
+
+html {
+  scroll-behavior: smooth;
+}
+
+.cake-builder-hero,
+.cake-builder-occasions,
+.cake-builder-story,
+.cake-builder-gallery,
+.cake-builder-pricing,
+.cake-builder-main,
+.cake-builder-reference,
+.cake-builder-faq,
+.cake-builder-cta {
+  padding: 84px 0;
+}
+
+.cake-builder-hero,
+.cake-builder-main,
+.cake-builder-reference,
+.cake-builder-cta {
+  background: #fffaf4;
+}
+
+.cake-builder-occasions,
+.cake-builder-gallery,
+.cake-builder-faq {
+  background: #fff;
+}
+
+.cake-builder-story,
+.cake-builder-pricing {
+  background: #fff7ef;
+}
+
+.cake-builder-hero {
+  padding-top: 110px;
+  padding-bottom: 88px;
+  overflow: hidden;
+}
+
+.cake-builder-hero__container,
+.cake-builder-story__container,
+.cake-builder-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 36px;
+  align-items: center;
+}
+
+.cake-builder-hero__eyebrow,
+.cake-builder-story__eyebrow,
+.cake-builder-section-heading__eyebrow {
+  margin: 0 0 12px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #8d5c2c;
+}
+
+.cake-builder-hero__title,
+.cake-builder-section-heading__title,
+.cake-builder-story__content h2,
+.cake-builder-cta__title {
+  margin: 0 0 16px;
+  font-size: clamp(2.3rem, 4vw, 4rem);
+  line-height: 1.08;
+  color: #2f2218;
+}
+
+.cake-builder-section-heading {
+  max-width: 860px;
+  margin: 0 auto 40px;
+  text-align: center;
+}
+
+.cake-builder-hero__text,
+.cake-builder-section-heading__text,
+.cake-builder-story__content p,
+.cake-builder-occasion-card p,
+.cake-builder-pricing-card li,
+.cake-builder-process__step p,
+.cake-builder-panel-header p,
+.cake-builder-field__help,
+.cake-builder-summary__empty p,
+.cake-builder-summary__review p,
+.cake-builder-summary__note,
+.cake-builder-reference-card li,
+.cake-builder-faq__item p,
+.cake-builder-cta__text {
+  margin: 0;
+  font-family: "Source Sans 3", sans-serif;
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: #5f4a3a;
+}
+
+.cake-builder-hero__actions,
+.cake-builder-cta__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.cake-builder-hero__highlights {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 12px;
+  padding: 0;
+  margin: 26px 0 0;
+  list-style: none;
+}
+
+.cake-builder-hero__highlights li {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid #e2d4c4;
+  font-family: "Source Sans 3", sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #6b4a2b;
+}
+
+.cake-builder-hero__media img,
+.cake-builder-story__media img {
+  width: 100%;
+  height: 100%;
+  min-height: 420px;
+  object-fit: cover;
+  display: block;
+  border-radius: 22px;
+  box-shadow: 0 18px 44px rgba(53, 37, 22, 0.12);
+}
+
+.cake-builder-occasions__grid,
+.cake-builder-pricing__grid,
+.cake-builder-reference__grid,
+.cake-builder-faq__list {
+  display: grid;
+  gap: 24px;
+}
+
+.cake-builder-occasions__grid,
+.cake-builder-pricing__grid,
+.cake-builder-reference__grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.cake-builder-occasion-card,
+.cake-builder-pricing-card,
+.cake-builder-reference-card,
+.cake-builder-faq__item,
+.cake-builder-form-panel,
+.cake-builder-summary {
+  background: #fff;
+  border-radius: 22px;
+  padding: 28px;
+  box-shadow: 0 14px 34px rgba(53, 37, 22, 0.08);
+}
+
+.cake-builder-occasion-card h2,
+.cake-builder-pricing-card h3,
+.cake-builder-reference-card h3,
+.cake-builder-process__step h3,
+.cake-builder-faq__item h3,
+.cake-builder-panel-header h3 {
+  margin: 0 0 10px;
+  font-size: 1.35rem;
+  line-height: 1.2;
+  color: #2f2218;
+}
+
+.cake-builder-gallery__grid {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 1fr;
+  gap: 18px;
+}
+
+.cake-builder-gallery__item,
+.cake-builder-gallery__item--large {
+  overflow: hidden;
+  border-radius: 18px;
+  background: #efe7da;
+  box-shadow: 0 12px 28px rgba(53, 37, 22, 0.08);
+}
+
+.cake-builder-gallery__item img,
+.cake-builder-gallery__item--large img {
+  width: 100%;
+  height: 100%;
+  min-height: 260px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.35s ease;
+}
+
+.cake-builder-gallery__item--large {
+  grid-row: span 2;
+}
+
+.cake-builder-gallery__item:hover img,
+.cake-builder-gallery__item--large:hover img {
+  transform: scale(1.04);
+}
+
+.cake-builder-pricing__grid ul,
+.cake-builder-reference-card ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.cake-builder-process {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  margin-top: 34px;
+}
+
+.cake-builder-process__step {
+  position: relative;
+  background: #fff;
+  border-radius: 22px;
+  padding: 28px;
+  box-shadow: 0 14px 34px rgba(53, 37, 22, 0.08);
+}
+
+.cake-builder-process__step span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background: #7b5d3f;
+  color: #fff;
+  font-family: "Source Sans 3", sans-serif;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.cake-builder-layout {
+  align-items: start;
+}
+
+.cake-builder-panel-header {
+  margin-bottom: 22px;
+}
+
+.cake-builder-form,
+.cake-builder-groups {
+  display: grid;
+  gap: 20px;
+}
+
+.cake-builder-group {
+  border: 1px solid #e4d8cb;
+  border-radius: 20px;
+  padding: 20px;
+  margin: 0;
+  background: #fffaf4;
+}
+
+.cake-builder-group__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.cake-builder-group__title {
+  padding: 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #2f2218;
+}
+
+.cake-builder-group__remove,
+.cake-builder-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 12px 18px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-family: "Source Sans 3", sans-serif;
+  font-size: 0.98rem;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cake-builder-group__remove {
+  width: 42px;
+  min-height: 42px;
+  padding: 0;
+  border-radius: 999px;
+  background: #efe7da;
+  color: #553e27;
+}
+
+.cake-builder-btn:hover,
+.cake-builder-group__remove:hover {
+  transform: translateY(-1px);
+}
+
+.cake-builder-btn--primary {
+  background: #7b5d3f;
+  color: #fff;
+}
+
+.cake-builder-btn--primary:hover {
+  background: #946f49;
+}
+
+.cake-builder-btn--secondary {
+  background: #e7a57a;
+  color: #553e27;
+  border-color: #d9966d;
+}
+
+.cake-builder-btn--secondary:hover {
+  background: #d9966d;
+  color: #fff;
+}
+
+.cake-builder-group__grid,
+.cake-builder-event-details__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.cake-builder-field {
+  display: grid;
+  gap: 8px;
+}
+
+.cake-builder-field label {
+  font-family: "Source Sans 3", sans-serif;
+  font-weight: 700;
+  color: #553e27;
+}
+
+.cake-builder-field input,
+.cake-builder-field select,
+.cake-builder-field textarea {
+  width: 100%;
+  border: 1px solid #d7c8b7;
+  border-radius: 14px;
+  padding: 14px 16px;
+  font-family: "Source Sans 3", sans-serif;
+  font-size: 1rem;
+  color: #2f2218;
+  background: #fff;
+}
+
+.cake-builder-field input:focus,
+.cake-builder-field select:focus,
+.cake-builder-field textarea:focus,
+.cake-builder-btn:focus-visible,
+.btn__primary:focus-visible,
+.btn__secondary:focus-visible {
+  outline: 3px solid rgba(141, 92, 44, 0.28);
+  outline-offset: 3px;
+}
+
+.cake-builder-field textarea {
+  resize: vertical;
+}
+
+.cake-builder-field__help {
+  font-size: 0.94rem;
+  color: #7a6654;
+}
+
+.cake-builder-group__footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+.cake-builder-group__summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 14px;
+  background: #fff;
+  border: 1px solid #e4d8cb;
+  font-family: "Source Sans 3", sans-serif;
+}
+
+.cake-builder-group__summary strong {
+  color: #8d5c2c;
+}
+
+.cake-builder-form__group-actions {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.cake-builder-event-details {
+  margin-top: 8px;
+  padding-top: 10px;
+}
+
+.cake-builder-summary {
+  position: sticky;
+  top: 110px;
+}
+
+.cake-builder-summary__content {
+  display: grid;
+  gap: 18px;
+}
+
+.cake-builder-summary__groups {
+  display: grid;
+  gap: 12px;
+}
+
+.cake-builder-summary__group {
+  padding: 16px;
+  border-radius: 16px;
+  background: #fffaf4;
+  border: 1px solid #e4d8cb;
+}
+
+.cake-builder-summary__group h4 {
+  margin: 0 0 6px;
+  font-size: 1rem;
+  color: #2f2218;
+}
+
+.cake-builder-summary__group p {
+  margin: 0;
+  font-family: "Source Sans 3", sans-serif;
+  font-size: 0.96rem;
+  line-height: 1.65;
+  color: #5f4a3a;
+}
+
+.cake-builder-summary__totals {
+  display: grid;
+  gap: 10px;
+  padding: 18px 0 0;
+  border-top: 1px solid #e4d8cb;
+}
+
+.cake-builder-summary__row {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: center;
+  font-family: "Source Sans 3", sans-serif;
+  color: #5f4a3a;
+}
+
+.cake-builder-summary__row strong {
+  color: #2f2218;
+}
+
+.cake-builder-summary__review {
+  padding: 16px;
+  border-radius: 16px;
+  background: #fff7ef;
+  border: 1px solid #ebc7a7;
+}
+
+.cake-builder-summary__review h4 {
+  margin: 0 0 6px;
+  color: #8d5c2c;
+}
+
+.cake-builder-summary__actions {
+  display: grid;
+  gap: 10px;
+}
+
+.cake-builder-summary__actions .cake-builder-btn {
+  width: 100%;
+}
+
+.cake-builder-summary__note {
+  font-size: 0.94rem;
+  color: #7a6654;
+}
+
+.cake-builder-faq__list {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.cake-builder-cta {
+  text-align: center;
+}
+
+.cake-builder-cta__text {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.cake-builder-cta__actions {
+  justify-content: center;
+}
+
+/* Anchor offset for sticky header */
+.cake-builder-hero,
+.cake-builder-occasions,
+.cake-builder-story,
+.cake-builder-gallery,
+.cake-builder-pricing,
+.cake-builder-main,
+.cake-builder-reference,
+.cake-builder-faq,
+.cake-builder-cta {
+  scroll-margin-top: 120px;
+}
+
+@media (max-width: 1200px) {
+  .cake-builder-occasions__grid,
+  .cake-builder-pricing__grid,
+  .cake-builder-reference__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .cake-builder-gallery__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .cake-builder-gallery__item--large {
+    grid-row: span 1;
+  }
+}
+
+@media (max-width: 980px) {
+  .cake-builder-hero__container,
+  .cake-builder-story__container,
+  .cake-builder-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .cake-builder-summary {
+    position: static;
+  }
+
+  .cake-builder-process {
+    grid-template-columns: 1fr;
+  }
+
+  .cake-builder-faq__list {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .cake-builder-hero,
+  .cake-builder-occasions,
+  .cake-builder-story,
+  .cake-builder-gallery,
+  .cake-builder-pricing,
+  .cake-builder-main,
+  .cake-builder-reference,
+  .cake-builder-faq,
+  .cake-builder-cta {
+    padding: 68px 0;
+  }
+
+  .cake-builder-hero {
+    padding-top: 90px;
+  }
+
+  .cake-builder-occasions__grid,
+  .cake-builder-pricing__grid,
+  .cake-builder-reference__grid,
+  .cake-builder-gallery__grid,
+  .cake-builder-group__grid,
+  .cake-builder-event-details__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cake-builder-hero__actions,
+  .cake-builder-cta__actions {
+    flex-direction: column;
+  }
+
+  .cake-builder-hero__actions .btn__primary,
+  .cake-builder-hero__actions .btn__secondary,
+  .cake-builder-cta__actions .btn__primary,
+  .cake-builder-cta__actions .btn__secondary {
+    width: 100%;
+  }
+
+  .cake-builder-group__header {
+    align-items: flex-start;
+  }
+
+  .cake-builder-form__group-actions .cake-builder-btn,
+  .cake-builder-summary__actions .cake-builder-btn {
+    width: 100%;
+  }
+
+  .cake-builder-hero__media img,
+  .cake-builder-story__media img {
+    min-height: 300px;
+  }
+}

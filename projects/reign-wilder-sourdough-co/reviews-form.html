@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reviews Form | Reign & Wilder Sourdough Co.</title>
+  <link rel="stylesheet" href="reviews-form.css"/>
+   <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <meta name="description" content="See what customers say about working with Reign & Wilder Sourdough Co. Real feedback from customers that have experienced our handcrafted bread and baked goods.">
+
+</head>
+
+<body>
+
+      <!--navbar-->
+<div id="header-placeholder"></div>
+
+  <main>
+
+    <section class="section section--page">
+  <div class="container">
+
+    <header class="section__header">
+      <h1 class="section__title">Leave a Review</h1>
+
+      <p class="section__lead">
+        If you tried our products, I'd appreciate your feedback. Reviews help other customers understand what it's like to work with Reign & Wilder Sourdough Co.
+      </p>
+
+      <p class="form__note">
+        This form is short and should only take a couple minutes.
+      </p>
+    </header>
+
+    <form
+  class="form form--review"
+  name="client-review"
+  method="POST"
+  action="/thank-you.html"
+  data-netlify="true"
+  data-netlify-honeypot="bot-field"
+>
+  <input type="hidden" name="form-name" value="client-review">
+  <input type="hidden" name="lead_source" value="review-form">
+
+  <div hidden>
+    <label>
+      Don't fill this out if you're human:
+      <input name="bot-field">
+    </label>
+  </div>
+
+  <div class="form__group">
+    <label class="form__label" for="name">Your Name *</label>
+    <input class="form__input" type="text" id="name" name="name" required>
+  </div>
+
+  <div class="form__group">
+    <label class="form__label" for="email">Email</label>
+    <input class="form__input" type="email" id="email" name="email">
+  </div>
+
+  <div class="form__group">
+    <label class="form__label" for="order_type">What did you order? *</label>
+    <select class="form__select" id="order_type" name="order_type" required>
+      <option value="">Select one</option>
+      <option value="sourdough-bread">Sourdough Bread</option>
+      <option value="pastries">Pastries</option>
+      <option value="cinnamon-rolls">Cinnamon Rolls</option>
+      <option value="cookies">Cookies</option>
+      <option value="pancake-mix">Pancake Mix</option>
+      <option value="custom-order">Custom Order</option>
+      <option value="seasonal-items">Seasonal Items</option>
+      <option value="event-order">Event Order</option>
+      <option value="other">Other</option>
+    </select>
+  </div>
+
+  <div class="form__group">
+    <label class="form__label" for="rating">Overall Experience *</label>
+    <select class="form__select" id="rating" name="rating" required>
+      <option value="">Select one</option>
+      <option value="5-stars">5 Stars</option>
+      <option value="4-stars">4 Stars</option>
+      <option value="3-stars">3 Stars</option>
+      <option value="2-stars">2 Stars</option>
+      <option value="1-star">1 Star</option>
+    </select>
+  </div>
+
+  <div class="form__group">
+    <label class="form__label" for="goal">What made you decide to order from Reign &amp; Wilder?</label>
+    <textarea class="form__textarea" id="goal" name="goal" rows="4"></textarea>
+  </div>
+
+  <div class="form__group">
+    <label class="form__label" for="result">What stood out to you about your order?</label>
+    <textarea class="form__textarea" id="result" name="result" rows="4"></textarea>
+  </div>
+
+  <div class="form__group">
+    <label class="form__label" for="favorite_part">What was your favorite part?</label>
+    <textarea class="form__textarea" id="favorite_part" name="favorite_part" rows="4"></textarea>
+  </div>
+
+  <div class="form__group">
+    <label class="form__label" for="review">Short Review for Website *</label>
+    <textarea class="form__textarea" id="review" name="review" rows="5" required></textarea>
+    <small class="form__hint">
+      Example: 2–4 sentences about what you ordered, how it tasted, and your overall experience.
+    </small>
+  </div>
+
+  <div class="form__group">
+    <label class="form__label" for="permission">Permission to Publish *</label>
+    <select class="form__select" id="permission" name="permission" required>
+      <option value="">Select one</option>
+      <option value="yes">Yes, you may publish my review on the website or social media</option>
+      <option value="no">No, please keep my review private</option>
+    </select>
+  </div>
+
+  <div class="form__group form__group--actions">
+    <button class="btn btn--primary" type="submit">Submit Review</button>
+  </div>
+
+  <p class="form__note">
+    Reviews may be lightly edited for spelling, grammar, or length without changing the meaning.
+  </p>
+</form>
+  </div>
+
+</main>
+
+
+<!--footer-->
+<div id="footer-placeholder"></div>
+
+</body>
+</html>

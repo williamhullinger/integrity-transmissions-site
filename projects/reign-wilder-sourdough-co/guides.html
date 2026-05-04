@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guides - Reign & Wilder Sourdough Co.</title>
+<meta name="description" content="Fresh sourdough bread and small-batch baked goods made with simple ingredients and traditional slow fermentation.">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="guides.css">
+<script src="script.js" defer></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+</head>
+
+<body>
+
+      <!--navbar-->
+<div id="header-placeholder"></div>
+
+<main>
+
+  <!-- HERO -->
+  <section class="guides-hero">
+    <img
+      class="guides-hero__img"
+      src="images/sourdough-loaf-round.webp"
+      alt="Rustic sourdough loaf on a wooden surface"
+    >
+
+    <div class="guides-hero__overlay container">
+      <p class="guides-hero__eyebrow">Beginner-Friendly Sourdough Education</p>
+      <h1 class="guides-hero__title">Sourdough Guides</h1>
+      <p class="guides-hero__text">
+        Learn how to care for starter, understand dough, improve fermentation,
+        and bake with more confidence using simple methods and traditional sourdough practices.
+      </p>
+
+      <div class="guides-hero__actions">
+        <a href="recipies.html" class="btn__primary">Explore Recipes</a>
+        <a href="tools.html" class="btn__primary">Recommended Tools</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="guides-divider" aria-hidden="true">
+    <svg viewBox="0 0 1440 140" preserveAspectRatio="none">
+      <path d="M0,0 L720,120 L1440,0 L1440,140 L0,140 Z" fill="#553e27"></path>
+      <path d="M0,0 L720,120 L1440,0" fill="none" stroke="#b08a62" stroke-width="6"></path>
+    </svg>
+  </div>
+
+  <!-- INTRO -->
+  <section class="guides-intro">
+    <div class="container guides-intro__content">
+      <h2 class="guides-intro__title">A Better Place to Start</h2>
+      <p class="guides-intro__text">
+        Sourdough can feel complicated at first, but it becomes much easier when you understand
+        how starter, dough strength, fermentation, and temperature all work together. This guide page
+        is here to help you build those fundamentals one step at a time.
+      </p>
+
+      <div class="guides-intro__links">
+        <a href="shop.html">Shop starter and bakery goods</a>
+        <a href="recipies.html">Put these methods to use in our recipes</a>
+        <a href="tools.html">See the tools we use and recommend</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY SOURDOUGH -->
+  <section class="guides-section guides-section--light">
+    <div class="container">
+      <header class="guides-section__header">
+        <p class="guides-section__eyebrow">Why Sourdough</p>
+        <h2 class="guides-section__title">What Makes Sourdough Different</h2>
+        <p class="guides-section__lead">
+          Sourdough is traditional bread made through natural fermentation using wild yeast and beneficial bacteria
+          rather than relying only on commercial yeast. That slower process helps develop flavor, structure, and the
+          character that makes sourdough so special.
+        </p>
+      </header>
+
+      <div class="guides-card-grid guides-card-grid--three">
+        <article class="guides-card">
+          <img class="guides-card__img" src="images/sourdough-loaf-round.webp" alt="Traditional sourdough loaf">
+          <h3 class="guides-card__title">A Long Tradition</h3>
+          <p class="guides-card__text">
+            Sourdough has ancient roots and was used long before modern commercial yeast. Its slow, natural process is one
+            reason it still feels so timeless and satisfying today.
+          </p>
+        </article>
+
+        <article class="guides-card">
+          <img class="guides-card__img" src="images/basic-ingredients-on-table.avif" alt="Fresh baked artisan pastries">
+          <h3 class="guides-card__title">Simple Ingredients</h3>
+          <p class="guides-card__text">
+            At its core, sourdough is made with flour, water, and salt. Time, fermentation, and technique do much of the heavy lifting.
+          </p>
+        </article>
+
+        <article class="guides-card">
+          <img class="guides-card__img" src="images/loaf-cut-in-half.avif" alt="Fresh baked homemade bread">
+          <h3 class="guides-card__title">Why Many People Love It</h3>
+          <p class="guides-card__text">
+            Many people appreciate sourdough for its deep flavor, traditional process, and long fermentation. Some individuals find
+            long-fermented sourdough easier to tolerate than conventional bread, though traditional wheat sourdough is not gluten-free.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- GETTING STARTED -->
+  <section class="guides-section guides-section--dark">
+    <div class="container">
+      <header class="guides-section__header">
+        <p class="guides-section__eyebrow">Getting Started</p>
+        <h2 class="guides-section__title guides-section__title--light">What You Need Before You Bake</h2>
+        <p class="guides-section__lead guides-section__lead--light">
+          You do not need a commercial bakery setup to make great sourdough at home. Start simple,
+          stay consistent, and learn how your dough behaves in your own kitchen.
+        </p>
+      </header>
+
+      <div class="guides-feature">
+        <div class="guides-feature__media">
+          <img src="images/cutting-dough-with-rezor.avif" alt="Baking setup with dough tools and ingredients">
+        </div>
+
+        <div class="guides-feature__content">
+          <div class="guides-checklist-grid">
+            <article class="guides-checklist">
+              <h3 class="guides-checklist__title">Best beginner mindset</h3>
+              <ul class="guides-checklist__list">
+                <li>Start with one recipe and repeat it</li>
+                <li>Pay attention to dough behavior, not just the clock</li>
+                <li>Use grams for better consistency</li>
+                <li>Keep simple notes as you learn</li>
+              </ul>
+            </article>
+
+            <article class="guides-checklist">
+              <h3 class="guides-checklist__title">Helpful basic tools</h3>
+              <ul class="guides-checklist__list">
+                <li>Digital scale</li>
+                <li>Mixing bowl or dough tub</li>
+                <li>Bench scraper</li>
+                <li>Jar for starter</li>
+                <li>Proofing basket or lined bowl</li>
+                <li>Dutch oven or baking setup</li>
+              </ul>
+              <a class="guides-inline-link" href="tools.html">See our full tools page</a>
+            </article>
+
+            <article class="guides-checklist">
+              <h3 class="guides-checklist__title">Why grams matter</h3>
+              <p class="guides-checklist__text">
+                Sourdough is much easier to repeat when ingredients are weighed in grams instead of measured by volume.
+                A scale gives you more control over hydration, feeding ratios, and consistent recipe results.
+              </p>
+            </article>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STARTER BASICS -->
+  <section class="guides-section guides-section--light">
+    <div class="container">
+      <header class="guides-section__header">
+        <p class="guides-section__eyebrow">Starter Basics</p>
+        <h2 class="guides-section__title">Understanding and Caring for Your Starter</h2>
+        <p class="guides-section__lead">
+          A sourdough starter is a living culture of flour and water filled with wild yeast and beneficial bacteria.
+          Once it becomes active and well-fed, it is what helps naturally leaven your dough.
+        </p>
+      </header>
+
+      <div class="guides-gallery guides-gallery--three">
+        <figure class="guides-gallery__item">
+          <img src="images/airaited-starter.avif" alt="Healthy active starter with bubbles and rise marks">
+          <figcaption>Healthy starter should look airy, bubbly, and active after feeding.</figcaption>
+        </figure>
+
+        <figure class="guides-gallery__item">
+          <img src="images/hungry-starter.jpg" alt="Hungry often looks flatter and less lively.">
+          <figcaption>A hungry or neglected starter often looks flatter and less lively.</figcaption>
+        </figure>
+
+        <figure class="guides-gallery__item">
+          <img src="images/feeding-starter.avif" alt="Starter jar and feeding setup on a counter">
+          <figcaption>Keeping a simple routine makes starter care much easier.</figcaption>
+        </figure>
+      </div>
+
+      <div class="guides-two-column">
+        <article class="guides-panel">
+          <h3 class="guides-panel__title">Signs of a healthy starter</h3>
+          <ul class="guides-panel__list">
+            <li>It rises predictably after feeding</li>
+            <li>It has visible bubbles throughout</li>
+            <li>It smells pleasantly tangy, mildly sweet, or slightly yogurty</li>
+            <li>It becomes light and airy at peak activity</li>
+          </ul>
+        </article>
+
+        <article class="guides-panel">
+          <h3 class="guides-panel__title">Signs your starter needs attention</h3>
+          <ul class="guides-panel__list">
+            <li>It has been neglected and is sluggish</li>
+            <li>It smells sharply like acetone or nail polish remover</li>
+            <li>It is not rising after multiple feedings</li>
+            <li>It seems weak, thin, or separates repeatedly</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="guides-richtext">
+        <h3>How often should you feed it?</h3>
+        <p>
+          If your starter lives at room temperature, it usually needs more frequent feeding. If it lives in the refrigerator,
+          it can be maintained on a more relaxed schedule and refreshed before baking. A strong routine matters more than an overly complicated one.
+        </p>
+
+        <h3>What does a hungry starter look like?</h3>
+        <p>
+          A hungry starter often flattens after peaking, loses some structure, and may develop a sharper smell. That does not necessarily
+          mean it is ruined. It often just needs a good feeding schedule and a little time to bounce back.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- STARTER OPTIONS -->
+  <section class="guides-section guides-section--accent">
+    <div class="container">
+      <header class="guides-section__header">
+        <p class="guides-section__eyebrow">Start Here</p>
+        <h2 class="guides-section__title">Three Ways to Begin with Starter</h2>
+        <p class="guides-section__lead">
+          You can create a starter from scratch, get one from another baker, or begin with one of our prepared starter options.
+        </p>
+      </header>
+
+      <div class="guides-card-grid guides-card-grid--three">
+        <article class="guides-card guides-card--soft">
+          <img class="guides-card__img" src="images/starter-ingredients-scratch.jpg" alt="Starter from scratch process">
+          <h3 class="guides-card__title">Create one from scratch</h3>
+          <p class="guides-card__text">
+            This is a slower process, but it teaches you how starter behaves from the beginning. Expect several days of feeding before it becomes reliable enough to bake with.
+          </p>
+        </article>
+
+        <article class="guides-card guides-card--soft">
+          <img class="guides-card__img" src="images/making-sourdough-starter.jpg" alt="Live starter and fresh baking ingredients">
+          <h3 class="guides-card__title">Start with a live starter</h3>
+          <p class="guides-card__text">
+            A refrigerated, wet, active starter gives you a head start. Once refreshed and fed, it can quickly become ready for regular baking.
+          </p>
+        </article>
+
+        <article class="guides-card guides-card--soft">
+          <img class="guides-card__img" src="images/dehydrated-starter.jpg" alt="Dried baking ingredients and sourdough supplies">
+          <h3 class="guides-card__title">Start with dehydrated starter</h3>
+          <p class="guides-card__text">
+            Dehydrated starter is shelf-stable and a great option for shipping, storing, gifting, or keeping as a backup. It must be rehydrated and strengthened before baking.
+          </p>
+        </article>
+      </div>
+
+      <div class="guides-callout">
+        <h3 class="guides-callout__title">Looking for starter?</h3>
+        <p class="guides-callout__text">
+          Reign & Wilder offers both live starter and dehydrated starter for home bakers who want a reliable place to begin.
+        </p>
+        <a href="shop.html" class="guides-btn guides-btn--primary">Shop Starter</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CREATE FROM SCRATCH -->
+  <section class="guides-section guides-section--light">
+    <div class="container">
+      <header class="guides-section__header">
+        <p class="guides-section__eyebrow">From Scratch</p>
+        <h2 class="guides-section__title">How to Create a Starter</h2>
+        <p class="guides-section__lead">
+          Creating a starter is mostly a process of regular feeding and patience. The exact timeline can vary based on flour,
+          temperature, and feeding consistency, but the basic principles stay the same.
+        </p>
+      </header>
+
+      <div class="guides-steps">
+        <article class="guides-step">
+          <img class="guides-step__img" src="images/flour-and-water.jpg" alt="Flour and water being mixed together">
+          <span class="guides-step__number">1</span>
+          <h3 class="guides-step__title">Combine flour and water</h3>
+          <p class="guides-step__text">
+            Mix flour and water in a clean jar until fully combined. Many bakers prefer grams because they keep the process more accurate and repeatable.
+          </p>
+        </article>
+
+        <article class="guides-step">
+          <img class="guides-step__img" src="images/feeding-starter-with-flour-scooper.jpg" alt="Starter being fed in a jar">
+          <span class="guides-step__number">2</span>
+          <h3 class="guides-step__title">Feed consistently</h3>
+          <p class="guides-step__text">
+            Discard a portion and feed fresh flour and water on a regular schedule. Consistency matters more than perfection in the early days.
+          </p>
+        </article>
+
+        <article class="guides-step">
+          <img class="guides-step__img" src="images/starter-bubles-on-top-surface.webp" alt="Starter with bubbles showing activity">
+          <span class="guides-step__number">3</span>
+          <h3 class="guides-step__title">Watch for activity</h3>
+          <p class="guides-step__text">
+            Bubbles, growth, aroma, and predictable rising after feeding are signs the culture is developing strength.
+          </p>
+        </article>
+
+        <article class="guides-step">
+          <img class="guides-step__img" src="images/sourdough-in-jars-before-after-feeding.jpg" alt="Starter and dough ready for baking">
+          <span class="guides-step__number">4</span>
+          <h3 class="guides-step__title">Build strength before baking</h3>
+          <p class="guides-step__text">
+            A starter should rise reliably after feeding before being used in dough. A little patience here makes a big difference later.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- REHYDRATE -->
+  <section class="guides-section guides-section--cream">
+    <div class="container">
+      <header class="guides-section__header">
+        <p class="guides-section__eyebrow">Dehydrated Starter</p>
+        <h2 class="guides-section__title">How Rehydrating Works</h2>
+        <p class="guides-section__lead">
+          Dehydrating starter preserves the culture in a dormant state. Rehydrating brings that culture back to life gradually through water, flour, and repeated feedings.
+        </p>
+      </header>
+
+      <div class="guides-feature guides-feature--reverse">
+        <div class="guides-feature__media">
+          <img src="images/dehydrated-starter-3-kinds.jpg" alt="Dried starter and ingredients used to rehydrate it">
+        </div>
+
+        <div class="guides-feature__content">
+          <div class="guides-richtext guides-richtext--tight">
+            <h3>Basic rehydration process</h3>
+            <ul class="guides-bullets">
+              <li>Combine dehydrated starter with water to soften and dissolve it</li>
+              <li>Add flour and mix well</li>
+              <li>Let it rest and begin feeding on a consistent schedule</li>
+              <li>Expect it to strengthen over multiple feedings before baking</li>
+            </ul>
+
+            <h3>What to expect</h3>
+            <p>
+              Dehydrated starter does not usually come back at full strength instantly. It often needs a few feedings before it becomes vigorous,
+              bubbly, and reliable enough for dough.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="guides-gallery guides-gallery--two">
+        <figure class="guides-gallery__item">
+          <img src="images/dehydrated-starter-after-hydration.jpg" alt="Starter beginning to come back to life after rehydration">
+          <figcaption>Early rehydration can look modest before the starter gains strength.</figcaption>
+        </figure>
+
+        <figure class="guides-gallery__item">
+          <img src="images/active-starter-after-several-feeding.jpg" alt="Active starter after several feedings">
+          <figcaption>After repeated feedings, the starter should become noticeably more active.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- STORAGE -->
+  <section class="guides-section guides-section--light">
+    <div class="container">
+      <header class="guides-section__header">
+        <p class="guides-section__eyebrow">Maintenance</p>
+        <h2 class="guides-section__title">Starter Storage, Routine, and Best Practices</h2>
+      </header>
+
+      <div class="guides-card-grid guides-card-grid--three">
+        <article class="guides-card">
+          <img class="guides-card__img" src="images/starter-at-room-temp.jpg" alt="Starter kept at room temperature">
+          <h3 class="guides-card__title">Room temperature storage</h3>
+          <p class="guides-card__text">
+            Best for frequent bakers. Starter usually needs more regular feeding, but it stays active and ready to build with.
+          </p>
+        </article>
+
+        <article class="guides-card">
+          <img class="guides-card__img" src="images/starter-in-fridge.jpg" alt="Starter stored in a refrigerator">
+          <h3 class="guides-card__title">Refrigerator storage</h3>
+          <p class="guides-card__text">
+            Great for a lower-maintenance routine. Refrigeration slows activity so the starter can rest between bakes.
+          </p>
+        </article>
+
+        <article class="guides-card">
+          <img class="guides-card__img" src="images/dehydrated-starter-backup-in-a-jar.jpg" alt="Dehydrated starter saved as a backup">
+          <h3 class="guides-card__title">Keeping a backup</h3>
+          <p class="guides-card__text">
+            Dehydrated starter is useful as a backup, gift, or long-term storage option in case your main starter becomes weak or neglected.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- DOUGH FUNDAMENTALS -->
+  <section class="guides-section guides-section--dark">
+    <div class="container">
+      <header class="guides-section__header">
+        <p class="guides-section__eyebrow">Dough Fundamentals</p>
+        <h2 class="guides-section__title guides-section__title--light">Hydration, Gluten, and Dough Strength</h2>
+        <p class="guides-section__lead guides-section__lead--light">
+          Understanding how hydration and gluten development affect dough will help you handle it better and choose the right style for what you want to make.
+        </p>
+      </header>
+
+      <div class="guides-card-grid guides-card-grid--three">
+        <article class="guides-card guides-card--dark">
+          <img class="guides-card__img" src="images/low-hydration.jpg" alt="Lower hydration dough example">
+          <h3 class="guides-card__title">Lower hydration dough</h3>
+          <p class="guides-card__text">
+            Usually easier to handle, firmer, and helpful for tighter-crumb breads, sandwich loaves, and bagel-style doughs.
+          </p>
+        </article>
+
+        <article class="guides-card guides-card--dark">
+          <img class="guides-card__img" src="images/medium-hydration.jpg" alt="Medium hydration dough example">
+          <h3 class="guides-card__title">Medium hydration dough</h3>
+          <p class="guides-card__text">
+            A versatile middle ground that works well for many artisan loaves and everyday sourdough bakes.
+          </p>
+        </article>
+
+        <article class="guides-card guides-card--dark">
+          <img class="guides-card__img" src="images/high-hydration.jpg" alt="Higher hydration dough example">
+          <h3 class="guides-card__title">Higher hydration dough</h3>
+          <p class="guides-card__text">
+            Softer, stickier, and often better for open crumb loaves, focaccia, and doughs that benefit from more extensibility.
+          </p>
+        </article>
+      </div>
+
+      <div class="guides-feature">
+        <div class="guides-feature__media">
+          <img src="images/dough-stratch-gluten-dev.avif" alt="Strong dough and finished loaf structure">
+        </div>
+
+        <div class="guides-feature__content">
+          <div class="guides-richtext guides-richtext--light guides-richtext--tight">
+            <h3>What is gluten development?</h3>
+            <p>
+              Gluten development is what gives dough strength, elasticity, and structure. In sourdough, that structure builds through mixing,
+              resting, fermentation, and folding. A stronger dough can trap gas better and hold its shape more effectively.
+            </p>
+
+            <h3>Long fermentation</h3>
+            <p>
+              Long fermentation affects flavor, texture, and digestibility. It also changes how the dough behaves over time, which is why sourdough often rewards patience.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HANDLING METHODS -->
+  <section class="guides-section guides-section--light">
+    <div class="container">
+      <header class="guides-section__header">
+        <p class="guides-section__eyebrow">Handling Methods</p>
+        <h2 class="guides-section__title">Kneading, Stretch and Folds, and Coil Folds</h2>
+      </header>
+
+      <div class="guides-card-grid guides-card-grid--three">
+        <article class="guides-card">
+          <img class="guides-card__img" src="images/kneading-traditional.jpg" alt="Traditional kneading example">
+          <h3 class="guides-card__title">Traditional kneading</h3>
+          <p class="guides-card__text">
+            Useful for some doughs, but many sourdough bakers rely more on time, hydration, and gentle strengthening methods.
+          </p>
+        </article>
+
+        <article class="guides-card">
+          <img class="guides-card__img" src="images/stretch-and-fold.jpg" alt="Stretch and fold dough handling example">
+          <h3 class="guides-card__title">Stretch and folds</h3>
+          <p class="guides-card__text">
+            A common method for building structure gradually during bulk fermentation without aggressively working the dough.
+          </p>
+        </article>
+
+        <article class="guides-card">
+          <img class="guides-card__img" src="images/coil-fold.jpg" alt="Coil fold dough handling example">
+          <h3 class="guides-card__title">Coil folds</h3>
+          <p class="guides-card__text">
+            A gentle method especially helpful with wetter doughs. It strengthens dough while preserving air and structure.
+          </p>
+        </article>
+      </div>
+
+      <div class="guides-gallery guides-gallery--two">
+        <figure class="guides-gallery__item">
+          <img src="images/smooth-dough.jpg" alt="Dough that looks strong and smooth">
+          <figcaption>Healthy dough becomes smoother, stronger, and more elastic as it develops.</figcaption>
+        </figure>
+
+        <figure class="guides-gallery__item">
+          <img src="images/overworked-dough.jpg" alt="Dough that looks tight or overworked">
+          <figcaption>Overworked dough can tighten up, tear more easily, and resist handling.</figcaption>
+        </figure>
+      </div>
+
+      <div class="guides-richtext">
+        <h3>How to know if you are overworking the dough</h3>
+        <p>
+          If dough becomes overly tight, tears easily, resists shaping, or loses the balance between strength and extensibility,
+          it may need more rest and less handling. Sourdough often improves when you let time do part of the work.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FERMENTATION -->
+  <section class="guides-section guides-section--cream">
+    <div class="container">
+      <header class="guides-section__header">
+        <p class="guides-section__eyebrow">Fermentation</p>
+        <h2 class="guides-section__title">Bulk Fermentation, Proofing, and Temperature</h2>
+        <p class="guides-section__lead">
+          Fermentation is where much of the magic happens. Learning what dough looks and feels like at each stage is often more useful than relying on a single exact time.
+        </p>
+      </header>
+
+      <div class="guides-card-grid guides-card-grid--three">
+        <article class="guides-card">
+          <img class="guides-card__img" src="images/bulk-fermentaion.jpg" alt="Dough early in bulk fermentation">
+          <h3 class="guides-card__title">Early bulk fermentation</h3>
+          <p class="guides-card__text">
+            Dough may look dense and less active early on, but it should gradually become smoother, puffier, and more alive as fermentation progresses.
+          </p>
+        </article>
+
+        <article class="guides-card">
+          <img class="guides-card__img" src="images/dough-ready-for-baking.jpg" alt="Dough properly fermented and ready">
+          <h3 class="guides-card__title">Well-fermented dough</h3>
+          <p class="guides-card__text">
+            Properly fermented dough often looks lighter, fuller, slightly domed, and shows better aeration and structure.
+          </p>
+        </article>
+
+        <article class="guides-card">
+          <img class="guides-card__img" src="images/overproofed-dough.jpg" alt="Overproofed dough example">
+          <h3 class="guides-card__title">Overproofed dough</h3>
+          <p class="guides-card__text">
+            Overproofed dough can look weak, overly loose, fragile, or deflated, and may struggle to hold shape.
+          </p>
+        </article>
+      </div>
+
+      <div class="guides-two-column">
+        <article class="guides-panel">
+          <h3 class="guides-panel__title">What to look for</h3>
+          <ul class="guides-panel__list">
+            <li>Noticeable growth in volume</li>
+            <li>A smoother, fuller surface</li>
+            <li>Bubbles and air pockets developing</li>
+            <li>A lighter, more active feel</li>
+          </ul>
+        </article>
+
+        <article class="guides-panel">
+          <h3 class="guides-panel__title">How temperature changes the process</h3>
+          <ul class="guides-panel__list">
+            <li>Warmer kitchens speed fermentation up</li>
+            <li>Cooler kitchens slow it down</li>
+            <li>Dough temperature strongly affects timing</li>
+            <li>Cold proofing changes flavor and scheduling</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- BAKING BASICS -->
+  <section class="guides-section guides-section--light">
+    <div class="container">
+      <header class="guides-section__header">
+        <p class="guides-section__eyebrow">Baking Basics</p>
+        <h2 class="guides-section__title">Shaping, Scoring, Steam, and Crust</h2>
+      </header>
+
+      <div class="guides-gallery guides-gallery--three">
+        <figure class="guides-gallery__item">
+          <img src="images/shaping-dough.jpg" alt="Shaped loaf before baking">
+          <figcaption>A well-shaped loaf helps support oven spring and final structure.</figcaption>
+        </figure>
+
+        <figure class="guides-gallery__item">
+          <img src="images/scored-loaf.jpg" alt="Scored loaf with expanded crust">
+          <figcaption>Scoring controls expansion and helps create a more attractive finished loaf.</figcaption>
+        </figure>
+
+        <figure class="guides-gallery__item">
+          <img src="images/the-perfect-outer-texture.avif" alt="Finished sourdough loaf with browned crust">
+          <figcaption>Steam early in the bake helps support better crust development and oven rise.</figcaption>
+        </figure>
+      </div>
+
+      <div class="guides-richtext">
+        <h3>Why steam matters</h3>
+        <p>
+          Steam helps keep the outer surface of the dough flexible early in the bake. That gives the loaf more room to expand before the crust sets,
+          which can improve oven spring and crust quality.
+        </p>
+
+        <h3>What a good crust should look like</h3>
+        <p>
+          A good crust is usually deeply colored, well set, and evenly baked without being raw inside or overly scorched outside.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TROUBLESHOOTING -->
+  <section class="guides-section guides-section--dark">
+    <div class="container">
+      <header class="guides-section__header">
+        <p class="guides-section__eyebrow">Troubleshooting</p>
+        <h2 class="guides-section__title guides-section__title--light">Common Mistakes and What They Usually Mean</h2>
+      </header>
+
+      <div class="guides-card-grid guides-card-grid--four">
+        <article class="guides-card guides-card--dark">
+          <img class="guides-card__img" src="images/dense-loaf.jpg" alt="Dense loaf example">
+          <h3 class="guides-card__title">Dense loaf</h3>
+          <p class="guides-card__text">Often related to weak starter, underfermentation, or dough that lacked enough strength.</p>
+        </article>
+
+        <article class="guides-card guides-card--dark">
+          <img class="guides-card__img" src="images/sticky-dough.jpg" alt="Sticky dough example">
+          <h3 class="guides-card__title">Sticky dough</h3>
+          <p class="guides-card__text">Could be hydration, handling, flour type, or fermentation stage rather than a sign something is wrong.</p>
+        </article>
+
+        <article class="guides-card guides-card--dark">
+          <img class="guides-card__img" src="images/flat-loaf.jpg" alt="Flat loaf example">
+          <h3 class="guides-card__title">Flat loaf</h3>
+          <p class="guides-card__text">Often points to overproofing, shaping issues, or dough that never built enough strength.</p>
+        </article>
+
+        <article class="guides-card guides-card--dark">
+          <img class="guides-card__img" src="images/inactive-starter.jpg" alt="Inactive starter example">
+          <h3 class="guides-card__title">Inactive starter</h3>
+          <p class="guides-card__text">Usually needs more regular feeding, warmth, or time to regain strength.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- STORAGE AND SERVING -->
+  <section class="guides-section guides-section--cream">
+    <div class="container">
+      <header class="guides-section__header">
+        <p class="guides-section__eyebrow">Storage</p>
+        <h2 class="guides-section__title">Keeping Bread Fresh After Baking</h2>
+      </header>
+
+      <div class="guides-feature">
+        <div class="guides-feature__media">
+          <img src="images/fresh-sourdough-in-pan.jpg" alt="Fresh sourdough loaf ready to cool and slice">
+        </div>
+
+        <div class="guides-feature__content">
+          <div class="guides-richtext guides-richtext--tight">
+            <h3>Best practices</h3>
+            <ul class="guides-bullets">
+              <li>Let loaves cool before slicing</li>
+              <li>Store cut-side down or in breathable wrapping</li>
+              <li>Freeze extra bread for longer storage</li>
+              <li>Refresh crust in the oven if needed</li>
+            </ul>
+
+            <h3>Why cooling matters</h3>
+            <p>
+              Cutting too soon can affect the crumb and texture inside the loaf. Letting bread cool fully usually gives a better result.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="guides-section guides-section--light">
+    <div class="container">
+      <header class="guides-section__header">
+        <p class="guides-section__eyebrow">FAQ</p>
+        <h2 class="guides-section__title">Frequently Asked Questions</h2>
+      </header>
+
+      <div class="guides-faq">
+        <article class="guides-faq__item">
+          <h3>Why didn’t my dough rise?</h3>
+          <p>It may have needed a stronger starter, more fermentation time, warmer dough conditions, or better gluten development.</p>
+        </article>
+
+        <article class="guides-faq__item">
+          <h3>Why is my dough so sticky?</h3>
+          <p>Sticky dough can be normal depending on hydration, flour choice, and fermentation stage. It does not always mean something went wrong.</p>
+        </article>
+
+        <article class="guides-faq__item">
+          <h3>Why use grams instead of cups?</h3>
+          <p>Grams are more consistent and make it easier to repeat good results and understand hydration more accurately.</p>
+        </article>
+
+        <article class="guides-faq__item">
+          <h3>When is starter ready to bake with?</h3>
+          <p>Usually when it rises reliably after feeding, looks airy and bubbly, and behaves predictably enough to leaven dough.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLASSES -->
+  <section class="guides-section guides-section--accent">
+    <div class="container">
+      <header class="guides-section__header">
+        <p class="guides-section__eyebrow">In-Person Learning</p>
+        <h2 class="guides-section__title">Learn Sourdough in Person</h2>
+        <p class="guides-section__lead">
+          Tempesst also offers in-person sourdough classes for beginners and home bakers who want hands-on help,
+          real guidance, and a more personal learning experience.
+        </p>
+      </header>
+
+      <div class="guides-feature guides-feature--reverse">
+        <div class="guides-feature__media">
+          <img src="images/sourdough-class.jpg" alt="Baker teaching a small sourdough class in person">
+        </div>
+
+        <div class="guides-feature__content">
+          <div class="guides-panel">
+            <h3 class="guides-panel__title">What classes may include</h3>
+            <ul class="guides-panel__list">
+              <li>Small class sizes</li>
+              <li>Beginner-friendly instruction</li>
+              <li>Hands-on starter and dough guidance</li>
+              <li>Fermentation and baking fundamentals</li>
+              <li>Questions answered in real time</li>
+              <li>Items to take home after class</li>
+            </ul>
+          </div>
+
+          <div class="guides-hero__actions guides-hero__actions--left">
+            <a href="contact.html" class="guides-btn guides-btn--primary">Ask About Classes</a>
+            <a href="events.html" class="guides-btn guides-btn--secondary">View Events</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPLORE MORE -->
+  <section class="guides-explore">
+    <div class="container">
+      <h2 class="guides-explore__title">Keep Learning and Baking</h2>
+      <p class="guides-explore__text">
+        Once you understand the basics, the best way to grow is by baking more often, trying new recipes,
+        and using the right tools to make the process smoother.
+      </p>
+
+      <div class="guides-explore__grid">
+        <a class="guides-explore__card" href="recipies.html">
+          <img src="images/sourdough-loaf-round.webp" alt="Sourdough recipes">
+          <span>Explore Recipes</span>
+        </a>
+
+        <a class="guides-explore__card" href="tools.html">
+          <img src="images/cookies pecan.jpeg" alt="Sourdough tools and supplies">
+          <span>Browse Tools</span>
+        </a>
+
+        <a class="guides-explore__card" href="shop.html">
+          <img src="images/cinnamon-roll.jpeg" alt="Starter and bakery products">
+          <span>Shop Starter & Bakes</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!--footer-->
+<div id="footer-placeholder"></div>
+
+</body>
+</html>

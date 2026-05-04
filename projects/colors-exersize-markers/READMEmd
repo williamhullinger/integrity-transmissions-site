@@ -1,0 +1,169 @@
+README.md — CSS Color Markers Exercise
+
+Author: William Hullinger
+Project: Colored Markers
+Purpose:
+This exercise demonstrates how CSS colors work in real-world scenarios.
+It shows how different color systems (RGB, HEX, HSL), transparency, gradients,
+and shadows are used together to create depth, realism, and reusable components.
+
+================================================================
+
+1. WHAT THIS EXERCISE IS ABOUT
+
+This project is not about drawing markers.
+It is about learning how color works in CSS through a simple visual object.
+
+By building the same object three times with different color systems,
+you learn how each system behaves and when to use it.
+
+This mirrors how color is handled in real projects:
+one component, multiple visual variants.
+
+================================================================
+
+2. CORE CONCEPTS DEMONSTRATED
+
+This exercise demonstrates:
+
+- Using color intentionally, not randomly
+- Applying gradients to simulate light and depth
+- Using shadows to separate elements from the background
+- Using transparency to layer colors
+- Reusing structure while changing appearance
+- Understanding multiple CSS color formats
+
+================================================================
+
+3. STRUCTURE OF THE COMPONENT
+
+Each marker follows the same structure:
+
+- A base marker body
+- A cap section
+- A sleeve (label) section
+
+The HTML uses:
+- One base class: marker
+- One modifier class: red, green, or blue
+
+This pattern is extremely common in real-world development:
+base component + variant class.
+
+================================================================
+
+4. COLOR SYSTEMS USED (INTENTIONAL)
+
+Each marker uses a different color system on purpose.
+
+RED MARKER
+- Uses RGB for gradient colors
+- Uses RGBA for the shadow
+- Demonstrates numeric color control and opacity
+
+GREEN MARKER
+- Uses HEX colors
+- Uses HEX with alpha for shadow opacity
+- Demonstrates design-tool-friendly color values
+
+BLUE MARKER
+- Uses HSL for gradient colors
+- Uses HSLA for the shadow
+- Demonstrates how hue, saturation, and lightness affect color perception
+
+Seeing these side by side helps reinforce how each system works.
+
+================================================================
+
+5. WHY GRADIENTS ARE USED
+
+Flat colors look artificial.
+Gradients simulate light hitting a round object.
+
+Each marker uses:
+- Dark color on the edges
+- Brighter color in the center
+
+This creates the illusion of a cylindrical shape.
+This same technique is used in buttons, cards, and modern UI components.
+
+================================================================
+
+6. WHY SHADOWS MATCH THE COLOR
+
+Each marker’s shadow is tinted to match its base color.
+
+This matters because:
+- Neutral black shadows can look dirty or flat
+- Colored shadows feel more natural and intentional
+- Real UI components often use color-aware shadows
+
+Shadows are not decoration.
+They communicate depth and separation.
+
+================================================================
+
+7. WHY TRANSPARENCY IS USED
+
+Transparency is used in two places:
+
+- The sleeve background
+- The shadows
+
+RGBA and HSLA allow layers to blend naturally.
+This is critical in modern UI design where elements overlap.
+
+================================================================
+
+8. COLOR THEORY CONNECTION
+
+This exercise reinforces key color theory principles:
+
+- Neutrals are the foundation
+- Color is used sparingly and purposefully
+- Lightness changes communicate interaction and depth
+- Consistency matters more than creativity
+
+If every element were bright,
+nothing would stand out.
+
+================================================================
+
+9. REAL-WORLD APPLICATIONS
+
+The same techniques shown here apply to:
+
+- Buttons with different variants
+- Badges and status indicators
+- Cards and panels
+- Design systems and component libraries
+- Theming and dark mode
+
+This is not toy knowledge.
+It directly maps to professional frontend work.
+
+================================================================
+
+10. HOW TO EXPERIMENT FURTHER
+
+To continue learning, try:
+- Changing only lightness values in HSL
+- Adjusting gradient direction
+- Softening or strengthening shadows
+- Converting RGB values to HSL
+- Replacing hard-coded colors with CSS variables
+
+Make one change at a time and observe the result.
+
+================================================================
+
+FINAL TAKEAWAY
+
+Good color usage is controlled, consistent, and intentional.
+This exercise shows how CSS color systems are tools,
+not magic.
+
+Understanding when and why to use each one
+is what separates beginners from professionals.
+
+END OF FILE

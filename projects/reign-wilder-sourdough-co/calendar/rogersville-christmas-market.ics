@@ -1,0 +1,14 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Reign & Wilder Sourdough Co.//Events//EN
+CALSCALE:GREGORIAN
+BEGIN:VEVENT
+UID:rogersville-christmas-market@reignandwilder.com
+DTSTAMP:20260328T000000Z
+DTSTART:20261212T090000
+DTEND:20261212T140000
+SUMMARY:Rogersville Christmas Market - Reign & Wilder
+LOCATION:Logan-Rogersville Upper Elementary, Rogersville, MO
+DESCRIPTION:Find Reign & Wilder at the Rogersville Christmas Market for fresh sourdough bread and baked goods.
+END:VEVENT
+END:VCALENDAR
