@@ -225,7 +225,6 @@ function initGalleryStage() {
 
       image.src = sourceImage.src;
       image.alt = "";
-
       image.setAttribute("aria-hidden", "true");
 
       thumb.appendChild(image);
@@ -244,6 +243,10 @@ function initGalleryStage() {
 
   /* ---------------------------------------------------------
     SHOW SELECTED SLIDE
+
+    IMPORTANT:
+    This function only changes classes and ARIA attributes.
+    It does NOT scroll, focus, or reposition the browser.
   --------------------------------------------------------- */
 
   function showSlide(index) {
@@ -277,8 +280,6 @@ function initGalleryStage() {
         thumb.removeAttribute("aria-current");
       }
     });
-
-    
   }
 
 
@@ -402,50 +403,35 @@ function initGalleryStage() {
 
 
   /* ---------------------------------------------------------
-    PAUSE WHEN USER IS INTERACTING
+    PAUSE ON MOUSE HOVER
+
+    This only stops/starts the timer.
+    It does not change page position.
   --------------------------------------------------------- */
 
-  gallery.addEventListener(
-    "mouseenter",
-    stopAutoplay
-  );
+  gallery.addEventListener("mouseenter", () => {
+    stopAutoplay();
+  });
 
-  gallery.addEventListener(
-    "mouseleave",
-    startAutoplay
-  );
-
-  gallery.addEventListener(
-    "focusin",
-    stopAutoplay
-  );
-
-  gallery.addEventListener(
-    "focusout",
-    () => {
-      window.setTimeout(() => {
-        if (!gallery.contains(document.activeElement)) {
-          startAutoplay();
-        }
-      }, 0);
-    }
-  );
+  gallery.addEventListener("mouseleave", () => {
+    startAutoplay();
+  });
 
 
   /* ---------------------------------------------------------
     TAB VISIBILITY
+
+    Prevent the timer from running unnecessarily while
+    the browser tab is hidden.
   --------------------------------------------------------- */
 
-  document.addEventListener(
-    "visibilitychange",
-    () => {
-      if (document.hidden) {
-        stopAutoplay();
-      } else {
-        startAutoplay();
-      }
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      stopAutoplay();
+    } else {
+      startAutoplay();
     }
-  );
+  });
 
 
   /* ---------------------------------------------------------
@@ -453,7 +439,6 @@ function initGalleryStage() {
   --------------------------------------------------------- */
 
   showSlide(0);
-
   startAutoplay();
 }
 
