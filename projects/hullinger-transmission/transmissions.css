@@ -1,6 +1,7 @@
 /* =========================================================
-  SUPPORTED UNITS / TRANSMISSIONS PAGE
+  TRANSMISSIONS PAGE
 ========================================================= */
+
 
 /* =========================================================
   HERO
@@ -30,7 +31,12 @@
   right: -12rem;
   width: 34rem;
   height: 34rem;
-  background: radial-gradient(circle, rgba(244, 123, 32, 0.18), transparent 68%);
+  background:
+    radial-gradient(
+      circle,
+      rgba(244, 123, 32, 0.18),
+      transparent 68%
+    );
 }
 
 .transmissions-hero__glow--dark {
@@ -38,13 +44,20 @@
   bottom: -18rem;
   width: 38rem;
   height: 38rem;
-  background: radial-gradient(circle, rgba(0, 0, 0, 0.08), transparent 68%);
+  background:
+    radial-gradient(
+      circle,
+      rgba(0, 0, 0, 0.08),
+      transparent 68%
+    );
 }
 
 .transmissions-hero__grid {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(330px, 0.72fr);
+  grid-template-columns:
+    minmax(0, 1.05fr)
+    minmax(330px, 0.72fr);
   gap: clamp(2rem, 5vw, 5rem);
   align-items: center;
 }
@@ -95,6 +108,7 @@
   font-weight: 900;
 }
 
+
 /* =========================================================
   HERO CARD
 ========================================================= */
@@ -105,8 +119,16 @@
   padding: clamp(1.45rem, 3vw, 2.25rem);
   color: var(--text-light);
   background:
-    radial-gradient(circle at top right, rgba(244, 123, 32, 0.38), transparent 18rem),
-    linear-gradient(145deg, #151515, #2b2119);
+    radial-gradient(
+      circle at top right,
+      rgba(244, 123, 32, 0.38),
+      transparent 18rem
+    ),
+    linear-gradient(
+      145deg,
+      #151515,
+      #2b2119
+    );
   border: 1px solid var(--border-light);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-lg);
@@ -134,7 +156,8 @@
   height: 10px;
   background: var(--accent);
   border-radius: 999px;
-  box-shadow: 0 0 0 8px rgba(244, 123, 32, 0.15);
+  box-shadow:
+    0 0 0 8px rgba(244, 123, 32, 0.15);
 }
 
 .transmissions-hero-card__status p {
@@ -149,6 +172,7 @@
 .transmissions-hero-card h2 {
   position: relative;
   margin: 0;
+  color: #ffffff;
   font-family: var(--font-heading);
   font-size: clamp(1.9rem, 4vw, 3rem);
   line-height: 0.95;
@@ -156,9 +180,10 @@
   text-transform: uppercase;
 }
 
-.transmissions-hero-card p {
+.transmissions-hero-card > p {
   position: relative;
   color: var(--text-light-soft);
+  line-height: 1.65;
 }
 
 .transmissions-hero-card__steps {
@@ -191,6 +216,7 @@
   font-size: 0.88rem;
 }
 
+
 /* =========================================================
   SUMMARY STRIP
 ========================================================= */
@@ -202,16 +228,24 @@
 
 .unit-summary__inner {
   display: grid;
-  grid-template-columns: minmax(240px, 0.62fr) minmax(0, 1fr) auto;
+  grid-template-columns:
+    minmax(240px, 0.62fr)
+    minmax(0, 1fr)
+    auto;
   gap: 1.5rem;
   align-items: center;
   padding: 1.45rem;
   color: #111111;
   background:
-    linear-gradient(135deg, #ffb66f 0%, var(--accent) 100%);
+    linear-gradient(
+      135deg,
+      #ffb66f 0%,
+      var(--accent) 100%
+    );
   border: 1px solid rgba(17, 17, 17, 0.08);
   border-radius: var(--radius-lg);
-  box-shadow: 0 26px 70px rgba(244, 123, 32, 0.28);
+  box-shadow:
+    0 26px 70px rgba(244, 123, 32, 0.28);
 }
 
 .eyebrow--dark {
@@ -220,6 +254,7 @@
 
 .unit-summary h2 {
   margin: 0;
+  color: #111111;
   font-family: var(--font-heading);
   font-size: clamp(1.6rem, 3vw, 2.35rem);
   line-height: 0.96;
@@ -229,48 +264,143 @@
 
 .unit-summary p {
   margin: 0;
-  color: rgba(17, 17, 17, 0.76);
+  color: rgba(17, 17, 17, 0.8);
   font-weight: 750;
+  line-height: 1.55;
 }
 
+
 /* =========================================================
-  SHARED UNIT CARDS
+  TRANSMISSION SECTIONS
+========================================================= */
+
+.gm-section {
+  background: #ffffff;
+}
+
+.ford-section {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 250, 242, 0.45),
+      rgba(238, 227, 210, 0.72)
+    );
+}
+
+.chrysler-section {
+  background: #ffffff;
+}
+
+.import-section {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 250, 242, 0.78),
+      rgba(255, 255, 255, 0.92)
+    );
+}
+
+
+/* =========================================================
+  TRANSMISSION GRID
 ========================================================= */
 
 .unit-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 0.95rem;
+  gap: 1rem;
   margin-top: 2rem;
+  align-items: start;
 }
+
+
+/* =========================================================
+  STATIC + EXPANDABLE TRANSMISSION CARDS
+========================================================= */
 
 .unit-card {
   position: relative;
-  min-height: 260px;
-  padding: 1.4rem;
-  background: #ffffff;
+  min-width: 0;
+  padding: 1.45rem;
+  background:
+    linear-gradient(
+      145deg,
+      #ffffff,
+      #fbf8f4
+    );
   border: 1px solid var(--border);
   border-radius: 28px;
   box-shadow: var(--shadow-sm);
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    border-color 180ms ease;
+}
+
+.unit-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(244, 123, 32, 0.34);
+  box-shadow:
+    0 20px 50px rgba(20, 20, 20, 0.11);
 }
 
 .unit-card--featured {
   color: var(--text-light);
   background:
-    radial-gradient(circle at top right, rgba(244, 123, 32, 0.36), transparent 18rem),
-    linear-gradient(145deg, #151515, #2a211a);
+    radial-gradient(
+      circle at top right,
+      rgba(244, 123, 32, 0.36),
+      transparent 18rem
+    ),
+    linear-gradient(
+      145deg,
+      #151515,
+      #2a211a
+    );
   border-color: var(--border-light);
 }
 
-.unit-card--caution {
-  background:
-    radial-gradient(circle at top right, rgba(244, 123, 32, 0.15), transparent 18rem),
-    #ffffff;
-  border-color: rgba(244, 123, 32, 0.32);
+.unit-card--featured:hover {
+  border-color:
+    rgba(244, 123, 32, 0.52);
 }
 
-.unit-card > span {
+
+/* =========================================================
+  DETAILS / SUMMARY RESET
+========================================================= */
+
+details.unit-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+details.unit-card summary {
+  position: relative;
+  display: block;
+  min-height: 270px;
+  padding: 1.45rem;
+  cursor: pointer;
+  list-style: none;
+}
+
+details.unit-card summary::-webkit-details-marker {
+  display: none;
+}
+
+details.unit-card summary::marker {
+  display: none;
+}
+
+
+/* =========================================================
+  CARD LABEL
+========================================================= */
+
+.unit-card > span,
+.unit-card summary > span {
   display: inline-flex;
+  align-items: center;
   margin-bottom: 1rem;
   padding: 0.5rem 0.7rem;
   color: #111111;
@@ -278,36 +408,199 @@
   border-radius: 999px;
   font-size: 0.72rem;
   font-weight: 900;
-  letter-spacing: 0.11em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
+
+/* =========================================================
+  CARD HEADINGS / COPY
+========================================================= */
+
 .unit-card h3 {
   margin: 0;
+  color: #171717;
   font-family: var(--font-heading);
-  font-size: clamp(1.65rem, 3vw, 2.25rem);
+  font-size: clamp(1.7rem, 3vw, 2.35rem);
   line-height: 0.96;
   letter-spacing: -0.03em;
   text-transform: uppercase;
 }
 
+.unit-card--featured h3 {
+  color: #ffffff;
+}
+
 .unit-card p {
   margin: 1rem 0 0;
   color: var(--text-soft);
+  line-height: 1.62;
 }
 
 .unit-card--featured p {
   color: var(--text-light-soft);
 }
 
+
 /* =========================================================
-  FORD SECTION
+  EXPLORE LINK INSIDE SUMMARY
 ========================================================= */
 
-.ford-section {
-  background:
-    linear-gradient(180deg, rgba(255, 250, 242, 0.35), rgba(238, 227, 210, 0.72));
+.unit-card summary > strong {
+  display: inline-block;
+  margin-top: 1.3rem;
+  color: var(--accent-dark);
+  font-size: 0.86rem;
+  font-weight: 900;
+  text-transform: uppercase;
 }
+
+.unit-card--featured summary > strong {
+  color: var(--accent);
+}
+
+
+/* =========================================================
+  OPEN / CLOSE INDICATOR
+========================================================= */
+
+details.unit-card summary::after {
+  content: "+";
+  position: absolute;
+  top: 1.35rem;
+  right: 1.35rem;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  color: #111111;
+  background:
+    rgba(244, 123, 32, 0.14);
+  border:
+    1px solid rgba(244, 123, 32, 0.3);
+  border-radius: 999px;
+  font-family: var(--font-heading);
+  font-size: 1.45rem;
+  line-height: 1;
+  transition:
+    transform 180ms ease,
+    background-color 180ms ease;
+}
+
+details.unit-card[open] summary::after {
+  content: "−";
+  transform: rotate(180deg);
+  background: var(--accent);
+}
+
+details.unit-card--featured summary::after {
+  color: #ffffff;
+  background:
+    rgba(255, 255, 255, 0.1);
+  border-color:
+    rgba(255, 255, 255, 0.16);
+}
+
+details.unit-card--featured[open] summary::after {
+  color: #111111;
+  background: var(--accent);
+}
+
+
+/* =========================================================
+  OPEN CARD STATE
+========================================================= */
+
+details.unit-card[open] {
+  grid-column: span 2;
+  border-color:
+    rgba(244, 123, 32, 0.42);
+  box-shadow:
+    0 24px 60px rgba(20, 20, 20, 0.13);
+}
+
+details.unit-card[open] summary {
+  min-height: auto;
+  border-bottom:
+    1px solid rgba(30, 30, 30, 0.09);
+}
+
+details.unit-card--featured[open] summary {
+  border-bottom-color:
+    rgba(255, 255, 255, 0.1);
+}
+
+
+/* =========================================================
+  EXPANDED TRANSMISSION INFORMATION
+========================================================= */
+
+.unit-card__details {
+  padding:
+    1.25rem
+    1.45rem
+    1.55rem;
+  background:
+    rgba(255, 255, 255, 0.48);
+}
+
+.unit-card--featured .unit-card__details {
+  background:
+    rgba(0, 0, 0, 0.1);
+}
+
+.unit-card__details p {
+  max-width: 760px;
+  margin:
+    0
+    0
+    1.15rem;
+}
+
+.unit-card__details h4 {
+  margin:
+    1.3rem
+    0
+    0.45rem;
+  color: #171717;
+  font-family: var(--font-heading);
+  font-size: 1.12rem;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+.unit-card--featured .unit-card__details h4 {
+  color: #ffffff;
+}
+
+.unit-card__details a {
+  display: inline-flex;
+  margin-top: 0.4rem;
+  color: var(--accent-dark);
+  font-weight: 900;
+}
+
+.unit-card--featured .unit-card__details a {
+  color: var(--accent);
+}
+
+
+/* =========================================================
+  FOCUS / ACCESSIBILITY
+========================================================= */
+
+details.unit-card summary:focus-visible {
+  outline:
+    3px solid
+    rgba(244, 123, 32, 0.5);
+  outline-offset: -3px;
+}
+
+details.unit-card[open] {
+  scroll-margin-top: 7rem;
+}
+
 
 /* =========================================================
   DRIVETRAIN SECTION
@@ -316,19 +609,30 @@
 .drivetrain-section {
   color: var(--text-light);
   background:
-    radial-gradient(circle at center right, rgba(244, 123, 32, 0.22), transparent 28rem),
-    linear-gradient(135deg, #151515, #261e17);
+    radial-gradient(
+      circle at center right,
+      rgba(244, 123, 32, 0.22),
+      transparent 28rem
+    ),
+    linear-gradient(
+      135deg,
+      #151515,
+      #261e17
+    );
 }
 
 .drivetrain-layout {
   display: grid;
-  grid-template-columns: minmax(0, 0.7fr) minmax(320px, 0.85fr);
+  grid-template-columns:
+    minmax(0, 0.7fr)
+    minmax(320px, 0.85fr);
   gap: clamp(2rem, 5vw, 4rem);
   align-items: center;
 }
 
 .drivetrain-copy h2 {
   margin: 0;
+  color: #ffffff;
   font-family: var(--font-heading);
   font-size: clamp(2.35rem, 5vw, 4.7rem);
   line-height: 0.92;
@@ -339,6 +643,7 @@
 .drivetrain-copy p {
   color: var(--text-light-soft);
   font-size: 1.05rem;
+  line-height: 1.7;
 }
 
 .drivetrain-copy .btn {
@@ -353,10 +658,12 @@
 
 .drivetrain-grid article {
   padding: 1.35rem;
-  background: rgba(255, 255, 255, 0.075);
+  background:
+    rgba(255, 255, 255, 0.075);
   border: 1px solid var(--border-light);
   border-radius: 26px;
-  box-shadow: 0 20px 55px rgba(0, 0, 0, 0.18);
+  box-shadow:
+    0 20px 55px rgba(0, 0, 0, 0.18);
 }
 
 .drivetrain-grid span {
@@ -374,6 +681,7 @@
 
 .drivetrain-grid h3 {
   margin: 0;
+  color: #ffffff;
   font-family: var(--font-heading);
   font-size: 1.55rem;
   line-height: 1;
@@ -383,21 +691,26 @@
 .drivetrain-grid p {
   margin: 0.75rem 0 0;
   color: var(--text-light-soft);
+  line-height: 1.55;
 }
 
+
 /* =========================================================
-  FIT NOTE
+  QUOTE INFORMATION / FIT NOTE
 ========================================================= */
 
 .fit-note-layout {
   display: grid;
-  grid-template-columns: minmax(0, 0.72fr) minmax(320px, 0.55fr);
+  grid-template-columns:
+    minmax(0, 0.72fr)
+    minmax(320px, 0.55fr);
   gap: clamp(2rem, 5vw, 4rem);
   align-items: center;
 }
 
 .fit-note-copy h2 {
   margin: 0;
+  color: #171717;
   font-family: var(--font-heading);
   font-size: clamp(2.35rem, 5vw, 4.7rem);
   line-height: 0.92;
@@ -408,6 +721,7 @@
 .fit-note-copy p {
   color: var(--text-soft);
   font-size: 1.05rem;
+  line-height: 1.7;
 }
 
 .fit-note-card {
@@ -420,6 +734,7 @@
 
 .fit-note-card h3 {
   margin: 0 0 1rem;
+  color: #171717;
   font-family: var(--font-heading);
   font-size: 1.55rem;
   line-height: 1;
@@ -452,24 +767,32 @@
   border-radius: 999px;
 }
 
+
 /* =========================================================
-  LOCAL SEO SECTION
+  LOCAL SEO
 ========================================================= */
 
 .local-units-section {
   background:
-    linear-gradient(180deg, rgba(255, 250, 242, 0.86), rgba(255, 255, 255, 0.72));
+    linear-gradient(
+      180deg,
+      rgba(255, 250, 242, 0.86),
+      rgba(255, 255, 255, 0.72)
+    );
 }
 
 .local-units-layout {
   display: grid;
-  grid-template-columns: minmax(0, 0.72fr) minmax(320px, 0.76fr);
+  grid-template-columns:
+    minmax(0, 0.72fr)
+    minmax(320px, 0.76fr);
   gap: 2rem;
   align-items: center;
 }
 
 .local-units-layout h2 {
   margin: 0;
+  color: #171717;
   font-family: var(--font-heading);
   font-size: clamp(2.35rem, 5vw, 4.7rem);
   line-height: 0.92;
@@ -480,6 +803,7 @@
 .local-units-layout p {
   color: var(--text-soft);
   font-size: 1.05rem;
+  line-height: 1.65;
 }
 
 .local-units-tags {
@@ -500,13 +824,18 @@
   font-weight: 900;
 }
 
+
 /* =========================================================
   FAQ
 ========================================================= */
 
 .faq-section {
   background:
-    linear-gradient(180deg, rgba(255, 250, 242, 0.86), rgba(255, 255, 255, 0.72));
+    linear-gradient(
+      180deg,
+      rgba(255, 250, 242, 0.86),
+      rgba(255, 255, 255, 0.72)
+    );
 }
 
 .faq-grid {
@@ -526,6 +855,7 @@
 
 .faq-card h3 {
   margin: 0;
+  color: #171717;
   font-family: var(--font-heading);
   font-size: 1.45rem;
   line-height: 1;
@@ -535,13 +865,81 @@
 .faq-card p {
   margin: 0.75rem 0 0;
   color: var(--text-soft);
+  line-height: 1.6;
 }
+
+
+/* =========================================================
+  FINAL CTA
+========================================================= */
+
+.final-cta {
+  position: relative;
+  overflow: hidden;
+  padding:
+    clamp(4.75rem, 8vw, 7.5rem)
+    0
+    clamp(5.25rem, 9vw, 8rem);
+  color: #ffffff;
+  background:
+    radial-gradient(
+      circle at center right,
+      rgba(244, 123, 32, 0.34),
+      transparent 31rem
+    ),
+    linear-gradient(
+      135deg,
+      #0d0d0d 0%,
+      #241a13 100%
+    );
+}
+
+.final-cta__inner {
+  max-width: 940px;
+  margin-inline: auto;
+  padding-inline: 1rem;
+  text-align: center;
+}
+
+.final-cta .eyebrow {
+  margin-bottom: 0.9rem;
+}
+
+.final-cta h2 {
+  max-width: 850px;
+  margin: 0 auto;
+  color: #ffffff;
+  font-family: var(--font-heading);
+  font-size: clamp(2.5rem, 5vw, 5rem);
+  line-height: 0.94;
+  letter-spacing: -0.045em;
+  text-transform: uppercase;
+}
+
+.final-cta p {
+  max-width: 720px;
+  margin: 1.35rem auto 0;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+.final-cta__actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  margin-top: 2.35rem;
+  padding-bottom: 0.35rem;
+}
+
 
 /* =========================================================
   RESPONSIVE
 ========================================================= */
 
 @media (max-width: 1080px) {
+
   .transmissions-hero__grid,
   .drivetrain-layout,
   .fit-note-layout,
@@ -561,15 +959,22 @@
   .unit-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  details.unit-card[open] {
+    grid-column: span 2;
+  }
 }
 
+
 @media (max-width: 760px) {
+
   .transmissions-hero {
     padding-top: 3.75rem;
   }
 
   .transmissions-hero h1 {
-    font-size: clamp(3rem, 14vw, 4.6rem);
+    font-size:
+      clamp(3rem, 14vw, 4.6rem);
   }
 
   .transmissions-hero__actions {
@@ -578,11 +983,13 @@
 
   .transmissions-hero__badges {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns:
+      repeat(2, 1fr);
   }
 
   .transmissions-hero__badges span {
     justify-content: center;
+    text-align: center;
   }
 
   .unit-grid,
@@ -591,11 +998,67 @@
     grid-template-columns: 1fr;
   }
 
+  details.unit-card[open] {
+    grid-column: span 1;
+  }
+
+  details.unit-card summary {
+    min-height: auto;
+    padding: 1.3rem;
+    padding-right: 3.5rem;
+  }
+
+  .unit-card__details {
+    padding:
+      1.15rem
+      1.3rem
+      1.4rem;
+  }
+
   .transmissions-hero-card,
   .unit-card,
   .drivetrain-grid article,
   .fit-note-card,
   .faq-card {
     border-radius: 22px;
+  }
+
+  .final-cta {
+    padding:
+      4rem
+      0
+      4.75rem;
+  }
+
+  .final-cta__inner {
+    padding-inline: 1.1rem;
+  }
+
+  .final-cta__actions {
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-top: 2rem;
+  }
+
+  .final-cta__actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+
+@media (max-width: 520px) {
+
+  .transmissions-hero__badges {
+    grid-template-columns: 1fr;
+  }
+
+  details.unit-card summary::after {
+    top: 1.1rem;
+    right: 1.1rem;
+  }
+
+  .unit-card h3 {
+    padding-right: 1.5rem;
   }
 }
