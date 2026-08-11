@@ -2,14 +2,20 @@
   GLOBAL SITE JAVASCRIPT
 ========================================================= */
 
+
+/* =========================================================
+  SITE NAVIGATION
+========================================================= */
+
 function initSiteNavigation() {
   const navToggle = document.querySelector("[data-nav-toggle]");
   const siteNav = document.querySelector("[data-site-nav]");
 
   if (!navToggle || !siteNav) return;
 
-  // Prevent duplicate init
+  // Prevent duplicate initialization
   if (navToggle.dataset.navInitialized === "true") return;
+
   navToggle.dataset.navInitialized = "true";
 
   const openNav = () => {
@@ -30,34 +36,47 @@ function initSiteNavigation() {
     navToggle.setAttribute("aria-label", "Open navigation");
   };
 
-  // Toggle
+  // Open / close mobile navigation
   navToggle.addEventListener("click", () => {
     const isOpen = siteNav.classList.contains("is-open");
-    isOpen ? closeNav() : openNav();
+
+    if (isOpen) {
+      closeNav();
+    } else {
+      openNav();
+    }
   });
 
-  // Close on nav link click
+  // Close navigation after selecting a link
   siteNav.querySelectorAll("a").forEach((link) => {
     link.addEventListener("click", closeNav);
   });
 
-  // Close on outside click
+  // Close when clicking outside navigation
   document.addEventListener("click", (event) => {
-    const isInsideNav = siteNav.contains(event.target);
-    const isToggle = navToggle.contains(event.target);
+    const clickedInsideNav = siteNav.contains(event.target);
+    const clickedToggle = navToggle.contains(event.target);
 
-    if (!isInsideNav && !isToggle && siteNav.classList.contains("is-open")) {
+    if (
+      !clickedInsideNav &&
+      !clickedToggle &&
+      siteNav.classList.contains("is-open")
+    ) {
       closeNav();
     }
   });
 
-  // Close on ESC (only if open)
+  // Close with Escape
   document.addEventListener("keydown", (event) => {
-    if (event.key !== "Escape" || !siteNav.classList.contains("is-open")) return;
-    closeNav();
+    if (
+      event.key === "Escape" &&
+      siteNav.classList.contains("is-open")
+    ) {
+      closeNav();
+    }
   });
 
-  // Fix resize issues
+  // Reset mobile navigation when returning to desktop width
   window.addEventListener("resize", () => {
     if (window.innerWidth > 1120) {
       closeNav();
@@ -65,15 +84,27 @@ function initSiteNavigation() {
   });
 }
 
+
+/* =========================================================
+  CURRENT YEAR
+========================================================= */
+
 function initCurrentYear() {
   const yearElement = document.querySelector("#current-year");
+
   if (yearElement) {
     yearElement.textContent = new Date().getFullYear();
   }
 }
 
+
+/* =========================================================
+  ACTIVE NAVIGATION LINK
+========================================================= */
+
 function initActiveNavLink() {
   const navLinks = document.querySelectorAll("[data-nav-link]");
+
   if (!navLinks.length) return;
 
   const currentPath = window.location.pathname;
@@ -97,11 +128,17 @@ function initActiveNavLink() {
   });
 }
 
+
+/* =========================================================
+  GLOBAL SITE INITIALIZATION
+========================================================= */
+
 function initSiteScripts() {
   initSiteNavigation();
   initCurrentYear();
   initActiveNavLink();
 }
+
 
 /* =========================================================
   PARTIALS SUPPORT
@@ -109,8 +146,9 @@ function initSiteScripts() {
 
 document.addEventListener("partialsLoaded", initSiteScripts);
 
+
 /* =========================================================
-  FALLBACK (no partials)
+  FALLBACK FOR PAGES WITHOUT PARTIALS
 ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -121,66 +159,94 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 /* =========================================================
-  HOMEPAGE GALLERY CAROUSEL
+  HOMEPAGE MODERN GALLERY
 ========================================================= */
 
-function initGalleryCarousel() {
-  const carousel = document.querySelector("[data-gallery-carousel]");
+function initGalleryStage() {
+  const gallery = document.querySelector("[data-gallery-stage]");
 
-  if (!carousel) return;
-  if (carousel.dataset.carouselInitialized === "true") return;
+  if (!gallery) return;
 
-  carousel.dataset.carouselInitialized = "true";
+  // Prevent duplicate initialization
+  if (gallery.dataset.galleryInitialized === "true") return;
 
-  const track = carousel.querySelector("[data-gallery-track]");
-  const slides = Array.from(carousel.querySelectorAll("[data-gallery-slide]"));
-  const prevButton = carousel.querySelector("[data-gallery-prev]");
-  const nextButton = carousel.querySelector("[data-gallery-next]");
-  const dotsContainer = carousel.querySelector("[data-gallery-dots]");
+  const slides = Array.from(
+    gallery.querySelectorAll("[data-gallery-slide]")
+  );
 
-  if (!track || !slides.length || !prevButton || !nextButton || !dotsContainer) {
+  const prevButton = gallery.querySelector("[data-gallery-prev]");
+  const nextButton = gallery.querySelector("[data-gallery-next]");
+  const thumbsContainer = gallery.querySelector("[data-gallery-thumbs]");
+
+  if (
+    slides.length === 0 ||
+    !prevButton ||
+    !nextButton ||
+    !thumbsContainer
+  ) {
     return;
   }
 
+  gallery.dataset.galleryInitialized = "true";
+
   let currentIndex = 0;
+  let autoplayTimer = null;
   let touchStartX = 0;
   let touchEndX = 0;
 
-  const dots = slides.map((_, index) => {
-    const dot = document.createElement("button");
+  const autoplayDelay = 5500;
 
-    dot.className = "gallery-carousel__dot";
-    dot.type = "button";
-    dot.setAttribute("aria-label", `Show gallery photo ${index + 1}`);
+  const prefersReducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)"
+  ).matches;
 
-    dot.addEventListener("click", () => {
-      goToSlide(index);
+
+  /* ---------------------------------------------------------
+    CREATE THUMBNAILS
+  --------------------------------------------------------- */
+
+  thumbsContainer.innerHTML = "";
+
+  const thumbnails = slides.map((slide, index) => {
+    const sourceImage = slide.querySelector("img");
+
+    const thumb = document.createElement("button");
+
+    thumb.type = "button";
+    thumb.className = "gallery-thumb";
+
+    thumb.setAttribute(
+      "aria-label",
+      `Show gallery image ${index + 1}`
+    );
+
+    if (sourceImage) {
+      const image = document.createElement("img");
+
+      image.src = sourceImage.src;
+      image.alt = "";
+
+      image.setAttribute("aria-hidden", "true");
+
+      thumb.appendChild(image);
+    }
+
+    thumb.addEventListener("click", () => {
+      showSlide(index);
+      restartAutoplay();
     });
 
-    dotsContainer.appendChild(dot);
+    thumbsContainer.appendChild(thumb);
 
-    return dot;
+    return thumb;
   });
 
-  function updateCarousel() {
-    track.style.transform = `translateX(-${currentIndex * 100}%)`;
 
-    slides.forEach((slide, index) => {
-      const isActive = index === currentIndex;
+  /* ---------------------------------------------------------
+    SHOW SELECTED SLIDE
+  --------------------------------------------------------- */
 
-      slide.classList.toggle("gallery-card--active", isActive);
-      slide.setAttribute("aria-hidden", isActive ? "false" : "true");
-    });
-
-    dots.forEach((dot, index) => {
-      const isActive = index === currentIndex;
-
-      dot.classList.toggle("is-active", isActive);
-      dot.setAttribute("aria-current", isActive ? "true" : "false");
-    });
-  }
-
-  function goToSlide(index) {
+  function showSlide(index) {
     if (index < 0) {
       currentIndex = slides.length - 1;
     } else if (index >= slides.length) {
@@ -189,62 +255,228 @@ function initGalleryCarousel() {
       currentIndex = index;
     }
 
-    updateCarousel();
+    slides.forEach((slide, slideIndex) => {
+      const isActive = slideIndex === currentIndex;
+
+      slide.classList.toggle("is-active", isActive);
+
+      slide.setAttribute(
+        "aria-hidden",
+        isActive ? "false" : "true"
+      );
+    });
+
+    thumbnails.forEach((thumb, thumbIndex) => {
+      const isActive = thumbIndex === currentIndex;
+
+      thumb.classList.toggle("is-active", isActive);
+
+      if (isActive) {
+        thumb.setAttribute("aria-current", "true");
+      } else {
+        thumb.removeAttribute("aria-current");
+      }
+    });
+
+    // Keep active thumbnail visible on smaller screens
+    const activeThumb = thumbnails[currentIndex];
+
+    if (activeThumb) {
+      activeThumb.scrollIntoView({
+        behavior: prefersReducedMotion ? "auto" : "smooth",
+        block: "nearest",
+        inline: "nearest"
+      });
+    }
   }
 
-  prevButton.addEventListener("click", () => {
-    goToSlide(currentIndex - 1);
+
+  /* ---------------------------------------------------------
+    NEXT / PREVIOUS
+  --------------------------------------------------------- */
+
+  function nextSlide() {
+    showSlide(currentIndex + 1);
+  }
+
+  function previousSlide() {
+    showSlide(currentIndex - 1);
+  }
+
+
+  /* ---------------------------------------------------------
+    AUTOPLAY
+  --------------------------------------------------------- */
+
+  function stopAutoplay() {
+    if (autoplayTimer !== null) {
+      window.clearInterval(autoplayTimer);
+      autoplayTimer = null;
+    }
+  }
+
+  function startAutoplay() {
+    if (prefersReducedMotion) return;
+    if (slides.length <= 1) return;
+
+    stopAutoplay();
+
+    autoplayTimer = window.setInterval(() => {
+      nextSlide();
+    }, autoplayDelay);
+  }
+
+  function restartAutoplay() {
+    stopAutoplay();
+    startAutoplay();
+  }
+
+
+  /* ---------------------------------------------------------
+    ARROW BUTTONS
+  --------------------------------------------------------- */
+
+  prevButton.addEventListener("click", (event) => {
+    event.preventDefault();
+
+    previousSlide();
+    restartAutoplay();
   });
 
-  nextButton.addEventListener("click", () => {
-    goToSlide(currentIndex + 1);
+  nextButton.addEventListener("click", (event) => {
+    event.preventDefault();
+
+    nextSlide();
+    restartAutoplay();
   });
 
-  carousel.addEventListener("keydown", (event) => {
+
+  /* ---------------------------------------------------------
+    KEYBOARD CONTROLS
+  --------------------------------------------------------- */
+
+  gallery.addEventListener("keydown", (event) => {
     if (event.key === "ArrowLeft") {
-      goToSlide(currentIndex - 1);
+      event.preventDefault();
+
+      previousSlide();
+      restartAutoplay();
     }
 
     if (event.key === "ArrowRight") {
-      goToSlide(currentIndex + 1);
+      event.preventDefault();
+
+      nextSlide();
+      restartAutoplay();
     }
   });
 
-  carousel.addEventListener(
+
+  /* ---------------------------------------------------------
+    TOUCH / SWIPE SUPPORT
+  --------------------------------------------------------- */
+
+  gallery.addEventListener(
     "touchstart",
     (event) => {
-      touchStartX = event.changedTouches[0].screenX;
+      touchStartX = event.changedTouches[0].clientX;
+
+      stopAutoplay();
     },
     { passive: true }
   );
 
-  carousel.addEventListener(
+  gallery.addEventListener(
     "touchend",
     (event) => {
-      touchEndX = event.changedTouches[0].screenX;
+      touchEndX = event.changedTouches[0].clientX;
 
-      const swipeDistance = touchEndX - touchStartX;
+      const swipeDistance =
+        touchEndX - touchStartX;
+
       const minimumSwipeDistance = 50;
 
       if (swipeDistance > minimumSwipeDistance) {
-        goToSlide(currentIndex - 1);
+        previousSlide();
+      } else if (
+        swipeDistance < -minimumSwipeDistance
+      ) {
+        nextSlide();
       }
 
-      if (swipeDistance < -minimumSwipeDistance) {
-        goToSlide(currentIndex + 1);
-      }
+      restartAutoplay();
     },
     { passive: true }
   );
 
-  updateCarousel();
+
+  /* ---------------------------------------------------------
+    PAUSE WHEN USER IS INTERACTING
+  --------------------------------------------------------- */
+
+  gallery.addEventListener(
+    "mouseenter",
+    stopAutoplay
+  );
+
+  gallery.addEventListener(
+    "mouseleave",
+    startAutoplay
+  );
+
+  gallery.addEventListener(
+    "focusin",
+    stopAutoplay
+  );
+
+  gallery.addEventListener(
+    "focusout",
+    () => {
+      window.setTimeout(() => {
+        if (!gallery.contains(document.activeElement)) {
+          startAutoplay();
+        }
+      }, 0);
+    }
+  );
+
+
+  /* ---------------------------------------------------------
+    TAB VISIBILITY
+  --------------------------------------------------------- */
+
+  document.addEventListener(
+    "visibilitychange",
+    () => {
+      if (document.hidden) {
+        stopAutoplay();
+      } else {
+        startAutoplay();
+      }
+    }
+  );
+
+
+  /* ---------------------------------------------------------
+    INITIAL STATE
+  --------------------------------------------------------- */
+
+  showSlide(0);
+
+  startAutoplay();
 }
 
-/*
-  Run carousel after partials and normal site scripts.
-*/
-document.addEventListener("partialsLoaded", initGalleryCarousel);
 
-document.addEventListener("DOMContentLoaded", () => {
-  initGalleryCarousel();
-});
+/* =========================================================
+  INITIALIZE GALLERY
+========================================================= */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  initGalleryStage
+);
+
+document.addEventListener(
+  "partialsLoaded",
+  initGalleryStage
+);
