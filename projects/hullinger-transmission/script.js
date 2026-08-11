@@ -278,16 +278,7 @@ function initGalleryStage() {
       }
     });
 
-    // Keep active thumbnail visible on smaller screens
-    const activeThumb = thumbnails[currentIndex];
-
-    if (activeThumb) {
-      activeThumb.scrollIntoView({
-        behavior: prefersReducedMotion ? "auto" : "smooth",
-        block: "nearest",
-        inline: "nearest"
-      });
-    }
+    
   }
 
 
