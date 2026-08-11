@@ -685,3 +685,119 @@
     border-radius: 22px;
   }
 }
+
+/* =========================================================
+  FINAL CTA
+========================================================= */
+
+.final-cta {
+  position: relative;
+  overflow: hidden;
+
+  padding:
+    clamp(4.75rem, 8vw, 7.5rem)
+    0
+    clamp(5.25rem, 9vw, 8rem);
+
+  color: #ffffff;
+
+  background:
+    radial-gradient(
+      circle at center right,
+      rgba(244, 123, 32, 0.34),
+      transparent 31rem
+    ),
+    linear-gradient(
+      135deg,
+      #0d0d0d 0%,
+      #241a13 100%
+    );
+}
+
+.final-cta__inner {
+  max-width: 940px;
+  margin-inline: auto;
+  padding-inline: 1rem;
+  text-align: center;
+}
+
+.final-cta .eyebrow {
+  margin-bottom: 0.9rem;
+}
+
+.final-cta h2 {
+  max-width: 850px;
+  margin:
+    0
+    auto;
+
+  color: #ffffff;
+
+  font-family: var(--font-heading);
+
+  font-size:
+    clamp(2.5rem, 5vw, 5rem);
+
+  line-height: 0.94;
+  letter-spacing: -0.045em;
+
+  text-transform: uppercase;
+}
+
+.final-cta p {
+  max-width: 720px;
+
+  margin:
+    1.35rem
+    auto
+    0;
+
+  color:
+    rgba(255, 255, 255, 0.80);
+
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+.final-cta__actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+
+  gap: 0.9rem;
+
+  margin-top: 2.35rem;
+  padding-bottom: 0.35rem;
+}
+
+
+/* =========================================================
+  FINAL CTA MOBILE
+========================================================= */
+
+@media (max-width: 760px) {
+
+  .final-cta {
+    padding:
+      4rem
+      0
+      4.75rem;
+  }
+
+  .final-cta__inner {
+    padding-inline: 1.1rem;
+  }
+
+  .final-cta__actions {
+    flex-direction: column;
+
+    gap: 0.8rem;
+
+    margin-top: 2rem;
+  }
+
+  .final-cta__actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
