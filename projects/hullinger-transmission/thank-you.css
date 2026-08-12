@@ -5,104 +5,329 @@
 .thank-you-page {
   position: relative;
   overflow: hidden;
+
   min-height: 72vh;
+
   display: grid;
   place-items: center;
-  padding: clamp(4rem, 8vw, 8rem) 0;
+
+  padding:
+    clamp(4rem, 8vw, 8rem)
+    0;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.97),
+      rgba(255, 249, 241, 0.93)
+    );
 }
+
+
+/* =========================================================
+  BACKGROUND GLOWS
+========================================================= */
 
 .thank-you-page::before {
   content: "";
+
   position: absolute;
   top: 4rem;
   right: -14rem;
+
   width: 36rem;
   height: 36rem;
-  background: radial-gradient(circle, rgba(244, 123, 32, 0.18), transparent 68%);
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(244, 123, 32, 0.18),
+      transparent 68%
+    );
+
   border-radius: 999px;
+
   pointer-events: none;
+
   filter: blur(6px);
   opacity: 0.9;
 }
 
 .thank-you-page::after {
   content: "";
+
   position: absolute;
   left: -16rem;
   bottom: -18rem;
+
   width: 38rem;
   height: 38rem;
-  background: radial-gradient(circle, rgba(0, 0, 0, 0.08), transparent 68%);
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(0, 0, 0, 0.08),
+      transparent 68%
+    );
+
   border-radius: 999px;
+
   pointer-events: none;
+
   filter: blur(8px);
   opacity: 0.6;
 }
 
+
+/* =========================================================
+  THANK YOU CARD
+========================================================= */
+
 .thank-you-card {
   position: relative;
+  z-index: 1;
+
   max-width: 920px;
   margin: 0 auto;
-  padding: clamp(1.5rem, 4vw, 3rem);
+
+  padding:
+    clamp(1.75rem, 4vw, 3.25rem);
+
   text-align: center;
-  background: rgba(255, 255, 255, 0.86);
+
+  background:
+    rgba(255, 255, 255, 0.9);
+
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
+
   box-shadow: var(--shadow-lg);
+
   backdrop-filter: blur(18px);
+
+  animation:
+    thankYouFade
+    500ms
+    ease
+    forwards;
+
+  opacity: 0;
+  transform: translateY(12px);
 }
+
+
+/* =========================================================
+  SUCCESS ICON
+========================================================= */
+
+.thank-you-icon {
+  display: grid;
+  place-items: center;
+
+  width: 72px;
+  height: 72px;
+
+  margin:
+    0
+    auto
+    1.4rem;
+
+  color: #111111;
+
+  background:
+    linear-gradient(
+      135deg,
+      #ffb66f,
+      var(--accent)
+    );
+
+  border-radius: 22px;
+
+  box-shadow:
+    0 18px 42px rgba(244, 123, 32, 0.25);
+
+  font-family: var(--font-heading);
+
+  font-size: 2.2rem;
+  font-weight: 700;
+}
+
+
+/* =========================================================
+  HEADLINE
+========================================================= */
 
 .thank-you-card h1 {
   margin: 0;
+
+  color: #171717;
+
   font-family: var(--font-heading);
-  font-size: clamp(3rem, 9vw, 6rem);
+
+  font-size:
+    clamp(3rem, 9vw, 6rem);
+
   line-height: 0.88;
   letter-spacing: -0.06em;
+
   text-transform: uppercase;
 }
 
-.thank-you-card p:not(.eyebrow) {
+
+/* =========================================================
+  LEAD
+========================================================= */
+
+.thank-you-lead {
   max-width: 680px;
-  margin: 1.25rem auto 0;
+
+  margin:
+    1.25rem
+    auto
+    0;
+
   color: var(--text-soft);
-  font-size: clamp(1rem, 2vw, 1.2rem);
+
+  font-size:
+    clamp(1rem, 2vw, 1.2rem);
+
   line-height: 1.7;
 }
+
+
+/* =========================================================
+  NEXT STEP BOX
+========================================================= */
+
+.thank-you-next {
+  max-width: 700px;
+
+  margin:
+    1.8rem
+    auto
+    0;
+
+  padding: 1.15rem;
+
+  text-align: left;
+
+  background:
+    linear-gradient(
+      145deg,
+      #fffaf3,
+      #ffffff
+    );
+
+  border:
+    1px solid
+    rgba(244, 123, 32, 0.18);
+
+  border-radius: 20px;
+}
+
+.thank-you-next strong {
+  display: block;
+
+  color: #171717;
+
+  font-family: var(--font-heading);
+
+  font-size: 1.2rem;
+
+  line-height: 1;
+
+  text-transform: uppercase;
+}
+
+.thank-you-next p {
+  margin:
+    0.65rem
+    0
+    0;
+
+  color: var(--text-soft);
+
+  line-height: 1.6;
+}
+
+
+/* =========================================================
+  ACTIONS
+========================================================= */
 
 .thank-you-actions {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+
   gap: 0.85rem;
+
   margin-top: 2rem;
 }
 
+
+/* =========================================================
+  MOBILE
+========================================================= */
+
 @media (max-width: 680px) {
+
   .thank-you-page {
     min-height: 68vh;
-    padding: 3.5rem 0;
+
+    padding:
+      3.5rem
+      0;
   }
 
   .thank-you-card {
+    padding:
+      1.5rem
+      1.15rem;
+
     border-radius: 24px;
   }
 
+  .thank-you-icon {
+    width: 64px;
+    height: 64px;
+
+    border-radius: 20px;
+
+    font-size: 2rem;
+  }
+
   .thank-you-card h1 {
-    font-size: clamp(3rem, 14vw, 4.6rem);
+    font-size:
+      clamp(3rem, 14vw, 4.6rem);
+  }
+
+  .thank-you-next {
+    padding: 1rem;
+
+    text-align: left;
+
+    border-radius: 18px;
   }
 
   .thank-you-actions {
     flex-direction: column;
   }
+
+  .thank-you-actions .btn {
+    width: 100%;
+
+    justify-content: center;
+  }
 }
 
-.thank-you-card {
-  animation: thankYouFade 500ms ease forwards;
-  opacity: 0;
-  transform: translateY(12px);
-}
+
+/* =========================================================
+  ENTRY ANIMATION
+========================================================= */
 
 @keyframes thankYouFade {
+
   to {
     opacity: 1;
     transform: translateY(0);

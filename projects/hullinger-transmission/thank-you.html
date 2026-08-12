@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <!-- =========================================================
-    CORE META
-  ========================================================== -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -11,7 +9,7 @@
 
   <meta
     name="description"
-    content="Thank you for contacting Integrity Transmission & Drivetrain. Your transmission or drivetrain quote request has been received."
+    content="Your quote request has been received by Integrity Transmission & Drivetrain."
   >
 
   <meta name="robots" content="noindex, follow">
@@ -19,120 +17,113 @@
   <meta name="theme-color" content="#f47b20">
   <meta name="format-detection" content="telephone=yes">
 
-  <link rel="canonical" href="https://integritydrivetrain.com/thank-you.html">
+  <link
+    rel="canonical"
+    href="https://integritydrivetrain.com/thank-you.html"
+  >
 
-  <!-- Icons -->
   <link rel="icon" href="images/favicon.ico">
   <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-/>
 
-  <!-- Fonts -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  >
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Oswald:wght@500;600;700&display=swap"
     rel="stylesheet"
   >
 
-  <!-- CSS -->
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="thank-you.css">
-
-  <style>
-    .thank-you-page {
-      position: relative;
-      overflow: hidden;
-      min-height: 72vh;
-      display: grid;
-      place-items: center;
-      padding: clamp(4rem, 8vw, 8rem) 0;
-    }
-
-    .thank-you-page::before {
-      content: "";
-      position: absolute;
-      top: 4rem;
-      right: -14rem;
-      width: 36rem;
-      height: 36rem;
-      background: radial-gradient(circle, rgba(244, 123, 32, 0.18), transparent 68%);
-      border-radius: 999px;
-      pointer-events: none;
-    }
-
-    .thank-you-card {
-      position: relative;
-      max-width: 920px;
-      padding: clamp(1.5rem, 4vw, 3rem);
-      text-align: center;
-      background: rgba(255, 255, 255, 0.86);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      box-shadow: var(--shadow-lg);
-    }
-
-    .thank-you-card h1 {
-      margin: 0;
-      font-family: var(--font-heading);
-      font-size: clamp(3rem, 9vw, 6rem);
-      line-height: 0.88;
-      letter-spacing: -0.06em;
-      text-transform: uppercase;
-    }
-
-    .thank-you-card p {
-      max-width: 680px;
-      margin: 1.25rem auto 0;
-      color: var(--text-soft);
-      font-size: clamp(1rem, 2vw, 1.2rem);
-      line-height: 1.7;
-    }
-
-    .thank-you-actions {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 0.85rem;
-      margin-top: 2rem;
-    }
-
-    @media (max-width: 680px) {
-      .thank-you-actions {
-        flex-direction: column;
-      }
-    }
-  </style>
 </head>
 
 <body>
+
   <div data-include="partials/header.html"></div>
 
   <main id="main-content">
+
     <section class="thank-you-page">
+
       <div class="container">
+
         <div class="thank-you-card">
-          <p class="eyebrow">Quote Request Received</p>
 
-          <h1>Thank you. We got your request.</h1>
+          <div class="thank-you-icon" aria-hidden="true">
+            ✓
+          </div>
 
-          <p>
-            Your quote request has been submitted. If the job is urgent or you want the fastest response, text the shop with your name, vehicle, and any photos or videos that help explain the issue.
+          <p class="eyebrow">
+            Quote Request Received
           </p>
 
-          <div class="thank-you-actions">
-            <a href="sms:14178153315" class="btn btn-primary">Text the Shop</a>
-            <a href="index.html" class="btn btn-secondary">Back to Home</a>
-            <a href="services.html" class="btn btn-secondary">View Services</a>
+          <h1>
+            We got it.
+          </h1>
+
+          <p class="thank-you-lead">
+            Thanks for reaching out. Your quote request has been submitted to
+            Integrity Transmission & Drivetrain and we'll review the vehicle
+            information you sent.
+          </p>
+
+          <div class="thank-you-next">
+
+            <strong>
+              Have something else that may help?
+            </strong>
+
+            <p>
+              If you forgot the VIN, have photos or videos, or want to add
+              anything to your request, text it to us with your name so we can
+              match it to your quote.
+            </p>
+
           </div>
+
+          <div class="thank-you-actions">
+
+            <a
+              href="sms:14178153315"
+              class="btn btn-primary"
+            >
+              Text Additional Details
+            </a>
+
+            <a
+              href="transmissions.html"
+              class="btn btn-secondary"
+            >
+              Explore Transmissions
+            </a>
+
+            <a
+              href="index.html"
+              class="btn btn-secondary"
+            >
+              Back To Home
+            </a>
+
+          </div>
+
         </div>
+
       </div>
+
     </section>
+
   </main>
 
   <div data-include="partials/footer.html"></div>
 
   <script src="js/partials.js" defer></script>
   <script src="script.js" defer></script>
+
 </body>
+
 </html>
