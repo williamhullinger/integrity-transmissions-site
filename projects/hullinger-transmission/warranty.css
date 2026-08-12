@@ -2,6 +2,7 @@
   WARRANTY PAGE
 ========================================================= */
 
+
 /* =========================================================
   HERO
 ========================================================= */
@@ -10,48 +11,33 @@
   position: relative;
   overflow: hidden;
   padding: clamp(4.5rem, 8vw, 8rem) 0;
-}
-
-.warranty-hero__visual-layer {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.warranty-hero__glow {
-  position: absolute;
-  border-radius: 999px;
-  filter: blur(2px);
-}
-
-.warranty-hero__glow--orange {
-  top: 6rem;
-  right: -12rem;
-  width: 34rem;
-  height: 34rem;
-  background: radial-gradient(circle, rgba(244, 123, 32, 0.18), transparent 68%);
-}
-
-.warranty-hero__glow--dark {
-  left: -16rem;
-  bottom: -18rem;
-  width: 38rem;
-  height: 38rem;
-  background: radial-gradient(circle, rgba(0, 0, 0, 0.08), transparent 68%);
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(244, 123, 32, 0.13),
+      transparent 30rem
+    ),
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.97),
+      rgba(255, 249, 241, 0.93)
+    );
 }
 
 .warranty-hero__grid {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(330px, 0.72fr);
+  grid-template-columns:
+    minmax(0, 1.05fr)
+    minmax(330px, 0.72fr);
   gap: clamp(2rem, 5vw, 5rem);
   align-items: center;
 }
 
 .warranty-hero h1 {
-  max-width: 920px;
+  max-width: 930px;
   margin: 0;
+  color: #171717;
   font-family: var(--font-heading);
   font-size: clamp(3rem, 7.2vw, 6.7rem);
   line-height: 0.88;
@@ -60,7 +46,7 @@
 }
 
 .warranty-hero__lead {
-  max-width: 730px;
+  max-width: 740px;
   margin: 1.5rem 0 0;
   color: var(--text-soft);
   font-size: clamp(1.05rem, 2vw, 1.25rem);
@@ -74,318 +60,186 @@
   margin-top: 2rem;
 }
 
-.warranty-hero__badges {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.65rem;
-  margin-top: 2rem;
-}
-
-.warranty-hero__badges span {
-  display: inline-flex;
-  align-items: center;
-  min-height: 38px;
-  padding: 0.55rem 0.85rem;
-  color: var(--text-soft);
-  background: rgba(255, 255, 255, 0.72);
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  box-shadow: var(--shadow-xs);
-  font-size: 0.82rem;
-  font-weight: 900;
-}
 
 /* =========================================================
-  HERO CARD
+  HERO WARRANTY CARD
 ========================================================= */
 
-.warranty-hero-card {
+.warranty-hero__card {
   position: relative;
   overflow: hidden;
-  padding: clamp(1.45rem, 3vw, 2.25rem);
-  color: var(--text-light);
+  padding: clamp(1.5rem, 3vw, 2.3rem);
+  color: #ffffff;
   background:
-    radial-gradient(circle at top right, rgba(244, 123, 32, 0.38), transparent 18rem),
-    linear-gradient(145deg, #151515, #2b2119);
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-lg);
+    radial-gradient(
+      circle at top right,
+      rgba(244, 123, 32, 0.42),
+      transparent 20rem
+    ),
+    linear-gradient(
+      145deg,
+      #121212,
+      #2b2119
+    );
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 32px;
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.28);
 }
 
-.warranty-hero-card::before {
-  content: "";
-  position: absolute;
-  inset: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.075);
-  border-radius: calc(var(--radius-xl) - 0.75rem);
-  pointer-events: none;
+.warranty-hero__card .eyebrow {
+  color: rgba(255, 255, 255, 0.7);
 }
 
-.warranty-hero-card__status {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  margin-bottom: 1.25rem;
-}
-
-.warranty-hero-card__status span {
-  width: 10px;
-  height: 10px;
-  background: var(--accent);
-  border-radius: 999px;
-  box-shadow: 0 0 0 8px rgba(244, 123, 32, 0.15);
-}
-
-.warranty-hero-card__status p {
-  margin: 0;
-  color: var(--text-light-soft);
-  font-size: 0.78rem;
-  font-weight: 900;
-  letter-spacing: 0.11em;
-  text-transform: uppercase;
-}
-
-.warranty-hero-card h2 {
-  position: relative;
-  margin: 0;
-  font-family: var(--font-heading);
-  font-size: clamp(1.9rem, 4vw, 3rem);
-  line-height: 0.95;
-  letter-spacing: -0.035em;
-  text-transform: uppercase;
-}
-
-.warranty-hero-card p {
-  position: relative;
-  color: var(--text-light-soft);
-}
-
-.warranty-hero-card__steps {
-  position: relative;
+.warranty-hero__stat {
   display: grid;
-  gap: 0.75rem;
-  margin-top: 1.5rem;
+  gap: 0.35rem;
+  margin-top: 1rem;
+  padding: 1.1rem;
+  background:
+    rgba(255, 255, 255, 0.075);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
 }
 
-.warranty-hero-card__steps div {
-  padding: 1rem;
-  background: rgba(255, 255, 255, 0.075);
-  border: 1px solid var(--border-light);
-  border-radius: 18px;
-}
-
-.warranty-hero-card__steps strong {
-  display: block;
+.warranty-hero__stat strong {
   color: #ffffff;
   font-family: var(--font-heading);
-  font-size: 1.2rem;
+  font-size: clamp(1.65rem, 3vw, 2.35rem);
   line-height: 1;
   text-transform: uppercase;
 }
 
-.warranty-hero-card__steps span {
-  display: block;
-  margin-top: 0.35rem;
-  color: var(--text-light-soft);
-  font-size: 0.88rem;
+.warranty-hero__stat span {
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.45;
 }
+
+.warranty-hero__stat--featured {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(244, 123, 32, 0.28),
+      rgba(244, 123, 32, 0.1)
+    );
+  border-color:
+    rgba(244, 123, 32, 0.45);
+}
+
 
 /* =========================================================
-  SUMMARY STRIP
+  WARRANTY OVERVIEW
 ========================================================= */
 
-.warranty-summary {
-  position: relative;
-  z-index: 2;
-}
-
-.warranty-summary__inner {
-  display: grid;
-  grid-template-columns: minmax(240px, 0.62fr) minmax(0, 1fr) auto;
-  gap: 1.5rem;
-  align-items: center;
-  padding: 1.45rem;
-  color: #111111;
+.warranty-overview {
   background:
-    linear-gradient(135deg, #ffb66f 0%, var(--accent) 100%);
-  border: 1px solid rgba(17, 17, 17, 0.08);
-  border-radius: var(--radius-lg);
-  box-shadow: 0 26px 70px rgba(244, 123, 32, 0.28);
+    linear-gradient(
+      180deg,
+      #fffaf3,
+      #f3e8da
+    );
 }
 
-.eyebrow--dark {
-  color: rgba(17, 17, 17, 0.68);
-}
-
-.warranty-summary h2 {
-  margin: 0;
-  font-family: var(--font-heading);
-  font-size: clamp(1.6rem, 3vw, 2.35rem);
-  line-height: 0.96;
-  letter-spacing: -0.035em;
-  text-transform: uppercase;
-}
-
-.warranty-summary p {
-  margin: 0;
-  color: rgba(17, 17, 17, 0.76);
-  font-weight: 750;
-}
-
-/* =========================================================
-  COVERAGE
-========================================================= */
-
-.coverage-section {
-  margin-top: clamp(2rem, 4vw, 4rem);
-}
-
-.coverage-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0.95rem;
-  margin-top: 2rem;
-}
-
-.coverage-card {
-  min-height: 280px;
-  padding: 1.4rem;
-  background: #ffffff;
-  border: 1px solid var(--border);
-  border-radius: 28px;
-  box-shadow: var(--shadow-sm);
-}
-
-.coverage-card--featured {
-  color: var(--text-light);
-  background:
-    radial-gradient(circle at top right, rgba(244, 123, 32, 0.36), transparent 18rem),
-    linear-gradient(145deg, #151515, #2a211a);
-  border-color: var(--border-light);
-}
-
-.coverage-card span {
-  display: grid;
-  place-items: center;
-  width: 48px;
-  height: 48px;
-  margin-bottom: 1.25rem;
-  color: #111111;
-  background: var(--accent);
-  border-radius: 16px;
-  font-family: var(--font-heading);
-  font-weight: 700;
-}
-
-.coverage-card h3 {
-  margin: 0;
-  font-family: var(--font-heading);
-  font-size: 1.55rem;
-  line-height: 0.98;
-  letter-spacing: -0.025em;
-  text-transform: uppercase;
-}
-
-.coverage-card p {
-  margin: 1rem 0 0;
-  color: var(--text-soft);
-}
-
-.coverage-card--featured p {
-  color: var(--text-light-soft);
-}
-
-/* =========================================================
-  WARRANTY LEVELS
-========================================================= */
-
-.warranty-levels-section {
-  background:
-    linear-gradient(180deg, rgba(255, 250, 242, 0.35), rgba(238, 227, 210, 0.72));
-}
-
-.warranty-level-grid {
+.warranty-options {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
-  margin-top: 2rem;
+  margin-top: 2.25rem;
   align-items: stretch;
 }
 
-.warranty-level-card {
+.warranty-option {
   position: relative;
   display: flex;
   flex-direction: column;
   min-height: 100%;
-  padding: 1.45rem;
-  background: rgba(255, 255, 255, 0.82);
+  padding: 1.55rem;
+  background:
+    linear-gradient(
+      145deg,
+      #ffffff,
+      #fbf8f4
+    );
   border: 1px solid var(--border);
   border-radius: 30px;
   box-shadow: var(--shadow-sm);
-  backdrop-filter: blur(18px);
 }
 
-.warranty-level-card--featured {
-  color: var(--text-light);
+.warranty-option--featured {
+  color: #ffffff;
   background:
-    radial-gradient(circle at top right, rgba(244, 123, 32, 0.36), transparent 20rem),
-    linear-gradient(145deg, #151515, #2a211a);
-  border-color: var(--border-light);
+    radial-gradient(
+      circle at top right,
+      rgba(244, 123, 32, 0.4),
+      transparent 20rem
+    ),
+    linear-gradient(
+      145deg,
+      #151515,
+      #2a211a
+    );
+  border-color:
+    rgba(244, 123, 32, 0.34);
   box-shadow: var(--shadow-lg);
 }
 
-.warranty-level-card__ribbon {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  padding: 0.45rem 0.7rem;
+.warranty-option__top {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.warranty-option__label {
+  display: inline-flex;
+  width: fit-content;
+  padding: 0.45rem 0.72rem;
   color: #111111;
-  background: var(--accent);
+  background: #ffddbf;
   border-radius: 999px;
   font-size: 0.72rem;
   font-weight: 900;
-  letter-spacing: 0.07em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
-.warranty-level-card__header {
-  padding-right: 3.5rem;
+.warranty-option--featured .warranty-option__label {
+  background: var(--accent);
 }
 
-.warranty-level-card__header p {
-  margin: 0 0 0.45rem;
+.warranty-option h3 {
+  margin: 0;
+  color: #171717;
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  line-height: 0.92;
+  text-transform: uppercase;
+}
+
+.warranty-option--featured h3 {
+  color: #ffffff;
+}
+
+.warranty-option__term {
+  display: block;
   color: var(--accent-dark);
-  font-size: 0.75rem;
-  font-weight: 900;
-  letter-spacing: 0.12em;
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
   text-transform: uppercase;
 }
 
-.warranty-level-card--featured .warranty-level-card__header p {
+.warranty-option--featured .warranty-option__term {
   color: var(--accent);
 }
 
-.warranty-level-card h3 {
-  margin: 0;
-  font-family: var(--font-heading);
-  font-size: clamp(2.3rem, 4vw, 3.7rem);
-  line-height: 0.9;
-  letter-spacing: -0.045em;
-  text-transform: uppercase;
-}
-
-.warranty-level-card > p {
-  margin: 1rem 0 1.25rem;
+.warranty-option > p {
   color: var(--text-soft);
-  font-weight: 650;
+  line-height: 1.62;
 }
 
-.warranty-level-card--featured > p {
+.warranty-option--featured > p {
   color: var(--text-light-soft);
 }
 
-.warranty-level-card ul {
+.warranty-option ul {
   display: grid;
   gap: 0.65rem;
   margin: 0;
@@ -393,339 +247,504 @@
   list-style: none;
 }
 
-.warranty-level-card li {
+.warranty-option li {
   position: relative;
   padding-left: 1.35rem;
   color: var(--text-soft);
   font-weight: 750;
+  line-height: 1.45;
 }
 
-.warranty-level-card li::before {
-  content: "";
+.warranty-option li::before {
+  content: "✓";
   position: absolute;
-  top: 0.66em;
   left: 0;
-  width: 8px;
-  height: 8px;
-  background: var(--accent);
-  border-radius: 999px;
+  color: var(--accent);
+  font-weight: 900;
 }
 
-.warranty-level-card--featured li {
+.warranty-option--featured li {
   color: var(--text-light-soft);
 }
 
-/* =========================================================
-  CLAIM PROCESS
-========================================================= */
-
-.claim-section {
-  color: var(--text-light);
-  background:
-    radial-gradient(circle at center right, rgba(244, 123, 32, 0.22), transparent 28rem),
-    linear-gradient(135deg, #151515, #261e17);
+.warranty-option__notice,
+.warranty-option__highlight {
+  margin-top: auto;
+  padding-top: 1.2rem;
 }
 
-.claim-layout {
+.warranty-option__notice {
+  margin-top: 1.4rem;
+  padding: 1rem;
+  color: var(--text-soft);
+  background:
+    rgba(244, 123, 32, 0.08);
+  border: 1px solid
+    rgba(244, 123, 32, 0.18);
+  border-radius: 18px;
+  line-height: 1.5;
+}
+
+.warranty-option__notice strong {
+  color: #171717;
+}
+
+.warranty-option__highlight {
+  margin-top: 1.4rem;
+  padding: 1rem;
+  background:
+    rgba(255, 255, 255, 0.08);
+  border: 1px solid
+    rgba(255, 255, 255, 0.14);
+  border-radius: 20px;
+}
+
+.warranty-option__highlight span {
+  display: block;
+  color: var(--accent);
+  font-size: 0.8rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.warranty-option__highlight strong {
+  display: block;
+  margin-top: 0.35rem;
+  color: #ffffff;
+  font-family: var(--font-heading);
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  line-height: 1;
+}
+
+.warranty-option__highlight p {
+  margin: 0.6rem 0 0;
+  color: var(--text-light-soft);
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+  NATIONWIDE COVERAGE
+========================================================= */
+
+.nationwide-section {
+  color: #ffffff;
+  background:
+    radial-gradient(
+      circle at center right,
+      rgba(244, 123, 32, 0.25),
+      transparent 30rem
+    ),
+    linear-gradient(
+      135deg,
+      #101010,
+      #251b14
+    );
+}
+
+.nationwide-layout {
   display: grid;
-  grid-template-columns: minmax(0, 0.7fr) minmax(320px, 0.85fr);
+  grid-template-columns:
+    minmax(0, 0.72fr)
+    minmax(330px, 0.82fr);
   gap: clamp(2rem, 5vw, 4rem);
   align-items: center;
 }
 
-.claim-copy h2 {
+.nationwide-copy h2 {
   margin: 0;
+  color: #ffffff;
   font-family: var(--font-heading);
-  font-size: clamp(2.35rem, 5vw, 4.7rem);
+  font-size: clamp(2.4rem, 5vw, 4.8rem);
   line-height: 0.92;
   letter-spacing: -0.045em;
   text-transform: uppercase;
 }
 
-.claim-copy p {
-  color: var(--text-light-soft);
-  font-size: 1.05rem;
+.nationwide-copy p {
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.68;
 }
 
-.claim-copy .btn {
-  margin-top: 1rem;
+.nationwide-card {
+  padding: 1.45rem;
+  background:
+    rgba(255, 255, 255, 0.075);
+  border: 1px solid
+    rgba(255, 255, 255, 0.12);
+  border-radius: 28px;
+  box-shadow:
+    0 22px 60px rgba(0, 0, 0, 0.22);
 }
 
-.claim-steps {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.95rem;
-}
-
-.claim-steps article {
-  padding: 1.35rem;
-  background: rgba(255, 255, 255, 0.075);
-  border: 1px solid var(--border-light);
-  border-radius: 26px;
-  box-shadow: 0 20px 55px rgba(0, 0, 0, 0.18);
-}
-
-.claim-steps span {
-  display: block;
-  color: var(--accent);
+.nationwide-card h3 {
+  margin: 0 0 1.3rem;
+  color: #ffffff;
   font-family: var(--font-heading);
-  font-size: 2.1rem;
-  line-height: 1;
-}
-
-.claim-steps h3 {
-  margin: 0.75rem 0 0;
-  font-family: var(--font-heading);
-  font-size: 1.5rem;
-  line-height: 1;
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  line-height: 0.95;
   text-transform: uppercase;
 }
 
-.claim-steps p {
-  margin: 0.75rem 0 0;
+.nationwide-step {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.85rem;
+  padding: 1rem 0;
+  border-top:
+    1px solid rgba(255, 255, 255, 0.1);
+}
+
+.nationwide-step:first-of-type {
+  border-top: 0;
+}
+
+.nationwide-step > span {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  color: #111111;
+  background: var(--accent);
+  border-radius: 14px;
+  font-family: var(--font-heading);
+  font-weight: 700;
+}
+
+.nationwide-step strong {
+  color: #ffffff;
+}
+
+.nationwide-step p {
+  margin: 0.3rem 0 0;
+  color: rgba(255, 255, 255, 0.76);
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+  WARRANTY VALUE
+========================================================= */
+
+.warranty-value-section {
+  background:
+    linear-gradient(
+      180deg,
+      #ffffff,
+      #fff8ef
+    );
+}
+
+.warranty-value-layout {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 0.72fr)
+    minmax(330px, 0.72fr);
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: center;
+}
+
+.warranty-value-layout h2 {
+  margin: 0;
+  color: #171717;
+  font-family: var(--font-heading);
+  font-size: clamp(2.4rem, 5vw, 4.8rem);
+  line-height: 0.92;
+  text-transform: uppercase;
+}
+
+.warranty-value-layout p {
+  color: var(--text-soft);
+  line-height: 1.68;
+}
+
+.warranty-value-layout .btn {
+  margin-top: 1rem;
+}
+
+.warranty-value-cards {
+  display: grid;
+  gap: 1rem;
+}
+
+.warranty-value-cards article {
+  padding: 1.45rem;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 26px;
+  box-shadow: var(--shadow-sm);
+}
+
+.warranty-value-cards article > span {
+  display: inline-flex;
+  margin-bottom: 0.75rem;
+  padding: 0.4rem 0.68rem;
+  color: #111111;
+  background: #ffddbf;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.warranty-value-cards h3 {
+  margin: 0;
+  color: #171717;
+  font-family: var(--font-heading);
+  font-size: 1.65rem;
+  text-transform: uppercase;
+}
+
+.warranty-value-cards p {
+  margin: 0.7rem 0 0;
+}
+
+.warranty-value-card--featured {
+  color: #ffffff;
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(244, 123, 32, 0.35),
+      transparent 20rem
+    ),
+    linear-gradient(
+      145deg,
+      #151515,
+      #2a211a
+    ) !important;
+  border-color:
+    rgba(255, 255, 255, 0.1) !important;
+}
+
+.warranty-value-card--featured h3 {
+  color: #ffffff;
+}
+
+.warranty-value-card--featured p {
   color: var(--text-light-soft);
 }
 
+.warranty-value-card--featured > span {
+  background: var(--accent) !important;
+}
+
+
 /* =========================================================
-  EXCLUSIONS
+  BENCH WARRANTY
 ========================================================= */
 
-.exclusions-layout {
+.bench-warranty-section {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 250, 242, 0.78),
+      rgba(238, 227, 210, 0.75)
+    );
+}
+
+.bench-warranty-layout {
   display: grid;
-  grid-template-columns: minmax(0, 0.62fr) minmax(320px, 0.9fr);
+  grid-template-columns:
+    minmax(0, 0.72fr)
+    minmax(330px, 0.58fr);
   gap: clamp(2rem, 5vw, 4rem);
   align-items: start;
 }
 
-.exclusions-copy h2 {
+.bench-warranty-layout h2 {
   margin: 0;
+  color: #171717;
   font-family: var(--font-heading);
-  font-size: clamp(2.35rem, 5vw, 4.7rem);
+  font-size: clamp(2.4rem, 5vw, 4.8rem);
   line-height: 0.92;
-  letter-spacing: -0.045em;
   text-transform: uppercase;
 }
 
-.exclusions-copy p {
+.bench-warranty-layout p {
   color: var(--text-soft);
-  font-size: 1.05rem;
+  line-height: 1.68;
 }
 
-.exclusions-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.95rem;
-}
-
-.exclusions-grid article {
-  padding: 1.35rem;
+.bench-warranty-card {
+  padding: 1.45rem;
   background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  box-shadow: var(--shadow-sm);
+}
+
+.bench-warranty-card h3 {
+  margin: 0 0 1rem;
+  color: #171717;
+  font-family: var(--font-heading);
+  font-size: 1.7rem;
+  text-transform: uppercase;
+}
+
+.bench-warranty-card ul {
+  display: grid;
+  gap: 0.65rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bench-warranty-card li {
+  position: relative;
+  padding-left: 1.4rem;
+  color: var(--text-soft);
+  font-weight: 750;
+  line-height: 1.45;
+}
+
+.bench-warranty-card li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-weight: 900;
+}
+
+.bench-warranty-card p {
+  margin: 1rem 0 0;
+}
+
+
+/* =========================================================
+  WARRANTY CONDITIONS
+========================================================= */
+
+.warranty-conditions-section {
+  background: #ffffff;
+}
+
+.warranty-condition-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.warranty-condition-grid article {
+  padding: 1.35rem;
+  background:
+    linear-gradient(
+      145deg,
+      #ffffff,
+      #fbf8f4
+    );
   border: 1px solid var(--border);
   border-radius: 26px;
   box-shadow: var(--shadow-sm);
 }
 
-.exclusions-grid h3 {
+.warranty-condition-grid h3 {
   margin: 0;
+  color: #171717;
   font-family: var(--font-heading);
-  font-size: 1.35rem;
+  font-size: 1.45rem;
   line-height: 1;
   text-transform: uppercase;
 }
 
-.exclusions-grid p {
+.warranty-condition-grid p {
   margin: 0.75rem 0 0;
   color: var(--text-soft);
+  line-height: 1.6;
 }
+
 
 /* =========================================================
-  RESPONSIBILITY
+  WARRANTY CLAIM
 ========================================================= */
 
-.responsibility-section {
-  color: var(--text-light);
+.warranty-claim-section {
+  color: #ffffff;
   background:
-    radial-gradient(circle at top left, rgba(244, 123, 32, 0.22), transparent 28rem),
-    linear-gradient(135deg, #111111, #241b14);
+    radial-gradient(
+      circle at top left,
+      rgba(244, 123, 32, 0.24),
+      transparent 28rem
+    ),
+    linear-gradient(
+      135deg,
+      #111111,
+      #251b14
+    );
 }
 
-.responsibility-layout {
+.warranty-claim-layout {
   display: grid;
-  grid-template-columns: minmax(0, 0.72fr) minmax(320px, 0.55fr);
+  grid-template-columns:
+    minmax(0, 0.72fr)
+    minmax(330px, 0.65fr);
   gap: clamp(2rem, 5vw, 4rem);
   align-items: center;
 }
 
-.responsibility-copy h2 {
+.warranty-claim-layout h2 {
   margin: 0;
+  color: #ffffff;
   font-family: var(--font-heading);
-  font-size: clamp(2.35rem, 5vw, 4.7rem);
+  font-size: clamp(2.4rem, 5vw, 4.8rem);
   line-height: 0.92;
-  letter-spacing: -0.045em;
   text-transform: uppercase;
 }
 
-.responsibility-copy p {
+.warranty-claim-layout p {
   color: var(--text-light-soft);
-  font-size: 1.05rem;
+  line-height: 1.68;
 }
 
-.responsibility-card {
-  padding: 1.45rem;
-  background: rgba(255, 255, 255, 0.075);
-  border: 1px solid var(--border-light);
-  border-radius: 28px;
-  box-shadow: 0 20px 55px rgba(0, 0, 0, 0.18);
-}
-
-.responsibility-card h3 {
-  margin: 0 0 1rem;
-  font-family: var(--font-heading);
-  font-size: 1.55rem;
-  line-height: 1;
-  text-transform: uppercase;
-}
-
-.responsibility-card ul {
-  display: grid;
-  gap: 0.65rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.responsibility-card li {
-  position: relative;
-  padding-left: 1.35rem;
-  color: var(--text-light-soft);
-  font-weight: 750;
-}
-
-.responsibility-card li::before {
-  content: "";
-  position: absolute;
-  top: 0.66em;
-  left: 0;
-  width: 8px;
-  height: 8px;
-  background: var(--accent);
-  border-radius: 999px;
-}
-
-/* =========================================================
-  REQUIREMENTS
-========================================================= */
-
-.requirements-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 0.72fr) minmax(320px, 0.55fr);
-  gap: clamp(2rem, 5vw, 4rem);
-  align-items: center;
-}
-
-.requirements-copy h2 {
-  margin: 0;
-  font-family: var(--font-heading);
-  font-size: clamp(2.35rem, 5vw, 4.7rem);
-  line-height: 0.92;
-  letter-spacing: -0.045em;
-  text-transform: uppercase;
-}
-
-.requirements-copy p {
-  color: var(--text-soft);
-  font-size: 1.05rem;
-}
-
-.requirements-card {
-  padding: 1.45rem;
-  background: #ffffff;
-  border: 1px solid var(--border);
-  border-radius: 28px;
-  box-shadow: var(--shadow-sm);
-}
-
-.requirements-card h3 {
-  margin: 0 0 1rem;
-  font-family: var(--font-heading);
-  font-size: 1.55rem;
-  line-height: 1;
-  text-transform: uppercase;
-}
-
-.requirements-card ul {
-  display: grid;
-  gap: 0.65rem;
-  margin: 0 0 1.35rem;
-  padding: 0;
-  list-style: none;
-}
-
-.requirements-card li {
-  position: relative;
-  padding-left: 1.35rem;
-  color: var(--text-soft);
-  font-weight: 750;
-}
-
-.requirements-card li::before {
-  content: "";
-  position: absolute;
-  top: 0.66em;
-  left: 0;
-  width: 8px;
-  height: 8px;
-  background: var(--accent);
-  border-radius: 999px;
-}
-
-/* =========================================================
-  LOCAL WARRANTY
-========================================================= */
-
-.local-warranty-section {
-  background:
-    linear-gradient(180deg, rgba(255, 250, 242, 0.86), rgba(255, 255, 255, 0.72));
-}
-
-.local-warranty-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 0.72fr) minmax(320px, 0.76fr);
-  gap: 2rem;
-  align-items: center;
-}
-
-.local-warranty-layout h2 {
-  margin: 0;
-  font-family: var(--font-heading);
-  font-size: clamp(2.35rem, 5vw, 4.7rem);
-  line-height: 0.92;
-  letter-spacing: -0.045em;
-  text-transform: uppercase;
-}
-
-.local-warranty-layout p {
-  color: var(--text-soft);
-  font-size: 1.05rem;
-}
-
-.local-warranty-tags {
+.warranty-claim__actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.7rem;
+  gap: 0.85rem;
+  margin-top: 1.6rem;
 }
 
-.local-warranty-tags span {
-  display: inline-flex;
-  padding: 0.72rem 0.9rem;
-  color: var(--text-soft);
-  background: #ffffff;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  box-shadow: var(--shadow-xs);
-  font-size: 0.84rem;
+.warranty-claim-card {
+  padding: 1.45rem;
+  background:
+    rgba(255, 255, 255, 0.075);
+  border: 1px solid
+    rgba(255, 255, 255, 0.12);
+  border-radius: 28px;
+  box-shadow:
+    0 20px 55px rgba(0, 0, 0, 0.2);
+}
+
+.warranty-claim-card h3 {
+  margin: 0 0 1rem;
+  color: #ffffff;
+  font-family: var(--font-heading);
+  font-size: 1.7rem;
+  text-transform: uppercase;
+}
+
+.warranty-claim-card ol {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding-left: 1.4rem;
+}
+
+.warranty-claim-card li {
+  color: var(--text-light-soft);
+  font-weight: 750;
+  line-height: 1.45;
+}
+
+.warranty-claim-card li::marker {
+  color: var(--accent);
   font-weight: 900;
 }
+
+.warranty-claim-card p {
+  margin: 1rem 0 0;
+}
+
 
 /* =========================================================
   FAQ
@@ -733,7 +752,11 @@
 
 .faq-section {
   background:
-    linear-gradient(180deg, rgba(255, 250, 242, 0.86), rgba(255, 255, 255, 0.72));
+    linear-gradient(
+      180deg,
+      rgba(255, 250, 242, 0.86),
+      rgba(255, 255, 255, 0.78)
+    );
 }
 
 .faq-grid {
@@ -743,7 +766,7 @@
   margin-top: 2rem;
 }
 
-.faq-card {
+.faq-item {
   padding: 1.35rem;
   background: #ffffff;
   border: 1px solid var(--border);
@@ -751,89 +774,180 @@
   box-shadow: var(--shadow-sm);
 }
 
-.faq-card h3 {
+.faq-item h3 {
   margin: 0;
+  color: #171717;
   font-family: var(--font-heading);
   font-size: 1.45rem;
   line-height: 1;
   text-transform: uppercase;
 }
 
-.faq-card p {
+.faq-item p {
   margin: 0.75rem 0 0;
   color: var(--text-soft);
+  line-height: 1.62;
 }
+
+
+/* =========================================================
+  FINAL CTA
+========================================================= */
+
+.final-cta {
+  position: relative;
+  overflow: hidden;
+  padding:
+    clamp(4.75rem, 8vw, 7.5rem)
+    0
+    clamp(5.25rem, 9vw, 8rem);
+  color: #ffffff;
+  background:
+    radial-gradient(
+      circle at center right,
+      rgba(244, 123, 32, 0.34),
+      transparent 31rem
+    ),
+    linear-gradient(
+      135deg,
+      #0d0d0d,
+      #241a13
+    );
+}
+
+.final-cta__inner {
+  max-width: 940px;
+  margin-inline: auto;
+  padding-inline: 1rem;
+  text-align: center;
+}
+
+.final-cta .eyebrow {
+  margin-bottom: 0.9rem;
+}
+
+.final-cta h2 {
+  max-width: 870px;
+  margin: 0 auto;
+  color: #ffffff;
+  font-family: var(--font-heading);
+  font-size: clamp(2.5rem, 5vw, 5rem);
+  line-height: 0.94;
+  letter-spacing: -0.045em;
+  text-transform: uppercase;
+}
+
+.final-cta p {
+  max-width: 760px;
+  margin: 1.35rem auto 0;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+.final-cta__actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  margin-top: 2.35rem;
+  padding-bottom: 0.35rem;
+}
+
 
 /* =========================================================
   RESPONSIVE
 ========================================================= */
 
 @media (max-width: 1080px) {
+
   .warranty-hero__grid,
-  .claim-layout,
-  .exclusions-layout,
-  .responsibility-layout,
-  .requirements-layout,
-  .local-warranty-layout {
+  .nationwide-layout,
+  .warranty-value-layout,
+  .bench-warranty-layout,
+  .warranty-claim-layout {
     grid-template-columns: 1fr;
   }
 
-  .warranty-summary__inner {
+  .warranty-options {
     grid-template-columns: 1fr;
-    text-align: center;
   }
 
-  .warranty-summary .btn {
-    justify-self: center;
-  }
-
-  .coverage-grid,
-  .exclusions-grid {
+  .warranty-condition-grid {
     grid-template-columns: repeat(2, 1fr);
-  }
-
-  .warranty-level-grid {
-    grid-template-columns: 1fr;
   }
 }
 
+
 @media (max-width: 760px) {
+
   .warranty-hero {
     padding-top: 3.75rem;
   }
 
   .warranty-hero h1 {
-    font-size: clamp(3rem, 14vw, 4.6rem);
+    font-size:
+      clamp(3rem, 14vw, 4.6rem);
   }
 
-  .warranty-hero__actions {
+  .warranty-hero__actions,
+  .warranty-claim__actions {
     flex-direction: column;
   }
 
-  .warranty-hero__badges {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .warranty-hero__badges span {
-    justify-content: center;
-  }
-
-  .coverage-grid,
-  .claim-steps,
-  .exclusions-grid,
+  .warranty-condition-grid,
   .faq-grid {
     grid-template-columns: 1fr;
   }
 
-  .warranty-hero-card,
-  .coverage-card,
-  .warranty-level-card,
-  .claim-steps article,
-  .exclusions-grid article,
-  .responsibility-card,
-  .requirements-card,
-  .faq-card {
+  .warranty-hero__card,
+  .warranty-option,
+  .nationwide-card,
+  .warranty-value-cards article,
+  .bench-warranty-card,
+  .warranty-condition-grid article,
+  .warranty-claim-card,
+  .faq-item {
     border-radius: 22px;
+  }
+
+  .final-cta {
+    padding:
+      4rem
+      0
+      4.75rem;
+  }
+
+  .final-cta__inner {
+    padding-inline: 1.1rem;
+  }
+
+  .final-cta__actions {
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-top: 2rem;
+  }
+
+  .final-cta__actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+
+@media (max-width: 520px) {
+
+  .warranty-hero h1 {
+    font-size:
+      clamp(2.8rem, 15vw, 4.2rem);
+  }
+
+  .warranty-option h3 {
+    font-size:
+      clamp(1.9rem, 10vw, 2.7rem);
+  }
+
+  .warranty-option__term {
+    font-size: 1.15rem;
   }
 }
