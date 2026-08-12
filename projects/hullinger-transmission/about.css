@@ -1,11 +1,22 @@
 /* =========================================================
-  ABOUT PAGE HERO
+  ABOUT PAGE
+========================================================= */
+
+
+/* =========================================================
+  HERO
 ========================================================= */
 
 .about-hero {
   position: relative;
   overflow: hidden;
   padding: clamp(4.5rem, 8vw, 8rem) 0;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.97),
+      rgba(255, 249, 241, 0.93)
+    );
 }
 
 .about-hero__visual-layer {
@@ -18,48 +29,62 @@
 .about-hero__glow {
   position: absolute;
   border-radius: 999px;
-  filter: blur(2px);
+  pointer-events: none;
 }
 
 .about-hero__glow--orange {
-  top: 6rem;
+  top: 5rem;
   right: -12rem;
-  width: 34rem;
-  height: 34rem;
-  background: radial-gradient(circle, rgba(244, 123, 32, 0.18), transparent 68%);
+  width: 36rem;
+  height: 36rem;
+  background:
+    radial-gradient(
+      circle,
+      rgba(244, 123, 32, 0.18),
+      transparent 68%
+    );
 }
 
 .about-hero__glow--dark {
   left: -16rem;
   bottom: -18rem;
-  width: 38rem;
-  height: 38rem;
-  background: radial-gradient(circle, rgba(0, 0, 0, 0.08), transparent 68%);
+  width: 40rem;
+  height: 40rem;
+  background:
+    radial-gradient(
+      circle,
+      rgba(20, 20, 20, 0.08),
+      transparent 68%
+    );
 }
 
 .about-hero__grid {
   position: relative;
+  z-index: 1;
   display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(330px, 0.72fr);
-  gap: clamp(2rem, 5vw, 5rem);
+  grid-template-columns:
+    minmax(0, 1.05fr)
+    minmax(340px, 0.72fr);
+  gap: clamp(2.5rem, 5vw, 5rem);
   align-items: center;
 }
 
 .about-hero h1 {
   max-width: 900px;
   margin: 0;
+  color: #171717;
   font-family: var(--font-heading);
-  font-size: clamp(3.1rem, 7.4vw, 6.8rem);
+  font-size: clamp(3.1rem, 7.2vw, 6.8rem);
   line-height: 0.88;
-  letter-spacing: -0.06em;
+  letter-spacing: -0.055em;
   text-transform: uppercase;
 }
 
 .about-hero__lead {
-  max-width: 720px;
+  max-width: 740px;
   margin: 1.5rem 0 0;
-  color: var(--text-soft);
-  font-size: clamp(1.05rem, 2vw, 1.25rem);
+  color: #3d4248;
+  font-size: clamp(1.05rem, 1.9vw, 1.25rem);
   line-height: 1.72;
 }
 
@@ -70,25 +95,39 @@
   margin-top: 2rem;
 }
 
+
+/* =========================================================
+  HERO CARD
+========================================================= */
+
 .about-hero-card {
   position: relative;
   overflow: hidden;
-  padding: clamp(1.45rem, 3vw, 2.25rem);
-  color: var(--text-light);
+  padding: clamp(1.5rem, 3vw, 2.3rem);
+  color: #ffffff;
   background:
-    radial-gradient(circle at top right, rgba(244, 123, 32, 0.38), transparent 18rem),
-    linear-gradient(145deg, #151515, #2b2119);
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-lg);
+    radial-gradient(
+      circle at top right,
+      rgba(244, 123, 32, 0.4),
+      transparent 19rem
+    ),
+    linear-gradient(
+      145deg,
+      #121212,
+      #2b2119
+    );
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 32px;
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.28);
 }
 
 .about-hero-card::before {
   content: "";
   position: absolute;
   inset: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.075);
-  border-radius: calc(var(--radius-xl) - 0.75rem);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 24px;
   pointer-events: none;
 }
 
@@ -96,89 +135,123 @@
   position: relative;
   display: grid;
   place-items: center;
-  min-height: 160px;
+  min-height: 175px;
   margin-bottom: 1.5rem;
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.045));
-  border: 1px solid var(--border-light);
+    radial-gradient(
+      circle at top right,
+      rgba(244, 123, 32, 0.2),
+      transparent 18rem
+    ),
+    linear-gradient(
+      145deg,
+      #101010,
+      #1d1814
+    );
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 26px;
+  box-shadow:
+    0 20px 55px rgba(0, 0, 0, 0.36);
 }
 
 .about-hero-card__logo img {
-  width: min(220px, 78%);
-  max-height: 130px;
+  width: min(240px, 80%);
+  max-height: 140px;
   object-fit: contain;
-  filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.35));
+  filter:
+    drop-shadow(
+      0 20px 30px rgba(0, 0, 0, 0.35)
+    );
 }
 
 .about-hero-card h2 {
   position: relative;
   margin: 0;
+  color: #ffffff;
   font-family: var(--font-heading);
-  font-size: clamp(1.9rem, 4vw, 3rem);
+  font-size: clamp(2rem, 3.8vw, 3rem);
   line-height: 0.95;
   letter-spacing: -0.035em;
   text-transform: uppercase;
 }
 
-.about-hero-card p {
+.about-hero-card > p {
   position: relative;
-  color: var(--text-light-soft);
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.65;
 }
 
 .about-hero-card__badges {
   position: relative;
   display: flex;
   flex-wrap: wrap;
-  gap: 0.55rem;
+  gap: 0.6rem;
   margin-top: 1.5rem;
 }
 
 .about-hero-card__badges span {
   display: inline-flex;
-  padding: 0.55rem 0.75rem;
+  align-items: center;
+  min-height: 38px;
+  padding: 0.55rem 0.78rem;
   color: #ffffff;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid var(--border-light);
+  background:
+    rgba(255, 255, 255, 0.08);
+  border:
+    1px solid rgba(255, 255, 255, 0.1);
   border-radius: 999px;
   font-size: 0.8rem;
   font-weight: 850;
 }
 
+
 /* =========================================================
-  STORY SECTION
+  STORY
 ========================================================= */
 
 .about-story-section {
   background:
-    linear-gradient(180deg, rgba(255, 250, 242, 0.68), rgba(255, 255, 255, 0.82));
+    linear-gradient(
+      180deg,
+      rgba(255, 250, 242, 0.72),
+      rgba(255, 255, 255, 0.9)
+    );
 }
 
 .about-story-grid {
   display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(300px, 0.48fr);
-  gap: clamp(2rem, 5vw, 4rem);
+  grid-template-columns:
+    minmax(0, 0.9fr)
+    minmax(320px, 0.48fr);
+  gap: clamp(2.5rem, 5vw, 4.5rem);
   align-items: start;
 }
 
 .about-story-copy h2,
 .difference-copy h2,
 .standards-copy h2,
-.about-local-section h2 {
+.about-model-layout h2,
+.about-warranty-layout h2,
+.about-local-section h2,
+.about-reviews-layout h2 {
   margin: 0;
+  color: #171717;
   font-family: var(--font-heading);
-  font-size: clamp(2.35rem, 5vw, 4.7rem);
+  font-size: clamp(2.4rem, 5vw, 4.8rem);
   line-height: 0.92;
   letter-spacing: -0.045em;
   text-transform: uppercase;
 }
 
 .about-story-copy p,
-.difference-copy p,
 .standards-copy p,
-.about-local-section p {
+.about-model-layout p,
+.about-warranty-layout p,
+.about-local-section p,
+.about-reviews-layout p {
   color: var(--text-soft);
   font-size: 1.05rem;
+  line-height: 1.68;
 }
 
 .about-story-panel {
@@ -193,8 +266,9 @@
 
 .about-story-panel h3 {
   margin: 0 0 1rem;
+  color: #171717;
   font-family: var(--font-heading);
-  font-size: 1.55rem;
+  font-size: 1.6rem;
   line-height: 1;
   text-transform: uppercase;
 }
@@ -212,6 +286,7 @@
   padding-left: 1.4rem;
   color: var(--text-soft);
   font-weight: 750;
+  line-height: 1.45;
 }
 
 .about-story-panel li::before {
@@ -225,14 +300,23 @@
   border-radius: 999px;
 }
 
+
 /* =========================================================
-  VALUES SECTION
+  VALUES
 ========================================================= */
 
 .values-section {
   background:
-    radial-gradient(circle at top left, rgba(244, 123, 32, 0.08), transparent 26rem),
-    linear-gradient(180deg, rgba(238, 227, 210, 0.56), rgba(255, 250, 242, 0.78));
+    radial-gradient(
+      circle at top left,
+      rgba(244, 123, 32, 0.08),
+      transparent 26rem
+    ),
+    linear-gradient(
+      180deg,
+      rgba(238, 227, 210, 0.56),
+      rgba(255, 250, 242, 0.78)
+    );
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
 }
@@ -245,23 +329,49 @@
 }
 
 .value-card {
-  min-height: 300px;
-  padding: 1.4rem;
-  background: #ffffff;
+  min-height: 310px;
+  padding: 1.45rem;
+  background:
+    linear-gradient(
+      145deg,
+      #ffffff,
+      #fbf8f4
+    );
   border: 1px solid var(--border);
   border-radius: 28px;
   box-shadow: var(--shadow-sm);
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.value-card:hover {
+  transform: translateY(-4px);
+  border-color:
+    rgba(244, 123, 32, 0.32);
+  box-shadow:
+    0 20px 50px rgba(20, 20, 20, 0.1);
 }
 
 .value-card--featured {
-  color: var(--text-light);
+  color: #ffffff;
   background:
-    radial-gradient(circle at top right, rgba(244, 123, 32, 0.36), transparent 18rem),
-    linear-gradient(145deg, #151515, #2a211a);
-  border-color: var(--border-light);
+    radial-gradient(
+      circle at top right,
+      rgba(244, 123, 32, 0.36),
+      transparent 18rem
+    ),
+    linear-gradient(
+      145deg,
+      #151515,
+      #2a211a
+    );
+  border-color:
+    rgba(255, 255, 255, 0.09);
 }
 
-.value-card span {
+.value-card > span {
   display: grid;
   place-items: center;
   width: 48px;
@@ -276,46 +386,72 @@
 
 .value-card h3 {
   margin: 0;
+  color: #171717;
   font-family: var(--font-heading);
-  font-size: 1.65rem;
+  font-size: 1.7rem;
   line-height: 0.98;
   letter-spacing: -0.025em;
   text-transform: uppercase;
 }
 
+.value-card--featured h3 {
+  color: #ffffff;
+}
+
 .value-card p {
   margin: 1rem 0 0;
   color: var(--text-soft);
+  line-height: 1.6;
 }
 
 .value-card--featured p {
   color: var(--text-light-soft);
 }
 
+
 /* =========================================================
-  DIFFERENCE SECTION
+  DIFFERENCE / HANDS-ON UNDERSTANDING
 ========================================================= */
 
 .difference-section {
-  color: var(--text-light);
+  color: #ffffff;
   background:
-    radial-gradient(circle at center right, rgba(244, 123, 32, 0.22), transparent 28rem),
-    linear-gradient(135deg, #151515, #261e17);
-}
-
-.difference-copy p {
-  color: var(--text-light-soft);
+    radial-gradient(
+      circle at center right,
+      rgba(244, 123, 32, 0.22),
+      transparent 28rem
+    ),
+    linear-gradient(
+      135deg,
+      #151515,
+      #261e17
+    );
 }
 
 .difference-layout {
   display: grid;
-  grid-template-columns: minmax(0, 0.75fr) minmax(320px, 0.72fr);
-  gap: clamp(2rem, 5vw, 4rem);
+  grid-template-columns:
+    minmax(0, 0.75fr)
+    minmax(320px, 0.72fr);
+  gap: clamp(2.5rem, 5vw, 4.5rem);
   align-items: center;
 }
 
-.difference-copy .btn {
-  margin-top: 1rem;
+.difference-copy h2 {
+  color: #ffffff;
+}
+
+.difference-copy p {
+  color: var(--text-light-soft);
+  font-size: 1.05rem;
+  line-height: 1.68;
+}
+
+.difference-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  margin-top: 1.5rem;
 }
 
 .difference-card-stack {
@@ -324,18 +460,21 @@
 }
 
 .difference-card-stack article {
-  padding: 1.35rem;
-  background: rgba(255, 255, 255, 0.075);
-  border: 1px solid var(--border-light);
+  padding: 1.4rem;
+  background:
+    rgba(255, 255, 255, 0.075);
+  border:
+    1px solid rgba(255, 255, 255, 0.1);
   border-radius: 26px;
-  box-shadow: 0 20px 55px rgba(0, 0, 0, 0.18);
+  box-shadow:
+    0 20px 55px rgba(0, 0, 0, 0.18);
 }
 
 .difference-card-stack strong {
   display: block;
   color: #ffffff;
   font-family: var(--font-heading);
-  font-size: 1.35rem;
+  font-size: 1.4rem;
   line-height: 1;
   text-transform: uppercase;
 }
@@ -344,21 +483,29 @@
   display: block;
   margin-top: 0.55rem;
   color: var(--text-light-soft);
+  line-height: 1.5;
 }
 
+
 /* =========================================================
-  STANDARDS SECTION
+  CUSTOMER EXPERIENCE / STANDARDS
 ========================================================= */
 
 .standards-section {
   background:
-    linear-gradient(180deg, rgba(255, 250, 242, 0.86), rgba(255, 255, 255, 0.72));
+    linear-gradient(
+      180deg,
+      rgba(255, 250, 242, 0.86),
+      rgba(255, 255, 255, 0.76)
+    );
 }
 
 .standards-layout {
   display: grid;
-  grid-template-columns: minmax(0, 0.62fr) minmax(320px, 0.88fr);
-  gap: clamp(2rem, 5vw, 4rem);
+  grid-template-columns:
+    minmax(0, 0.62fr)
+    minmax(340px, 0.88fr);
+  gap: clamp(2.5rem, 5vw, 4.5rem);
   align-items: center;
 }
 
@@ -369,7 +516,7 @@
 }
 
 .standards-grid article {
-  padding: 1.35rem;
+  padding: 1.4rem;
   background: #ffffff;
   border: 1px solid var(--border);
   border-radius: 26px;
@@ -378,8 +525,9 @@
 
 .standards-grid h3 {
   margin: 0;
+  color: #171717;
   font-family: var(--font-heading);
-  font-size: 1.45rem;
+  font-size: 1.5rem;
   line-height: 1;
   text-transform: uppercase;
 }
@@ -387,35 +535,192 @@
 .standards-grid p {
   margin: 0.75rem 0 0;
   color: var(--text-soft);
+  line-height: 1.58;
 }
 
+
 /* =========================================================
-  LOCAL SECTION
+  BUSINESS MODEL
+========================================================= */
+
+.about-model-section {
+  background:
+    linear-gradient(
+      180deg,
+      #fffaf3,
+      #f1e6d7
+    );
+}
+
+.about-model-layout {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 0.7fr)
+    minmax(340px, 0.82fr);
+  gap: clamp(2.5rem, 5vw, 4.5rem);
+  align-items: center;
+}
+
+.about-model-cards {
+  display: grid;
+  gap: 1rem;
+}
+
+.about-model-cards article {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 1rem;
+  row-gap: 0.25rem;
+  align-items: start;
+  padding: 1.35rem;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 26px;
+  box-shadow: var(--shadow-sm);
+}
+
+.about-model-cards article > span {
+  grid-row: 1 / span 2;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  color: #111111;
+  background: var(--accent);
+  border-radius: 15px;
+  font-family: var(--font-heading);
+  font-weight: 700;
+}
+
+.about-model-cards h3 {
+  margin: 0;
+  color: #171717;
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.about-model-cards p {
+  margin: 0.35rem 0 0;
+  color: var(--text-soft);
+  line-height: 1.55;
+}
+
+
+/* =========================================================
+  WARRANTY / TRUST
+========================================================= */
+
+.about-warranty-section {
+  color: #ffffff;
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(244, 123, 32, 0.22),
+      transparent 29rem
+    ),
+    linear-gradient(
+      135deg,
+      #101010,
+      #241b14
+    );
+}
+
+.about-warranty-layout {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 0.75fr)
+    minmax(320px, 0.58fr);
+  gap: clamp(2.5rem, 5vw, 4.5rem);
+  align-items: center;
+}
+
+.about-warranty-layout h2 {
+  color: #ffffff;
+}
+
+.about-warranty-layout p {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.about-warranty-layout .btn {
+  margin-top: 1rem;
+}
+
+.about-warranty-card {
+  padding: 1.5rem;
+  background:
+    rgba(255, 255, 255, 0.075);
+  border:
+    1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 28px;
+  box-shadow:
+    0 22px 60px rgba(0, 0, 0, 0.22);
+}
+
+.about-warranty-card > span {
+  display: inline-flex;
+  margin-bottom: 0.85rem;
+  padding: 0.45rem 0.7rem;
+  color: #111111;
+  background: var(--accent);
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.about-warranty-card h3 {
+  margin: 0;
+  color: #ffffff;
+  font-family: var(--font-heading);
+  font-size: clamp(1.9rem, 3vw, 2.6rem);
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.about-warranty-card p {
+  margin: 0.85rem 0 0;
+  color: var(--text-light-soft);
+  line-height: 1.6;
+}
+
+
+/* =========================================================
+  LOCAL
 ========================================================= */
 
 .about-local-section {
   background:
-    linear-gradient(180deg, rgba(238, 227, 210, 0.42), rgba(255, 250, 242, 0.88));
+    linear-gradient(
+      180deg,
+      rgba(238, 227, 210, 0.45),
+      rgba(255, 250, 242, 0.9)
+    );
   border-top: 1px solid var(--border);
 }
 
 .about-local-layout {
   display: grid;
-  grid-template-columns: minmax(0, 0.74fr) minmax(320px, 0.76fr);
-  gap: 2rem;
+  grid-template-columns:
+    minmax(0, 0.74fr)
+    minmax(320px, 0.76fr);
+  gap: 2.25rem;
   align-items: center;
 }
 
 .about-local-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.7rem;
+  gap: 0.72rem;
 }
 
 .about-local-tags span {
   display: inline-flex;
-  padding: 0.72rem 0.9rem;
-  color: var(--text-soft);
+  align-items: center;
+  padding: 0.74rem 0.95rem;
+  color: #353a40;
   background: #ffffff;
   border: 1px solid var(--border);
   border-radius: 999px;
@@ -424,24 +729,118 @@
   font-weight: 900;
 }
 
+
 /* =========================================================
-  FINAL CTA OVERRIDE
+  REVIEWS
+========================================================= */
+
+.about-reviews-section {
+  background:
+    linear-gradient(
+      180deg,
+      #ffffff,
+      #fff8ef
+    );
+}
+
+.about-reviews-layout {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 0.75fr)
+    auto;
+  gap: 2rem;
+  align-items: center;
+}
+
+.about-reviews-layout p {
+  margin-bottom: 0;
+}
+
+.about-reviews-action {
+  display: flex;
+  justify-content: flex-end;
+}
+
+
+/* =========================================================
+  FINAL CTA
 ========================================================= */
 
 .about-final-cta {
   margin-top: 0;
 }
 
+.final-cta {
+  position: relative;
+  overflow: hidden;
+  padding:
+    clamp(4.75rem, 8vw, 7.5rem)
+    0
+    clamp(5.25rem, 9vw, 8rem);
+  color: #ffffff;
+  background:
+    radial-gradient(
+      circle at center right,
+      rgba(244, 123, 32, 0.34),
+      transparent 31rem
+    ),
+    linear-gradient(
+      135deg,
+      #0d0d0d,
+      #241a13
+    );
+}
+
+.final-cta__inner {
+  max-width: 940px;
+  margin-inline: auto;
+  padding-inline: 1rem;
+  text-align: center;
+}
+
+.final-cta h2 {
+  max-width: 850px;
+  margin: 0 auto;
+  color: #ffffff;
+  font-family: var(--font-heading);
+  font-size: clamp(2.5rem, 5vw, 5rem);
+  line-height: 0.94;
+  letter-spacing: -0.045em;
+  text-transform: uppercase;
+}
+
+.final-cta p {
+  max-width: 720px;
+  margin: 1.35rem auto 0;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+.final-cta__actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  margin-top: 2.35rem;
+  padding-bottom: 0.35rem;
+}
+
+
 /* =========================================================
-  RESPONSIVE
+  TABLET
 ========================================================= */
 
-@media (max-width: 1040px) {
+@media (max-width: 1080px) {
+
   .about-hero__grid,
   .about-story-grid,
   .difference-layout,
   .standards-layout,
-  .about-local-layout {
+  .about-model-layout,
+  .about-warranty-layout,
+  .about-local-layout,
+  .about-reviews-layout {
     grid-template-columns: 1fr;
   }
 
@@ -452,19 +851,35 @@
   .values-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  .about-reviews-action {
+    justify-content: flex-start;
+  }
 }
 
+
+/* =========================================================
+  MOBILE
+========================================================= */
+
 @media (max-width: 760px) {
+
   .about-hero {
     padding-top: 3.75rem;
   }
 
   .about-hero h1 {
-    font-size: clamp(3rem, 14vw, 4.6rem);
+    font-size:
+      clamp(3rem, 14vw, 4.6rem);
   }
 
   .about-hero__actions {
     flex-direction: column;
+  }
+
+  .about-hero__actions .btn {
+    width: 100%;
+    justify-content: center;
   }
 
   .values-grid,
@@ -472,11 +887,78 @@
     grid-template-columns: 1fr;
   }
 
+  .difference-actions {
+    flex-direction: column;
+  }
+
+  .difference-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .about-model-cards article {
+    grid-template-columns: 1fr;
+  }
+
+  .about-model-cards article > span {
+    grid-row: auto;
+  }
+
   .about-hero-card,
   .about-story-panel,
   .value-card,
   .difference-card-stack article,
-  .standards-grid article {
+  .standards-grid article,
+  .about-model-cards article,
+  .about-warranty-card {
     border-radius: 22px;
+  }
+
+  .about-local-tags {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .about-local-tags span {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .about-reviews-action .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .final-cta {
+    padding:
+      4rem
+      0
+      4.75rem;
+  }
+
+  .final-cta__actions {
+    flex-direction: column;
+  }
+
+  .final-cta__actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+
+/* =========================================================
+  SMALL MOBILE
+========================================================= */
+
+@media (max-width: 430px) {
+
+  .about-local-tags {
+    grid-template-columns: 1fr;
+  }
+
+  .about-hero h1 {
+    font-size:
+      clamp(2.8rem, 15vw, 4.1rem);
   }
 }
