@@ -1,203 +1,640 @@
-# Hullinger Transmission & Drivetrain Website
+# Integrity Transmission & Drivetrain Website
 
-A professional, SEO-focused business website for a home-based transmission and drivetrain repair venture serving Springfield, Ozark, and surrounding Missouri areas.
+Official website for Integrity Transmission & Drivetrain, serving Springfield and Southwest Missouri.
 
-This project was built to help establish a stronger online presence, improve local search visibility, give the business more legitimacy, and provide potential customers with a clear overview of supported services, supported units, warranty messaging, and contact options.
+**Live site:** https://integritydrivetrain.com/
 
-## Project Goals
+The website is designed as a fast, mobile-friendly, SEO-focused business site for transmission repair, professional transmission rebuilding, remanufactured transmission replacement, drivetrain service, and selected automotive repair.
 
-- Create a clean, professional website for a new transmission and drivetrain repair business
-- Build trust and legitimacy for a home-based, appointment-focused operation
-- Improve visibility for local Google searches related to transmission rebuilds and drivetrain repair
-- Clearly communicate supported transmissions, differentials, and transfer case services
-- Give customers multiple ways to connect, including phone, email, and Facebook
-- Create a scalable foundation that can expand into additional service pages later
+The project is intentionally built without a large framework or template system. It uses semantic HTML, modular CSS, lightweight JavaScript, reusable partials, structured data, and purpose-built content so the site remains fast, maintainable, expandable, and highly optimized for organic search.
 
-## Target Audience
+---
 
-This site is designed for local customers searching for:
+## Primary Goals
 
-- transmission rebuilds
-- 4L60E rebuilds
-- 4L80E rebuilds
-- transfer case repair
-- front differential repair
-- rear differential service
-- drivetrain repair in Springfield, Missouri and nearby areas
+- Generate qualified transmission leads and quote requests
+- Rank competitively for transmission-related searches in Springfield and Southwest Missouri
+- Compete against template-based automotive and transmission shop websites with stronger content and technical SEO
+- Make transmission pricing and service options easy to understand
+- Position remanufactured transmission replacement alongside traditional rebuilding
+- Educate customers enough to make informed decisions without overwhelming them
+- Demonstrate real transmission knowledge and actual shop experience
+- Build trust through clear warranty, process, repair, and pricing information
+- Create a strong mobile experience for customers searching from their phones
+- Make VIN-based quote requests fast and simple
+- Maintain a scalable architecture for future SEO growth without unnecessarily overbuilding the site
 
-It is especially aimed at customers who want a more trustworthy and professional alternative to a vague marketplace post or an unstructured social media presence.
+---
 
-## Features
+## Business Positioning
 
-- SEO-focused homepage structure
-- local-service keyword targeting
-- semantic HTML5 structure
-- expandable navigation for future pages
-- hero section with strong business positioning
-- supported services overview
-- supported transmission and drivetrain unit section
-- warranty and reassurance messaging
-- home-based business credibility section
-- local service area section
-- Facebook and contact call-to-action areas
-- FAQ section to reduce friction for new leads
-- responsive layout for desktop and mobile use
+Integrity Transmission & Drivetrain specializes in automatic transmission and drivetrain service.
 
-## Current Supported Units Highlighted On Site
+Primary transmission services include:
 
-### Transmissions
-- 4L60E
-- 4L65E
-- 4L80E
-- 700R4 / early 4L60
-- TH350
-- TH400
+- Complete transmission replacement
+- Remanufactured transmission replacement
+- Transmission rebuilding
+- Bench transmission rebuilds
+- Removal and installation
+- Transmission diagnosis and repair
+- Towing and heavy-duty builds
+- Longevity-focused builds
+- Performance transmission builds
+- Custom transmission configurations
+- Programming and adaptive relearn when applicable
+- Transmission fluid and supporting service
+- Drivetrain and transfer-case service
 
-### Drivetrain / Related Services
-- select transfer cases
-- select front IFS differentials
-- select rear differentials
-- select 2WD and 4WD applications
+Selected general automotive services may also be offered, including:
+
+- Brake service
+- Steering and suspension repair
+- Wheel bearings and hubs
+- CV axles
+- Selected routine maintenance
+
+Transmission and drivetrain work remain the primary specialty.
+
+---
+
+## Transmission Philosophy
+
+The website intentionally presents both rebuilding and remanufactured replacement rather than treating one solution as correct for every vehicle.
+
+### Traditional Rebuilds
+
+A rebuild begins with the customer's existing transmission.
+
+Standard rebuild work generally focuses on normal rebuild components and soft parts while inspecting the transmission for additional damage.
+
+Hard parts that are damaged or outside reusable specifications may require additional replacement.
+
+Builds can also be tailored for:
+
+- longevity
+- towing
+- heavy-duty use
+- performance
+- increased horsepower and torque
+- known application-specific failure points
+
+### Remanufactured Transmission Replacement
+
+For many newer vehicles, a professionally remanufactured transmission may provide better overall value than rebuilding the original unit.
+
+Depending on the supplier and application, remanufacturing may include:
+
+- standardized teardown and inspection
+- hard-part inspection or replacement
+- valve-body work
+- solenoid/electronic service
+- known-failure corrections
+- updated components
+- testing before shipment
+- nationwide warranty options
+
+The website is designed to help customers compare these options rather than automatically pushing every customer toward the same repair.
+
+---
+
+## Rebuild Quality & Testing
+
+Transmission content throughout the site emphasizes proper inspection and measurement rather than simple parts replacement.
+
+Depending on the transmission and repair, processes may include:
+
+- air testing
+- vacuum testing
+- clutch clearance measurement
+- end-play measurement
+- dimensional inspection
+- micrometer measurements
+- hydraulic inspection
+- valve-body inspection
+- hard-part inspection
+- torque verification
+- known-failure correction
+- application-specific upgrades
+
+The purpose is to communicate that a professional transmission rebuild involves inspection, measurement, verification, and correction—not simply installing a rebuild kit.
+
+---
+
+## Warranty Structure
+
+Warranty information varies by repair type.
+
+### Bench Rebuilds
+
+- Integrity-provided warranty
+- Typically 1 year
+- Transmission must be returned to Integrity for warranty evaluation/service
+- Installation-related failures may void warranty coverage
+
+### Integrity Removal & Installation Rebuilds
+
+- Integrity-provided warranty
+- Typically 18 months
+- Warranty service is performed through Integrity
+
+### Remanufactured Transmissions
+
+Warranty is provided through the remanufacturer rather than Integrity's in-house rebuild warranty.
+
+Available programs may include:
+
+- 18-month / 18,000-mile coverage
+- 3-year / unlimited-mile coverage
+- nationwide coverage
+- approved labor reimbursement
+- labor reimbursement programs that may provide $70/hour or $125/hour depending on the selected transmission/warranty package
+
+Exact warranty terms depend on the transmission, supplier, and package quoted.
+
+The website should never imply that Integrity's in-house rebuild warranty is a nationwide warranty.
+
+---
+
+## Current Site Architecture
+
+Primary pages include:
+
+- `index.html` — Homepage
+- `services.html` — Services overview
+- `transmissions.html` — Automatic transmission information and transmission families
+- `transmission-build-guide.html` — Rebuild types, components, testing, upgrades, towing, longevity, and performance information
+- `warranty.html` — Warranty options and differences between Integrity and remanufacturer coverage
+- `contact.html` — VIN-first quote and contact flow
+- `thank-you.html` — Quote submission confirmation
+- `reviews.html` — Customer reviews / reputation content
+- `about.html` — Business information and company positioning
+
+Additional pages may be added when there is a legitimate customer, conversion, or SEO reason to create them.
+
+The site should not create thin pages solely to increase page count.
+
+---
+
+## Transmission Coverage
+
+The site is intentionally broader than the original GM-focused version.
+
+Content should demonstrate experience across domestic and import applications, including examples from:
+
+- GM / Chevrolet / GMC / Cadillac
+- Ford / Lincoln
+- Ram / Dodge / Chrysler / Jeep
+- Toyota / Lexus
+- Honda / Acura
+- Nissan / Infiniti
+- selected European applications
+- conventional automatics
+- selected CVT applications
+
+Examples should rotate between manufacturers when practical so the site does not appear focused on only one transmission family.
+
+Individual transmission pages may be created later when search demand, customer value, and available content justify dedicated landing pages.
+
+---
+
+## Mobile UX Strategy
+
+Most prospective customers are expected to interact with the site from a phone.
+
+Mobile usability is therefore a primary design requirement.
+
+Important mobile features include:
+
+- large touch-friendly buttons
+- responsive layouts
+- readable typography
+- single-column forms where appropriate
+- direct phone links
+- direct SMS links
+- VIN-first quote flow
+- section jump navigation on longer pages
+- manufacturer/category jump buttons
+- minimal friction between search landing and quote request
+
+Long educational pages use section navigation so customers can jump directly to information relevant to their vehicle or intended transmission build.
+
+---
+
+## Quote / Conversion Flow
+
+The primary conversion path is:
+
+**Search / Landing Page → Relevant Information → Request Quote → VIN / Vehicle Details → Thank You**
+
+The Contact page is intentionally simpler and less sales-heavy than the educational pages.
+
+Customers are encouraged to provide:
+
+- VIN
+- name
+- phone number
+- email if desired
+- year / make / model
+- engine
+- drivetrain
+- transmission if known
+- mileage
+- requested service
+- whether the transmission is installed or removed
+- vehicle use
+- symptoms
+- towing, performance, or modification information when relevant
+
+Customers are not required to diagnose their own vehicle before requesting help.
+
+Text messaging is also emphasized because customers can easily send:
+
+- VIN
+- photos
+- videos
+- diagnostic information
+- vehicle information
+
+---
+
+## Forms
+
+The quote form uses Netlify Forms.
+
+Current form:
+
+`quote-request`
+
+The form includes:
+
+- Netlify form detection
+- honeypot spam protection
+- redirect to `thank-you.html`
+- mobile-friendly inputs
+- VIN and vehicle-specific information
+
+The thank-you page is intentionally:
+
+`noindex, follow`
+
+It exists as a conversion-completion page and should not become a search landing page.
+
+---
 
 ## SEO Strategy
 
-This project was structured with a strong foundational SEO setup for local service visibility.
+SEO is a core part of the project rather than an afterthought.
 
-### Included SEO elements
-- keyword-focused page title
-- meta description
-- canonical tag
-- Open Graph tags
-- Twitter card tags
-- local business schema
-- strong heading hierarchy
-- semantic section structure
-- location-based service language
-- internal links prepared for future pages
+The site is being developed to compete with local automotive websites that often rely on generic templates and duplicated service content.
+
+### On-Page SEO
+
+Pages use:
+
+- unique page titles
+- unique meta descriptions
+- semantic HTML5
+- logical heading hierarchy
+- descriptive copy
+- natural keyword coverage
+- internal linking
 - descriptive image alt text
+- local geographic relevance
+- service-specific terminology
+- search-intent-focused page structure
 
-### Local SEO positioning
-The homepage copy is intentionally written to support searches around:
-- Springfield, MO
-- Ozark, MO
-- surrounding Missouri service areas
-- transmission rebuild services
-- differential and transfer case repair
-- supported GM transmission units
+Keyword use should remain natural. Content should not be stuffed with repetitive location or service phrases.
 
-## Tech Stack
+### Technical SEO
 
-- HTML5
-- CSS3
-- Google Fonts
+The site includes or is being developed around:
 
-No frameworks were used in the initial build. This keeps the project lightweight, easy to maintain, and beginner-friendly while still being professional and expandable.
+- canonical URLs
+- `robots.txt`
+- XML sitemap
+- Google Search Console
+- indexation control
+- structured data / JSON-LD
+- Open Graph metadata
+- Twitter/X metadata
+- responsive design
+- mobile usability
+- lightweight frontend architecture
+- crawlable HTML content
+- internal navigation
+- clean URL/page architecture
 
-## File Structure
+### Structured Data
 
-Expected project structure:
+Schema may include, where appropriate:
 
-hullinger-transmission/
-- index.html
-- styles.css
-- images/
-  - logo-main.jpg
-  - favicon.png
-  - og-image.jpg
+- `AutoRepair`
+- `WebSite`
+- `WebPage`
+- `ContactPage`
+- `FAQPage`
+- `BreadcrumbList`
+- service-related structured data
+
+Structured data should describe content that actually exists on the corresponding page.
+
+### Local SEO
+
+Primary geographic focus includes:
+
+- Springfield, Missouri
+- Ozark, Missouri
+- Rogersville, Missouri
+- Nixa, Missouri
+- Republic, Missouri
+- Battlefield, Missouri
+- Strafford, Missouri
+- surrounding Southwest Missouri communities
+
+Local SEO should be supported by useful business information and relevant content rather than excessive city-name repetition.
+
+---
+
+## SEO Development Philosophy
+
+The objective is not simply to "add keywords."
+
+The site should compete through a combination of:
+
+1. Technical SEO
+2. Search-intent alignment
+3. High-quality original content
+4. Strong internal linking
+5. Local relevance
+6. Mobile usability
+7. Page speed
+8. Structured data
+9. Crawlability and indexation
+10. Conversion optimization
+11. Real-world expertise
+12. Reputation and review signals
+
+Future SEO work should be based on measurable opportunity rather than automatically creating hundreds of thin service/location pages.
+
+---
+
+## Sitemap & Crawling
+
+The live domain is:
+
+`https://integritydrivetrain.com/`
+
+The project includes:
+
+- `sitemap.xml`
+- `robots.txt`
+
+The sitemap has been submitted through Google Search Console.
+
+New indexable pages should be added to the sitemap when they are published.
+
+Pages intentionally marked `noindex`, such as the quote confirmation page, should not be treated as organic landing pages.
+
+---
+
+## CSS Architecture
+
+The site uses a shared global stylesheet plus page-specific stylesheets.
+
+Example structure:
+
+    styles.css
+    index.css
+    services.css
+    transmissions.css
+    transmission-build-guide.css
+    warranty.css
+    contact.css
+    thank-you.css
+
+`styles.css` contains shared/global components and design variables.
+
+Page-specific stylesheets contain layouts and components unique to their corresponding pages.
+
+Avoid unnecessarily duplicating global styles inside page-specific CSS.
+
+---
+
+## JavaScript
+
+JavaScript is intentionally lightweight.
+
+Primary scripts include:
+
+    script.js
+    js/partials.js
+
+JavaScript responsibilities may include:
+
+- interactive gallery/carousel behavior
+- reusable UI behavior
+- partial loading
+- navigation-related functionality
+
+JavaScript should not unexpectedly alter scroll position or interfere with normal page navigation.
+
+Any new JavaScript functionality should be tested against the entire site before deployment because `script.js` may be loaded by multiple pages.
+
+---
+
+## Shared Partials
+
+Reusable site elements are loaded from the `partials/` directory.
+
+Examples:
+
+    partials/header.html
+    partials/footer.html
+
+`js/partials.js` handles partial inclusion.
+
+This allows navigation and footer updates to be made centrally rather than manually updating every page.
+
+---
+
+## Images & Media
+
+The `images/` directory contains:
+
+- business logos
+- favicon assets
+- Open Graph/social images
+- real shop photographs
+- transmission assembly photographs
+- failure/inspection photographs
+- completed transmission photographs
+- vehicle photographs
+
+Real work imagery is preferred over generic stock photography whenever practical.
+
+Images should use:
+
+- descriptive filenames
+- appropriate alt text
+- reasonable dimensions
+- web-appropriate compression
+
+Image optimization and Core Web Vitals remain part of the final technical audit.
+
+---
 
 ## Design Direction
 
-The visual direction is built around:
-- dark industrial styling
-- high-contrast layout
-- orange accent color for energy and brand emphasis
-- bold typography for strength and clarity
-- card-based sections for organization and readability
+The visual identity uses:
 
-The design aims to feel rugged, credible, and professional without looking cheap or overly generic.
+- orange brand accent
+- black / charcoal contrast sections
+- warm cream / white backgrounds
+- bold Oswald headings
+- Inter body typography
+- modern card-based layouts
+- subtle gradients
+- restrained shadows
+- rounded components
+- strong visual hierarchy
+- real shop imagery
 
-## Expandability Plan
+The goal is to feel:
 
-This homepage was intentionally structured so it can grow into a larger business website.
+- professional
+- modern
+- technically competent
+- trustworthy
+- approachable
+- automotive without looking like a generic repair-shop template
 
-Planned future pages may include:
-- services.html
-- transmissions.html
-- warranty.html
-- contact.html
-- transfer-cases.html
-- differentials.html
-- about.html
+---
 
-Potential future upgrades:
-- live contact form
-- Netlify Forms integration
-- service-area pages
-- individual transmission landing pages
-- testimonial section
-- gallery / completed work section
-- Google Maps embed
-- FAQ expansion
-- review request flow
-- business credentials and insurance details
-- appointment request system
+## Development Workflow
 
-## Professional Positioning Strategy
+Local development is performed in VS Code.
 
-A key goal of this website is to help the business feel more legitimate and trustworthy, especially because it is home-based.
+Typical workflow:
 
-The site supports that by emphasizing:
-- clear supported services
-- selective, quality-focused work
-- written warranty messaging
-- professionalism in communication
-- organized structure instead of only relying on Facebook or Marketplace
-- future-ready business pages and contact flow
+    git status
+    git add .
+    git commit -m "Describe changes"
+    git push
 
-## What This Project Demonstrates
+Changes should be previewed locally before deployment.
 
-This project demonstrates the ability to:
-- build a real small-business website from scratch
-- structure content for trust and legitimacy
-- write conversion-aware local business copy
-- prepare a site for local SEO growth
-- create scalable page architecture from the beginning
-- design a professional brand presentation around a trade/service business
+After deployment:
 
-## Setup
+1. Verify the live page
+2. Hard refresh when necessary
+3. Test desktop layout
+4. Test mobile layout
+5. Test navigation and section links
+6. Test forms
+7. Test interactive JavaScript
+8. Verify that no unexpected scrolling or layout behavior was introduced
 
-1. Create a project folder
-2. Add index.html
-3. Add styles.css
-4. Create an images folder
-5. Add the business logo and other image assets
-6. Open the project in VS Code
-7. Run with Live Server for local development
+---
 
-## Customization Checklist
+## Current Development Status
 
-Before launch, update the following placeholders:
-- business phone number
-- business email
-- Facebook page URL
-- final live domain
-- favicon file
-- Open Graph image
-- schema phone/email values
-- LLC / licensed / insured wording once finalized
+Major work completed or substantially developed:
 
-## Status
+- homepage redesign
+- shared visual system
+- responsive/mobile layouts
+- reusable header/footer partials
+- services page
+- automatic transmissions page
+- transmission build guide
+- warranty page
+- contact / quote page
+- Netlify quote form
+- thank-you confirmation page
+- transmission gallery/carousel
+- mobile section-jump navigation
+- manufacturer/category navigation
+- sitemap
+- robots.txt
+- Google Search Console sitemap submission
+- structured data foundation
+- local SEO foundation
+- internal-linking architecture
 
-This project is currently in the foundational build stage:
-- homepage structure created
-- styling system created
-- SEO framework established
-- ready for additional pages and content refinement
+---
 
-## Author
+## Remaining / Ongoing Work
 
-Built for Hullinger Transmission & Drivetrain as a professional small-business website focused on transmission rebuilds, drivetrain service, and local credibility.
+Primary remaining work includes:
 
-## License
+- About page audit/refinement
+- Reviews page audit/refinement
+- final site-wide SEO audit
+- internal-link audit
+- metadata consistency audit
+- schema validation
+- sitemap verification
+- Search Console indexing review
+- broken-link testing
+- redirect / 404 review
+- mobile usability testing
+- accessibility review
+- image optimization
+- performance optimization
+- Core Web Vitals review
+- conversion tracking / analytics
+- Google Business Profile alignment
+- review/reputation strategy
+- continued content expansion based on actual search opportunity
 
-This project is for business use by Hullinger Transmission & Drivetrain.
+---
+
+## Future Expansion
+
+Potential future additions should be driven by customer usefulness or measurable SEO opportunity.
+
+Possible additions include:
+
+- high-value individual transmission landing pages
+- application-specific transmission guides
+- selected service-area pages
+- additional technical FAQs
+- diagnostic educational content
+- towing/performance transmission content
+- additional real-work galleries
+- customer case studies
+- review integration
+- analytics and conversion reporting
+
+The project should remain focused on generating transmission business rather than becoming an unnecessarily large technical encyclopedia.
+
+---
+
+## Guiding Principle
+
+Every significant site change should improve at least one of the following:
+
+- search visibility
+- customer understanding
+- trust
+- usability
+- conversion rate
+- technical performance
+- maintainability
+
+If a page, section, feature, or piece of content does not meaningfully improve one of those areas, it probably does not need to be added.
+
+---
+
+## Author / Project
+
+Built for **Integrity Transmission & Drivetrain**.
+
+Website:
+
+`https://integritydrivetrain.com/`
+
+Primary focus:
+
+**Transmission repair, rebuilding, remanufactured transmission replacement, drivetrain service, and transmission-related automotive solutions in Springfield and Southwest Missouri.**
