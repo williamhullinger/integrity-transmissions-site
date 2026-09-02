@@ -14,6 +14,7 @@ Google Search Console's Links report was still processing when reviewed Septembe
 |---|---|
 | `/reman-transmissions` | A VIN-first path for customers or repair shops sourcing a verified reman unit nationwide |
 | `/guides/transmission-problems` | A plain-language warning-sign and stop-driving guide |
+| `/guides/cvt-transmission-problems` | A demand-backed CVT symptom, fluid, safety, and repair-versus-replacement guide with manufacturer references |
 | `/warranty` | A clear explanation of coverage categories and why written terms control |
 | Future installer checklist | Helps shops and customers prepare for cooler, programming, fluid, documentation, freight, and core requirements |
 | Future core-return guide | Reduces shipping mistakes, missed deadlines, and avoidable core charges |
@@ -23,7 +24,7 @@ Google Search Console's Links report was still processing when reviewed Septembe
 
 | Priority | Opportunity | Relevant link or proof | Next action | Status |
 |---:|---|---|---|---|
-| 1 | ACE Transmission relationship | Reman page or a joint customer/installer resource | Confirm reseller wording, fulfillment terms, and whether ACE offers an authorized dealer, partner, customer-story, or resource link | Not contacted |
+| 1 | ACE Transmission relationship | Reman page, CVT guide, or a joint customer/installer resource | Send the approved integration/dealer-link request to the verified ACE Sales Support address | Recipient verified; message awaiting action-time approval |
 | 2 | ATRA | Member profile and Shop Finder listing if Integrity qualifies | Confirm membership/credential status, exact business name, service-area address policy, and profile URL | Eligibility to confirm |
 | 3 | MWACA | Legitimate member directory/profile if Integrity joins or is already a member | Confirm membership and complete a factual profile | Eligibility to confirm |
 | 4 | Springfield-area Chamber and nearby chambers | Accurate business directory/profile | Select only chambers matching the real service area and appointment model; keep name, phone, URL, and address policy consistent | Eligibility to confirm |
@@ -35,23 +36,31 @@ Google Search Console's Links report was still processing when reviewed Septembe
 
 ## Supplier Outreach Draft
 
-Do not send until the relationship language and recipient are confirmed.
+Verified recipient: **ACE Sales Support** at the address displayed in Integrity's authenticated wholesale portal. Review immediately before sending.
 
 ```text
-Subject: Integrity reman transmission resource and dealer-link question
+Subject: Integrity reman integration and dealer-resource questions
 
-Hi [Name],
+Hi ACE Sales Support,
 
-Integrity Transmission & Drivetrain is building a VIN-first quote process for customers and repair shops that need a verified remanufactured transmission shipped nationwide. We are designing the page so fitment, package contents, freight, core, installer, programming, and warranty requirements are confirmed before payment.
+Integrity Transmission & Drivetrain has launched a VIN-first quote process for customers and repair shops that need a verified remanufactured transmission shipped nationwide. We are keeping it quote-first so fitment, package contents, freight, core, installer, programming, and warranty requirements are confirmed before payment.
 
-We plan to source supported orders through ACE under our existing business relationship. Before we publish or promote that process, can you confirm the wording we may use about the relationship and whether ACE maintains an authorized dealer, reseller, customer-story, or resource directory where Integrity could be listed?
+We plan to source supported orders through ACE under our existing wholesale account. Before we automate any part of the workflow, could you please confirm:
+
+1. Whether ACE offers an authorized API, inventory/lead-time feed, pricing feed, CSV export, saved-quote link, or other approved integration for wholesale customers.
+2. Whether Integrity may show customer-facing availability or retail pricing derived from ACE data, and any reseller, advertised-price, or branding restrictions.
+3. Whether an approved integration can return fitment, package contents, warranty options, freight, core terms, order status, and tracking—or place an order after Integrity receives payment.
+4. Whether ACE supports blind drop shipping and what ACE documents or communications reach the final customer or installer.
+5. What relationship wording Integrity may use and whether ACE maintains a dealer, reseller, customer-story, or resource directory where Integrity could be listed.
 
 The page is: https://integritydrivetrain.com/reman-transmissions
+
+We also published a CVT symptom and replacement-planning guide that references ACE's public RE0F10D resource: https://integritydrivetrain.com/guides/cvt-transmission-problems
 
 We would also be interested in a joint installer or core-return checklist if that would be useful to ACE customers.
 
 Thank you,
-[Name]
+William Hullinger
 Integrity Transmission & Drivetrain
 ```
 

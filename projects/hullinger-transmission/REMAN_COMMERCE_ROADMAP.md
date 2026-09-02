@@ -25,7 +25,7 @@ This creates a national sales path now without pretending a VIN decoder is a com
 
 ## Phase 1: VIN-Assisted Quote Intake
 
-Status: built locally and ready for deployment testing.
+Status: deployed and production-tested.
 
 Implemented:
 
@@ -95,7 +95,53 @@ Only consider public pricing or instant availability after the supplier can prov
 - converter, fluid, cooler, programming, relearn, and documentation requirements;
 - exclusions for modified, commercial, towing, fleet, RV, or other duty cycles.
 
-No public ACE catalog or ordering API was identified during the initial review. ACE wholesale ordering access may still offer portal or export capabilities, so the account workflow must be reviewed directly before integration is designed.
+No public ACE catalog or ordering API was identified during the initial review. The authenticated wholesale portal was reviewed directly on September 2, 2026; it did not expose API documentation, API keys, webhooks, OAuth, CSV export, catalog export, or a data-feed workflow. Its live price and vehicle lookups are private, session-authenticated portal functions and must not be treated as a supported third-party API without written ACE authorization.
+
+## Authenticated ACE Portal Findings
+
+The read-only review confirmed that the portal can:
+
+- identify applications by VIN, year/make/model/engine, or RMA;
+- return tag, part number, transmission family, engine and OEM identifiers;
+- show stock status, warehouse quantity, non-returnable status, and estimated lead-time notices;
+- itemize the transmission, core charge, required installation-kit contents, fluid, warranty tier, optional labor coverage, freight, and total;
+- quote freight by destination and accessorial needs such as residential delivery, liftgate, inside delivery, and round trip;
+- retain lookup history with vehicle, transmission family, VIN, and resulting order;
+- track orders, status, serial number, production estimate, tracking number, transactions, outstanding cores, warranty claims, and reports; and
+- provide installation documents and account policies.
+
+The portal is an excellent staff verification and ordering tool, but the observed integration calls depend on the logged-in wholesale session. Reusing those private calls from Integrity's public site would expose credentials, create a brittle dependency, and risk unapproved access. Do not scrape the portal, embed credentials in browser code, or automate order placement until ACE supplies a supported interface or written integration permission.
+
+## ACE Policy Findings to Reflect in Quotes
+
+The account documents reviewed September 2, 2026 state, subject to ACE's current written terms:
+
+- distributor orders are placed through the portal, and drop shipping is available when the shipping address is changed on the order;
+- freight varies by destination and selected terms;
+- cores for orders purchased on or after May 1, 2026 generally must be returned within 90 days to preserve available core credit, and unpaid or late core obligations can affect warranty status;
+- full core credit depends on an assembled, matching unit and torque converter plus required brackets and the correct shipping tote; damage, missing parts, disassembly, a wrong core, or missing packaging can reduce or eliminate credit;
+- a unit marked non-returnable is paid up front, cannot be canceled after a hot build begins, and cannot be returned for credit; an in-stock unit may be cancelable only before it leaves the warehouse;
+- current portal options include 18-month/18,000-mile and three-year/unlimited-mile coverage, with optional labor/programming upgrades; and
+- warranty work requires prior authorization, documented installation and cooler procedures, required programming or relearn evidence, and adherence to the exact written warranty.
+
+Integrity's customer-facing quote must summarize these obligations and attach the controlling current documents. Do not promise a core refund, cancellation, freight timing, warranty payment, or return eligibility until the exact order is verified.
+
+## Recommended Pricing Formula
+
+Keep ACE wholesale cost private and calculate customer pricing only in a secure quote record:
+
+`customer total = approved unit/package + Integrity margin + freight/accessorials + core deposit + applicable tax`
+
+Recommended margin logic:
+
+- apply a percentage margin to the approved transmission, required kit, and selected warranty package;
+- enforce a fixed minimum gross-margin floor so low-cost units still cover VIN verification, sourcing, customer service, payment risk, order handling, tracking, and core administration;
+- show freight and accessorials as verified line items rather than advertising free or guaranteed overnight shipping;
+- show the core deposit separately and explain that any later credit depends on ACE inspection and deadlines;
+- calculate tax from the destination and the final taxable items; and
+- generate payment only from the approved server-side quote so the customer cannot alter the amount.
+
+The percentage, minimum margin, quote-expiration period, and any policy-compliant payment-cost treatment remain Integrity business decisions. Do not publish prices until those values are approved.
 
 ## Supplier Information Needed
 
@@ -166,4 +212,4 @@ Phase 2 can launch when:
 
 ## Immediate Next Step
 
-Deploy Phase 1, test a real internal VIN quote submission without placing an order, and obtain ACE's wholesale workflow and policy details. Those facts determine whether Phase 2 should integrate with a supplier system, import a price/availability feed, or remain a fast manual quote-to-payment process.
+Ask ACE Sales Support for a supported API/feed or written integration guidance. Unless ACE provides one, build Phase 2 as a secure manual-review workflow: customer VIN request, staff portal verification, approved quote with markup, full payment, manual ACE order, then order/tracking/core status updates.

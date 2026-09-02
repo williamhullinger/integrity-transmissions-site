@@ -70,19 +70,22 @@ An original symptom guide covering slipping, delayed engagement, harsh shifting,
 
 A national commercial page for VIN-assisted reman transmission quotes. It makes the quote-first process, fitment verification, freight, core, installer, programming, warranty, and payment boundaries clear.
 
+### `/guides/cvt-transmission-problems`
+
+A search-demand-driven CVT guide covering normal versus abnormal RPM behavior, delayed engagement, flare, judder, whining, overheating, fail-safe operation, fluid specification, stop-driving criteria, diagnostic evidence, repair-versus-replacement decisions, and VIN-verified reman options. It cites manufacturer and transmission-industry technical sources and uses an original CVT-specific hero image.
+
 ## Prioritized Publishing Queue
 
 | Priority | Page or story | Search intent | Required evidence before publication |
 |---:|---|---|---|
-| 1 | CVT Transmission Problems: Symptoms, Causes, and Next Steps | National symptom research | Technical review; clear limits; supported makes/models |
-| 2 | Transmission Slipping: What It Feels Like and What to Record | Symptom research and urgent local help | Diagnostic distinctions; no blanket failure claims |
-| 3 | Delayed Engagement Into Drive or Reverse | Symptom research | Cold/hot behavior, fluid, codes, and model distinctions |
-| 4 | Transmission Shudder vs. Engine Misfire | Symptom comparison | Diagnostic process and safety review |
-| 5 | No Reverse but Forward Gears Work | Symptom research | Unit-specific caveats and next-step evidence |
-| 6 | Nissan CVT Problems | Make-specific research | Supported years/models, real examples, precise limitations |
-| 7 | Honda CVT Problems | Make-specific research | Supported years/models, real examples, precise limitations |
-| 8 | Real 6L80/6L90 Diagnosis or Replacement Case Study | Commercial proof | Complete job record, photos, permission, outcome follow-up |
-| 9 | Real Towing/68RFE Case Study | Heavy-duty commercial proof | Duty cycle, modifications, failure evidence, solution, outcome |
+| 1 | Transmission Slipping: What It Feels Like and What to Record | Symptom research and urgent local help | Diagnostic distinctions; no blanket failure claims |
+| 2 | Delayed Engagement Into Drive or Reverse | Symptom research | Cold/hot behavior, fluid, codes, and model distinctions |
+| 3 | Transmission Shudder vs. Engine Misfire | Symptom comparison | Diagnostic process and safety review |
+| 4 | No Reverse but Forward Gears Work | Symptom research | Unit-specific caveats and next-step evidence |
+| 5 | Nissan CVT Problems | Make-specific research | Supported years/models, real examples, precise limitations |
+| 6 | Honda CVT Problems | Make-specific research | Supported years/models, real examples, precise limitations |
+| 7 | Real 6L80/6L90 Diagnosis or Replacement Case Study | Commercial proof | Complete job record, photos, permission, outcome follow-up |
+| 8 | Real Towing/68RFE Case Study | Heavy-duty commercial proof | Duty cycle, modifications, failure evidence, solution, outcome |
 
 ## Case-Study Selection Rules
 

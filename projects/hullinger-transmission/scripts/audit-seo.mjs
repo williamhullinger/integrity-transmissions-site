@@ -169,7 +169,7 @@ if (!fs.existsSync(sitemapPath)) {
   const sitemapUrls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
   const canonicalUrls = [...seenCanonicals.keys()].sort();
 
-  if (sitemapUrls.length !== 24) errors.push(`sitemap.xml: expected 24 URLs, found ${sitemapUrls.length}`);
+  if (sitemapUrls.length !== 25) errors.push(`sitemap.xml: expected 25 URLs, found ${sitemapUrls.length}`);
   if (sitemapUrls.some((url) => url.includes(".html"))) errors.push("sitemap.xml: contains .html URLs");
   if (!sitemapUrls.every((url) => /<lastmod>\d{4}-\d{2}-\d{2}<\/lastmod>/.test(sitemap))) {
     errors.push("sitemap.xml: missing lastmod values");

@@ -6,7 +6,7 @@ Updated: September 2, 2026
 
 This campaign is for **Integrity Transmission & Drivetrain** and the production domain `https://integritydrivetrain.com/`.
 
-The staged site contains 24 indexable canonical URLs, two noindexed conversion-confirmation pages, and a noindexed custom 404 page.
+The staged site contains 25 indexable canonical URLs, two noindexed conversion-confirmation pages, and a noindexed custom 404 page.
 
 ### Core URLs
 
@@ -43,17 +43,18 @@ The staged site contains 24 indexable canonical URLs, two noindexed conversion-c
 ### Search-Demand Guide URLs
 
 - `/guides/transmission-problems`
+- `/guides/cvt-transmission-problems`
 
 ## Completed On-Site Work
 
 - Unique titles, descriptions, H1s, canonicals, Open Graph metadata, and structured data
 - Original service- and transmission-specific copy
 - Four useful FAQs on every new landing page
-- Fifteen distinct optimized focused-page hero images with reserved dimensions
+- Sixteen distinct optimized focused-page hero images with reserved dimensions
 - Static crawlable header and footer on every page
 - Clean extensionless internal links and canonical URLs
 - Permanent redirects from legacy `.html` URLs
-- 24-URL XML sitemap with `lastmod`
+- 25-URL XML sitemap with `lastmod`
 - `robots.txt`, custom 404, and production response headers
 - Internal topic links from the homepage, services, transmissions, rebuild guide, footer, and related-page sections
 - Noindexed quote and review confirmation pages
@@ -63,6 +64,7 @@ The staged site contains 24 indexable canonical URLs, two noindexed conversion-c
 - Nationwide reman landing page and top-level **Reman Transmissions** navigation tab
 - VIN-assisted quote intake using NHTSA vehicle data with mandatory manual fitment confirmation
 - Search-demand-driven transmission warning-sign and symptom guide
+- Search-demand-driven CVT problems guide with manufacturer references and an original hero
 - Documented content roadmap, real-case-study workflow, backlink campaign, and reman commerce roadmap
 
 ## Business Rules Reflected in the Site
@@ -94,9 +96,9 @@ node scripts/submit-indexnow.mjs
 
 Expected audit baseline:
 
-- 27 HTML files
-- 24 indexable pages
-- 15 unique focused-page heroes
+- 28 HTML files
+- 25 indexable pages
+- 16 unique focused-page heroes
 - No SEO audit errors
 
 ## Deployment and Search Engine Submission
@@ -128,7 +130,17 @@ Current 24-page expansion deployed September 2, 2026:
 - Verified both new production pages, canonicals, H1s, structured data, navigation, and the legacy reman `.html` redirect.
 - Verified the VIN decoder on production with a non-customer sample VIN; it identified and prefilled basic vehicle, engine, and drive data without submitting the form.
 - Verified the production reman quote form name, POST method, honeypot, VIN requirement, and thank-you route.
-- New-URL Google/Bing submission and the updated IndexNow batch remain to be completed after action-time approval.
+- Resubmitted the 24-URL sitemap in Google Search Console; Google reported **Success** and 24 discovered pages.
+- Requested Google indexing for `/reman-transmissions` and `/guides/transmission-problems`.
+- Resubmitted the sitemap in Bing Webmaster Tools and submitted both new URLs successfully.
+- Submitted all 24 canonical URLs through IndexNow; the endpoint accepted the batch with HTTP 200.
+
+Current 25-page CVT expansion staged September 2, 2026:
+
+- Added `/guides/cvt-transmission-problems` from verified Bing search demand.
+- Added internal links from the homepage, supported-units page, reman page, symptom hub, and shared footer.
+- Added a unique CVT-specific hero, Article/Breadcrumb/FAQ structured data, manufacturer references, sitemap entry, and legacy `.html` redirect.
+- Production deployment and search-engine submission remain pending final verification.
 
 ## Search-Demand Baseline
 
@@ -154,4 +166,4 @@ Bing's three-month keyword view showed meaningful symptom demand around `cvt tra
 
 ## Next Content Phase
 
-Do not create thin city pages. Next priorities are a reviewed CVT problems hub, focused symptom guides, and the first evidence-backed case study. The national reman program should remain quote-first until ACE fitment, inventory, freight, core, warranty, pricing, and ordering data can support a safe transaction workflow.
+Do not create thin city pages. Next priorities are focused slipping and delayed-engagement guides plus the first evidence-backed case study. The national reman program should remain quote-first until ACE authorizes a supported integration and fitment, inventory, freight, core, warranty, pricing, and ordering data can support a safe transaction workflow.
