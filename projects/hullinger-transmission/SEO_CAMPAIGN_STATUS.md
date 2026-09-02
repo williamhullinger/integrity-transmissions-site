@@ -135,12 +135,16 @@ Current 24-page expansion deployed September 2, 2026:
 - Resubmitted the sitemap in Bing Webmaster Tools and submitted both new URLs successfully.
 - Submitted all 24 canonical URLs through IndexNow; the endpoint accepted the batch with HTTP 200.
 
-Current 25-page CVT expansion staged September 2, 2026:
+Current 25-page CVT expansion deployed September 2, 2026:
 
 - Added `/guides/cvt-transmission-problems` from verified Bing search demand.
 - Added internal links from the homepage, supported-units page, reman page, symptom hub, and shared footer.
 - Added a unique CVT-specific hero, Article/Breadcrumb/FAQ structured data, manufacturer references, sitemap entry, and legacy `.html` redirect.
-- Production deployment and search-engine submission remain pending final verification.
+- Verified the live guide returns HTTP 200 with the correct title, H1, canonical, structured data, original WebP hero, and internal links.
+- Verified the legacy `.html` route permanently redirects to the clean canonical.
+- Verified the live sitemap contains all 25 canonical URLs.
+- Submitted all 25 canonical URLs through IndexNow; the endpoint accepted the batch with HTTP 200.
+- Google Search Console and Bing Webmaster Tools submission for the new CVT URL remain pending action-time approval.
 
 ## Search-Demand Baseline
 
