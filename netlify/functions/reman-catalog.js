@@ -248,7 +248,7 @@ const buildCatalog = async (vin) => {
     candidates,
     orderableSelections,
     requiresFinalConfirmation: true,
-    notice: "These prices are current for the VIN and package shown. We confirm fitment, availability, delivery, tax and core eligibility again before payment.",
+    notice: "These prices are current for the VIN and package shown. We confirm the exact transmission match, availability, delivery price, tax and core-return eligibility again before payment.",
   };
 };
 
