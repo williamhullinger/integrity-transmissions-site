@@ -167,9 +167,14 @@ const mockFetch = async (input, options = {}) => {
   if (url.pathname.endsWith("/GetFreightRates")) {
     assert.match(String(options.body), /addressState=MO/);
     assert.match(String(options.body), /roundTrip=True/);
-    return json({
+    return new Response(JSON.stringify({
       rates: [{ CarrierName: "Test Freight", ServiceDays: 2, FreightCharge: 225, AccessorialCharge: 25 }],
       localRates: [],
+    }), {
+      status: 200,
+      // ACE currently returns a valid JSON freight payload with a non-JSON
+      // content type. The connector must parse the body, not reject the header.
+      headers: { "Content-Type": "text/html; charset=utf-8" },
     });
   }
   throw new Error(`Unexpected test request: ${options.method || "GET"} ${url}`);

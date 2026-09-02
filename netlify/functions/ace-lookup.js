@@ -202,13 +202,13 @@ const createAceClient = ({ username, password, fetchImpl = fetch }) => {
   });
 
   const json = async (response, label) => {
-    const contentType = response.headers.get("content-type") || "";
     const text = await response.text();
 
-    if (!response.ok || !/json/i.test(contentType)) {
-      if (/id=["']loginForm["']|name=["']UserName["']/i.test(text)) {
-        throw new Error("ACE session authentication expired");
-      }
+    if (/id=["']loginForm["']|name=["']UserName["']/i.test(text)) {
+      throw new Error("ACE session authentication expired");
+    }
+
+    if (!response.ok) {
       throw new Error(`${label} returned HTTP ${response.status}`);
     }
 
