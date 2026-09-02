@@ -61,8 +61,8 @@
 ========================================================= */
 
 .page-hero {
-  --page-hero-image: url("images/integrity-transmission-shop-hero.webp");
-  --page-hero-position: 58% center;
+  --page-hero-image: none;
+  --page-hero-position: center;
   position: relative;
   isolation: isolate;
   display: flex;
@@ -97,36 +97,38 @@
 }
 
 .page-hero--about {
-  --page-hero-image: url("images/96-dodge-elcamino.jpeg");
-  --page-hero-position: 58% center;
+  --page-hero-image: url("images/about-shop-hero.webp");
+  --page-hero-position: center;
 }
 
 .page-hero--services {
-  --page-hero-position: 58% center;
+  --page-hero-image: url("images/services-shop-hero.webp");
+  --page-hero-position: center;
 }
 
 .page-hero--transmissions {
-  --page-hero-image: url("images/inside-case-clean-assembly.jpeg");
-  --page-hero-position: 68% center;
+  --page-hero-image: url("images/supported-units-hero.webp");
+  --page-hero-position: center;
 }
 
 .page-hero--rebuild {
-  --page-hero-image: url("images/3-4-clutch-assembled.jpeg");
-  --page-hero-position: 70% center;
+  --page-hero-image: url("images/rebuild-options-hero.webp");
+  --page-hero-position: center;
 }
 
 .page-hero--reviews {
-  --page-hero-image: url("images/96-dodge-elcamino.jpeg");
-  --page-hero-position: 62% center;
+  --page-hero-image: url("images/customer-reviews-hero.webp");
+  --page-hero-position: center;
 }
 
 .page-hero--warranty {
-  --page-hero-image: url("images/assembled-valve-body-with-torque-paint-marks.jpeg");
-  --page-hero-position: 70% center;
+  --page-hero-image: url("images/warranty-coverage-hero.webp");
+  --page-hero-position: center;
 }
 
 .page-hero--contact {
-  --page-hero-position: 60% center;
+  --page-hero-image: url("images/contact-quote-hero.webp");
+  --page-hero-position: center;
 }
 
 .page-hero > [class*="visual-layer"] {
