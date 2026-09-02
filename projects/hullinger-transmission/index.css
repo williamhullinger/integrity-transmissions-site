@@ -37,7 +37,7 @@
 }
 
 .hero__grid {
-  width: 100%;
+  width: min(var(--container), calc(100% - clamp(2.5rem, 6vw, 6rem)));
 }
 
 .hero__content {
