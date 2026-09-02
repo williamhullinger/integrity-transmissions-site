@@ -25,3 +25,5 @@
 /reman-transmissions.html                        /reman-transmissions               301!
 /guides/transmission-problems.html               /guides/transmission-problems      301!
 /guides/cvt-transmission-problems.html           /guides/cvt-transmission-problems  301!
+/staff/ace-quote.html                            /staff/ace-quote                   301!
+/api/ace-lookup                                  /.netlify/functions/ace-lookup     200

@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
 
+Disallow: /staff/
+Disallow: /api/
+
 Sitemap: https://integritydrivetrain.com/sitemap.xml

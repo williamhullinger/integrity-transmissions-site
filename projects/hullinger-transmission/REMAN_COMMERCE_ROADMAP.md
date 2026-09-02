@@ -44,7 +44,20 @@ The NHTSA response may identify manufacturer-reported basic vehicle data. It is 
 
 ## Phase 2: Verified Quote and Payment
 
-Recommended next build:
+Status: the ACE-assisted staff lookup and quote-building portion is implemented locally. Payment and persistent order-state records remain pending.
+
+Implemented in the current release:
+
+- private staff quote desk at `/staff/ace-quote`;
+- server-side login to the existing ACE account;
+- live VIN, application, part/tag, wholesale pricing, core, warranty, included-item, warning, non-returnable and base-stock retrieval;
+- configurable Integrity margin floor using ACE suggested retail, a percentage markup and a minimum gross margin;
+- customer quote calculator with unit, freight, core, other approved items and tax separated;
+- fitment and terms confirmation required before customer quote text can be copied;
+- no supplier credentials or wholesale prices in public browser code; and
+- no ACE cart or order-placement method.
+
+Remaining Phase 2 work:
 
 - internal quote record with a unique quote ID;
 - exact VIN and confirmed transmission/application fields;
@@ -110,7 +123,7 @@ The read-only review confirmed that the portal can:
 - track orders, status, serial number, production estimate, tracking number, transactions, outstanding cores, warranty claims, and reports; and
 - provide installation documents and account policies.
 
-The portal is an excellent staff verification and ordering tool, but the observed integration calls depend on the logged-in wholesale session. Reusing those private calls from Integrity's public site would expose credentials, create a brittle dependency, and risk unapproved access. Do not scrape the portal, embed credentials in browser code, or automate order placement until ACE supplies a supported interface or written integration permission.
+The portal is an excellent staff verification and ordering tool. Integrity's staff connector now uses the account's session-authenticated lookup calls through a protected Netlify function, never through public browser code. Keep it staff-only and read-only. Do not enable public live pricing or automate order placement until ACE or TAS supplies a supported interface or written integration permission.
 
 ## ACE Policy Findings to Reflect in Quotes
 
@@ -212,4 +225,4 @@ Phase 2 can launch when:
 
 ## Immediate Next Step
 
-Ask ACE Sales Support for a supported API/feed or written integration guidance. Unless ACE provides one, build Phase 2 as a secure manual-review workflow: customer VIN request, staff portal verification, approved quote with markup, full payment, manual ACE order, then order/tracking/core status updates.
+Configure the protected Netlify runtime variables, production-test the staff connector with a non-customer VIN, and ask ACE/TAS for a supported API/feed or written integration authorization. Until that response arrives, use the implemented workflow: customer VIN request, live staff ACE lookup, manually approved quote with markup, full payment, manual ACE order, then order/tracking/core status updates.

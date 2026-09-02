@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ACE Reman Quote Desk | Integrity Staff</title>
+  <meta name="description" content="Private staff workflow for VIN lookup, ACE reman pricing review and Integrity customer quote preparation.">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <meta name="theme-color" content="#111111">
+  <link rel="icon" type="image/png" href="/images/integrity-logo-ITD.png">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/modern-pages.css">
+  <link rel="stylesheet" href="/staff/ace-quote.css">
+</head>
+<body class="staff-page">
+  <header class="staff-header">
+    <a class="staff-brand" href="/" aria-label="Integrity Transmission & Drivetrain home">
+      <img src="/images/integrity-logo-ITD.png" alt="Integrity Transmission & Drivetrain" width="454" height="246">
+      <span><strong>Integrity</strong> Reman Quote Desk</span>
+    </a>
+    <a class="btn btn-secondary" href="https://tasworkflow.com/ace/OnlineOrdering/OrderParts" target="_blank" rel="noopener noreferrer">Open ACE Portal</a>
+  </header>
+
+  <main class="staff-shell">
+    <section class="staff-intro">
+      <p class="eyebrow">Staff Only</p>
+      <h1>VIN-to-quote workspace</h1>
+      <p>Retrieve ACE fitment candidates and current account pricing, apply Integrity's pricing floor, and prepare a customer-facing quote without exposing supplier credentials or wholesale cost.</p>
+    </section>
+
+    <section class="staff-panel" aria-labelledby="lookup-title">
+      <div class="staff-panel__heading">
+        <div>
+          <p class="eyebrow">Step 1</p>
+          <h2 id="lookup-title">Look up the application</h2>
+        </div>
+        <span class="staff-badge">No order is placed</span>
+      </div>
+
+      <form class="staff-form" data-ace-lookup-form>
+        <div class="staff-field staff-field--token">
+          <label for="ace-admin-token">Staff access token</label>
+          <input id="ace-admin-token" type="password" autocomplete="off" spellcheck="false" required data-ace-token>
+          <small>Stored only for this browser session. This is not the ACE password.</small>
+        </div>
+        <div class="staff-field">
+          <label for="ace-vin">17-digit VIN</label>
+          <input id="ace-vin" type="text" inputmode="text" autocomplete="off" minlength="17" maxlength="17" spellcheck="false" required data-ace-vin>
+        </div>
+        <button class="btn btn-primary" type="submit" data-ace-submit>Check ACE Fitment & Pricing</button>
+      </form>
+
+      <div class="staff-status" data-ace-status data-state="idle" aria-live="polite">
+        <strong>Ready for a VIN</strong>
+        <span>The supplier login and wholesale pricing remain on the server.</span>
+      </div>
+    </section>
+
+    <section class="staff-results" data-ace-results hidden aria-labelledby="results-title">
+      <div class="staff-panel__heading">
+        <div>
+          <p class="eyebrow">Step 2</p>
+          <h2 id="results-title">Review the ACE matches</h2>
+        </div>
+        <span class="staff-checked-at" data-checked-at></span>
+      </div>
+      <div class="staff-vehicle" data-ace-vehicle></div>
+      <div class="staff-candidates" data-ace-candidates></div>
+    </section>
+
+    <section class="staff-panel staff-quote-builder" data-quote-builder hidden aria-labelledby="quote-title">
+      <div class="staff-panel__heading">
+        <div>
+          <p class="eyebrow">Step 3</p>
+          <h2 id="quote-title">Build the customer quote</h2>
+        </div>
+        <span class="staff-badge staff-badge--orange">Full payment before ordering</span>
+      </div>
+
+      <div class="selected-package" data-selected-package></div>
+
+      <div class="quote-calculator">
+        <label>Transmission package
+          <input type="number" min="0" step="0.01" data-quote-unit>
+        </label>
+        <label>Freight & accessorials
+          <input type="number" min="0" step="0.01" value="0" data-quote-freight>
+        </label>
+        <label>Refundable core deposit
+          <input type="number" min="0" step="0.01" value="0" data-quote-core>
+        </label>
+        <label>Other approved items
+          <input type="number" min="0" step="0.01" value="0" data-quote-other>
+        </label>
+        <label>Sales tax
+          <input type="number" min="0" step="0.01" value="0" data-quote-tax>
+        </label>
+        <label>Quote expiration
+          <input type="date" data-quote-expiration>
+        </label>
+      </div>
+
+      <div class="quote-total">
+        <span>Customer total</span>
+        <strong data-quote-total>$0.00</strong>
+      </div>
+
+      <label class="staff-confirmation">
+        <input type="checkbox" data-fitment-confirmed>
+        <span>I verified the exact tag/application, availability, package contents, warranty, freight, core, programming and installer requirements in ACE.</span>
+      </label>
+
+      <div class="staff-actions">
+        <button class="btn btn-primary" type="button" data-copy-quote disabled>Copy Customer Quote</button>
+        <button class="btn btn-dark" type="button" data-reset-quote>Clear Selection</button>
+      </div>
+      <p class="staff-note">This tool prepares a quote only. Payment and the supplier order remain separate approval steps.</p>
+    </section>
+  </main>
+
+  <script src="/staff/ace-quote.js" defer></script>
+</body>
+</html>

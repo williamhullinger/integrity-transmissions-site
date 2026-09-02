@@ -66,6 +66,8 @@ The staged site contains 25 indexable canonical URLs, two noindexed conversion-c
 - Search-demand-driven transmission warning-sign and symptom guide
 - Search-demand-driven CVT problems guide with manufacturer references and an original hero
 - Documented content roadmap, real-case-study workflow, backlink campaign, and reman commerce roadmap
+- Private ACE staff connector and noindexed quote desk for live VIN, fitment, pricing, warranty, core and base-stock review
+- Expanded reman intake fields for ACE-ready freight, warranty, labor, programming and core-return review
 
 ## Business Rules Reflected in the Site
 

@@ -373,6 +373,7 @@
         >
           <input type="hidden" name="form-name" value="reman-transmission-quote">
           <input type="hidden" name="request-type" value="Nationwide reman transmission quote">
+          <input type="hidden" name="supplier-workflow" value="ACE fitment, price and availability review required">
           <input type="hidden" name="decoded-vehicle" value="">
           <p class="form-hidden"><label>Do not fill this out if you are human: <input name="bot-field"></label></p>
 
@@ -410,7 +411,19 @@
               <input id="reman-email" name="email" type="email" autocomplete="email" required>
             </div>
             <div class="form-field">
-              <label for="shipping-zip">Destination ZIP Code</label>
+              <label for="shipping-street">Delivery Street Address</label>
+              <input id="shipping-street" name="shipping-street" type="text" autocomplete="street-address" required>
+            </div>
+            <div class="form-field">
+              <label for="shipping-city">Delivery City</label>
+              <input id="shipping-city" name="shipping-city" type="text" autocomplete="address-level2" required>
+            </div>
+            <div class="form-field">
+              <label for="shipping-state">State</label>
+              <input id="shipping-state" name="shipping-state" type="text" autocomplete="address-level1" maxlength="30" required>
+            </div>
+            <div class="form-field">
+              <label for="shipping-zip">ZIP Code</label>
               <input id="shipping-zip" name="shipping-zip" type="text" inputmode="numeric" autocomplete="postal-code" maxlength="10" required>
             </div>
             <div class="form-field form-field--full">
@@ -469,6 +482,46 @@
                 <option value="Installer still needed">I still need an installer</option>
                 <option value="Repair shop ordering">I am a repair shop</option>
                 <option value="Local installation requested">Request local coordinated installation</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label for="warranty-preference">Warranty Preference</label>
+              <select id="warranty-preference" name="warranty-preference" required>
+                <option value="">Select one</option>
+                <option value="Show both current warranty options">Show me both current warranty options</option>
+                <option value="18 month / 18,000 mile option">18 months / 18,000 miles</option>
+                <option value="3 year / unlimited mile option">3 years / unlimited miles</option>
+                <option value="Best value recommended">Recommend the best value</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label for="labor-coverage">Warranty Labor Preference</label>
+              <select id="labor-coverage" name="warranty-labor-preference" required>
+                <option value="">Select one</option>
+                <option value="Show standard and premium labor options">Show standard and premium options</option>
+                <option value="Standard labor coverage">Standard labor coverage</option>
+                <option value="Premium labor coverage if eligible">Premium labor coverage if eligible</option>
+                <option value="No preference">No preference</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label for="programming-capability">Programming & Relearn</label>
+              <select id="programming-capability" name="programming-capability" required>
+                <option value="">Select one</option>
+                <option value="Installer can program and perform relearn">Installer can program and perform the required relearn</option>
+                <option value="Dealership programming will be arranged">Dealership programming will be arranged</option>
+                <option value="Need programming assistance">I need help arranging programming</option>
+                <option value="Unknown">Not sure</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label for="core-return-freight">Core Return Freight</label>
+              <select id="core-return-freight" name="core-return-freight" required>
+                <option value="">Select one</option>
+                <option value="Include round-trip freight">Include outbound and core-return freight</option>
+                <option value="Quote outbound first">Quote outbound freight first</option>
+                <option value="Customer has freight account">I have a freight account</option>
+                <option value="Unknown">Not sure</option>
               </select>
             </div>
             <div class="form-field form-field--full">
