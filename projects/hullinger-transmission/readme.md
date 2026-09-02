@@ -36,7 +36,7 @@ Primary transmission services include:
 - Remanufactured transmission replacement
 - Transmission rebuilding
 - Bench transmission rebuilds
-- Removal and installation
+- Partner-coordinated removal and installation when included in the quote
 - Transmission diagnosis and repair
 - Towing and heavy-duty builds
 - Longevity-focused builds
@@ -132,11 +132,12 @@ Warranty information varies by repair type.
 - Transmission must be returned to Integrity for warranty evaluation/service
 - Installation-related failures may void warranty coverage
 
-### Integrity Removal & Installation Rebuilds
+### Coordinated R&R Rebuilds
 
 - Integrity-provided warranty
-- Typically 18 months
-- Warranty service is performed through Integrity
+- Typically 18 months / 18,000 miles
+- Vehicle removal and installation are arranged through the approved partner included in the quote
+- Warranty inspection and approved rebuild-related service are coordinated through Integrity
 
 ### Remanufactured Transmissions
 
@@ -158,19 +159,38 @@ The website should never imply that Integrity's in-house rebuild warranty is a n
 
 ## Current Site Architecture
 
-Primary pages include:
+Core pages include:
 
 - `index.html` — Homepage
 - `services.html` — Services overview
 - `transmissions.html` — Automatic transmission information and transmission families
-- `transmission-build-guide.html` — Rebuild types, components, testing, upgrades, towing, longevity, and performance information
+- `rebuild-guide.html` — Rebuild types, components, testing, upgrades, towing, longevity, and performance information
 - `warranty.html` — Warranty options and differences between Integrity and remanufacturer coverage
 - `contact.html` — VIN-first quote and contact flow
 - `thank-you.html` — Quote submission confirmation
 - `reviews.html` — Customer reviews / reputation content
 - `about.html` — Business information and company positioning
 
-Additional pages may be added when there is a legitimate customer, conversion, or SEO reason to create them.
+Focused service pages include:
+
+- `/services/transmission-repair`
+- `/services/transmission-replacement`
+- `/services/transmission-rebuild`
+- `/services/bench-transmission-rebuild`
+- `/services/torque-converter`
+- `/services/transfer-case`
+- `/services/differential`
+
+Focused transmission pages include:
+
+- `/transmissions/4l60e`
+- `/transmissions/6l80-6l90`
+- `/transmissions/10r80`
+- `/transmissions/68rfe`
+- `/transmissions/700r4`
+- `/transmissions/4l80e`
+
+The site also includes `/service-area`, two noindexed confirmation pages, and a custom `404.html` page. The campaign now contains 22 indexable canonical URLs.
 
 The site should not create thin pages solely to increase page count.
 
@@ -390,7 +410,7 @@ The project includes:
 - `sitemap.xml`
 - `robots.txt`
 
-The sitemap has been submitted through Google Search Console.
+The previous eight-page sitemap was submitted through Google Search Console. The expanded 22-URL sitemap must be resubmitted after this campaign is deployed.
 
 New indexable pages should be added to the sitemap when they are published.
 
@@ -428,14 +448,19 @@ JavaScript is intentionally lightweight.
 Primary scripts include:
 
     script.js
-    js/partials.js
+    scripts/generate-seo-pages.mjs
+    scripts/generate-sitemap.mjs
+    scripts/normalize-urls.mjs
+    scripts/sync-partials.mjs
+    scripts/audit-seo.mjs
 
 JavaScript responsibilities may include:
 
 - interactive gallery/carousel behavior
 - reusable UI behavior
-- partial loading
 - navigation-related functionality
+- privacy-safe conversion event hooks
+- generation and validation of the focused SEO pages
 
 JavaScript should not unexpectedly alter scroll position or interfere with normal page navigation.
 
@@ -445,16 +470,16 @@ Any new JavaScript functionality should be tested against the entire site before
 
 ## Shared Partials
 
-Reusable site elements are loaded from the `partials/` directory.
+Reusable site elements are maintained in the `partials/` directory.
 
 Examples:
 
     partials/header.html
     partials/footer.html
 
-`js/partials.js` handles partial inclusion.
+`scripts/sync-partials.mjs` embeds the shared header and footer into every HTML page before deployment.
 
-This allows navigation and footer updates to be made centrally rather than manually updating every page.
+This keeps navigation and footer updates centralized while ensuring search crawlers and visitors receive the complete navigation in the initial HTML response without client-side fetching.
 
 ---
 
@@ -517,6 +542,13 @@ Local development is performed in VS Code.
 
 Typical workflow:
 
+    node scripts/generate-seo-pages.mjs
+    node scripts/normalize-urls.mjs
+    node scripts/sync-partials.mjs
+    node scripts/generate-sitemap.mjs
+    node scripts/audit-seo.mjs
+    node scripts/test-production-routes.mjs
+    node scripts/submit-indexnow.mjs
     git status
     git add .
     git commit -m "Describe changes"
@@ -561,6 +593,12 @@ Major work completed or substantially developed:
 - structured data foundation
 - local SEO foundation
 - internal-linking architecture
+- 14 focused service, service-area, and transmission landing pages
+- clean extensionless canonical URLs
+- legacy `.html` redirect rules
+- static crawlable navigation and footer
+- custom 404 and production headers
+- automated SEO audit and sitemap generation
 
 ---
 
@@ -570,20 +608,14 @@ Primary remaining work includes:
 
 - About page audit/refinement
 - Reviews page audit/refinement
-- final site-wide SEO audit
-- internal-link audit
-- metadata consistency audit
-- schema validation
-- sitemap verification
 - Search Console indexing review
-- broken-link testing
-- redirect / 404 review
+- Bing Webmaster Tools setup and sitemap submission
+- IndexNow setup and URL submission
 - mobile usability testing
 - accessibility review
-- image optimization
 - performance optimization
 - Core Web Vitals review
-- conversion tracking / analytics
+- connect the existing conversion event hooks to the selected analytics platform
 - Google Business Profile alignment
 - review/reputation strategy
 - continued content expansion based on actual search opportunity
@@ -596,9 +628,8 @@ Potential future additions should be driven by customer usefulness or measurable
 
 Possible additions include:
 
-- high-value individual transmission landing pages
+- symptom-specific pages supported by real search demand
 - application-specific transmission guides
-- selected service-area pages
 - additional technical FAQs
 - diagnostic educational content
 - towing/performance transmission content
@@ -607,7 +638,7 @@ Possible additions include:
 - review integration
 - analytics and conversion reporting
 
-The project should remain focused on generating transmission business rather than becoming an unnecessarily large technical encyclopedia.
+The project should remain focused on generating qualified transmission business rather than becoming an unnecessarily large technical encyclopedia or a collection of thin city pages.
 
 ---
 

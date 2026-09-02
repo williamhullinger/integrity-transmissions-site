@@ -107,9 +107,19 @@ function initActiveNavLink() {
 
   if (!navLinks.length) return;
 
-  const currentPath = window.location.pathname;
-  const currentFile = currentPath.split("/").pop() || "index.html";
-  const currentPage = currentFile.replace(".html", "") || "index";
+  const currentPath = window.location.pathname.replace(/\/+$/, "") || "/";
+  const currentFile = currentPath.split("/").pop() || "index";
+  let currentPage = currentFile.replace(".html", "") || "index";
+
+  if (currentPath.startsWith("/services/")) {
+    currentPage = "services";
+  } else if (currentPath.startsWith("/transmissions/")) {
+    currentPage = "transmissions";
+  } else if (currentPath === "/service-area") {
+    currentPage = "services";
+  } else if (currentPath === "/") {
+    currentPage = "index";
+  }
 
   navLinks.forEach((link) => {
     const linkPage = link.getAttribute("data-nav-link");
@@ -130,6 +140,49 @@ function initActiveNavLink() {
 
 
 /* =========================================================
+  PRIVACY-SAFE CONVERSION EVENT HOOKS
+========================================================= */
+
+function pushConversionEvent(eventName, details = {}) {
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({
+    event: eventName,
+    ...details,
+  });
+}
+
+function initConversionTracking() {
+  document.addEventListener("click", (event) => {
+    const link = event.target.closest("a[href]");
+
+    if (!link) return;
+
+    const href = link.getAttribute("href") || "";
+
+    if (href.startsWith("tel:")) {
+      pushConversionEvent("phone_click", { page_path: window.location.pathname });
+    } else if (href.startsWith("sms:")) {
+      pushConversionEvent("text_click", { page_path: window.location.pathname });
+    } else if (href.includes("/contact") || href.includes("contact.html")) {
+      pushConversionEvent("quote_cta_click", {
+        page_path: window.location.pathname,
+        destination: href,
+      });
+    }
+  });
+
+  document.querySelectorAll("form").forEach((form) => {
+    form.addEventListener("submit", () => {
+      pushConversionEvent("quote_form_submit", {
+        page_path: window.location.pathname,
+        form_name: form.getAttribute("name") || form.id || "unknown",
+      });
+    });
+  });
+}
+
+
+/* =========================================================
   GLOBAL SITE INITIALIZATION
 ========================================================= */
 
@@ -137,6 +190,7 @@ function initSiteScripts() {
   initSiteNavigation();
   initCurrentYear();
   initActiveNavLink();
+  initConversionTracking();
 }
 
 

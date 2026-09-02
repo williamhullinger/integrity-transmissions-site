@@ -18,8 +18,8 @@
 
   <link rel="canonical" href="https://integritydrivetrain.com/">
 
-  <link rel="icon" href="images/favicon.ico">
-  <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/integrity-logo-ITD.png">
+  <link rel="apple-touch-icon" href="/images/integrity-logo-ITD.png">
 
   <link
     rel="stylesheet"
@@ -40,7 +40,7 @@
   <meta property="og:locale" content="en_US">
   <meta
     property="og:image"
-    content="https://integritydrivetrain.com/images/og-integrity-drivetrain.jpg"
+    content="https://integritydrivetrain.com/images/homepage-owner-patch-hero.webp"
   >
   <meta
     property="og:image:alt"
@@ -58,7 +58,7 @@
   >
   <meta
     name="twitter:image"
-    content="https://integritydrivetrain.com/images/og-integrity-drivetrain.jpg"
+    content="https://integritydrivetrain.com/images/homepage-owner-patch-hero.webp"
   >
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -70,6 +70,7 @@
 
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="index.css">
+  <link rel="stylesheet" href="/seo-landing.css">
 
   <script src="script.js" defer></script>
 
@@ -85,8 +86,8 @@
         "telephone": "+14178153315",
         "email": "info@integritydrivetrain.com",
         "priceRange": "$$",
-        "image": "https://integritydrivetrain.com/images/og-integrity-drivetrain.jpg",
-        "logo": "https://integritydrivetrain.com/images/integrity-logo.png",
+        "image": "https://integritydrivetrain.com/images/homepage-owner-patch-hero.webp",
+        "logo": "https://integritydrivetrain.com/images/integrity-logo-ITD.png",
         "description": "Integrity Transmission & Drivetrain provides transmission repair, rebuilds, remanufactured transmission replacement, drivetrain service, and select automotive repair in Springfield and Southwest Missouri.",
         "slogan": "Honest work. No shortcuts. Built to last.",
         "areaServed": [
@@ -188,7 +189,76 @@
 
 <body class="home-page">
 
-  <div data-include="partials/header.html"></div>
+  <!-- SITE_HEADER_START -->
+<!-- =========================================================
+  GLOBAL SITE HEADER
+========================================================= -->
+<a class="skip-link" href="#main-content">Skip to main content</a>
+
+<header class="site-header" data-site-header>
+  <div class="topbar">
+    <div class="container topbar__inner">
+      <p class="topbar__text">
+        Transmission Rebuilds • Bench Builds • Transfer Cases • Differentials • Southwest Missouri
+      </p>
+
+      <div class="topbar__links" aria-label="Quick contact links">
+        <a href="tel:14178153315">Call: (417) 815-3315</a>
+        <a href="sms:14178153315">Text the Shop</a>
+        <a href="https://www.facebook.com/share/1BafrbBeyF/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer">
+  <i class="fa-brands fa-facebook-f"></i>
+</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-header">
+    <div class="container main-header__inner">
+      <a class="brand" href="/" aria-label="Integrity Transmission & Drivetrain home">
+        <span class="brand__logo-frame">
+          <img
+            class="brand__logo"
+            src="/images/integrity-logo-ITD.png"
+            alt="Integrity Transmission & Drivetrain logo"
+            width="454"
+            height="246"
+            decoding="async"
+          >
+        </span>
+
+        <span class="brand__copy">
+          <strong>Integrity</strong>
+          <span>Transmission & Drivetrain</span>
+        </span>
+      </a>
+
+      <button
+        class="nav-toggle"
+        type="button"
+        aria-label="Open navigation"
+        aria-controls="site-nav"
+        aria-expanded="false"
+        data-nav-toggle
+      >
+        <span class="nav-toggle__line"></span>
+        <span class="nav-toggle__line"></span>
+        <span class="nav-toggle__line"></span>
+      </button>
+
+      <nav class="site-nav" id="site-nav" aria-label="Main navigation" data-site-nav>
+        <a class="site-nav__link" href="/" data-nav-link="index">Home</a>
+        <a class="site-nav__link" href="/about" data-nav-link="about">About</a>
+        <a class="site-nav__link" href="/services" data-nav-link="services">Services</a>
+        <a class="site-nav__link" href="/transmissions" data-nav-link="transmissions">Supported Units</a>
+        <a class="site-nav__link" href="/rebuild-guide" data-nav-link="rebuild-guide">Rebuild Options</a>
+        <a class="site-nav__link" href="/reviews" data-nav-link="reviews">Reviews</a>
+        <a class="site-nav__link" href="/warranty" data-nav-link="warranty">Warranty</a>
+        <a class="site-nav__link site-nav__link--button" href="/contact" data-nav-link="contact">Get Quote</a>
+      </nav>
+    </div>
+  </div>
+</header>
+  <!-- SITE_HEADER_END -->
 
   <main id="main-content">
 
@@ -227,7 +297,7 @@
           </p>
 
           <div class="hero__actions">
-            <a href="contact.html#quote-form" class="btn btn-primary">
+            <a href="/contact#quote-form" class="btn btn-primary">
               Get a Transmission Quote
             </a>
 
@@ -394,7 +464,7 @@
             updated components, and final testing before shipment.
           </p>
 
-          <a href="contact.html#quote-form">
+          <a href="/contact#quote-form">
             Get a replacement quote
           </a>
         </article>
@@ -408,12 +478,12 @@
           </h3>
 
           <p>
-            Complete transmission removal and installation can be included along
-            with required fluid service, supporting work, programming, and
-            adaptive relearn procedures when applicable.
+            Transmission removal and installation can be coordinated through an
+            approved partner and included with required fluid service, supporting
+            work, programming, and adaptive relearn procedures when applicable.
           </p>
 
-          <a href="services.html">
+          <a href="/services">
             View transmission services
           </a>
         </article>
@@ -484,7 +554,7 @@
             your transmission and installing a remanufactured unit is surprisingly small.
           </p>
 
-          <a href="contact.html#quote-form" class="btn btn-secondary">
+          <a href="/contact#quote-form" class="btn btn-secondary">
             Compare My Options
           </a>
 
@@ -583,7 +653,7 @@
             <li>Approved labor reimbursement up to $125 per labor hour</li>
           </ul>
 
-          <a href="warranty.html" class="btn btn-dark">
+          <a href="/warranty" class="btn btn-dark">
             View Warranty Information
           </a>
 
@@ -636,6 +706,10 @@
             <img
               src="images/96-dodge-elcamino.jpeg"
               alt="1996 Dodge Cummins 4x4 and El Camino SS in the shop"
+              width="1536"
+              height="1152"
+              loading="lazy"
+              decoding="async"
             >
 
             <figcaption>
@@ -652,6 +726,10 @@
             <img
               src="images/assembled-valve-body-with-torque-paint-marks.jpeg"
               alt="Transmission valve body installed with visible torque verification marks"
+              width="1152"
+              height="1536"
+              loading="lazy"
+              decoding="async"
             >
 
             <figcaption>
@@ -668,6 +746,10 @@
             <img
               src="images/inside-case-clean-assembly.jpeg"
               alt="Clean transmission case during internal assembly"
+              width="1536"
+              height="1152"
+              loading="lazy"
+              decoding="async"
             >
 
             <figcaption>
@@ -684,6 +766,10 @@
             <img
               src="images/lotus.jpeg"
               alt="Yellow Lotus Elise in the shop for drivetrain service"
+              width="1152"
+              height="1536"
+              loading="lazy"
+              decoding="async"
             >
 
             <figcaption>
@@ -699,6 +785,10 @@
             <img
               src="images/dirty-oil-pan.jpeg"
               alt="Transmission pan showing contaminated fluid and internal debris"
+              width="1536"
+              height="1152"
+              loading="lazy"
+              decoding="async"
             >
 
             <figcaption>
@@ -715,6 +805,10 @@
             <img
               src="images/bmw z4.jpeg"
               alt="BMW Z4 on an automotive lift for drivetrain service"
+              width="1152"
+              height="1536"
+              loading="lazy"
+              decoding="async"
             >
 
             <figcaption>
@@ -730,6 +824,10 @@
             <img
               src="images/seperator-plate-damage.jpeg"
               alt="Damaged transmission separator plate found during teardown"
+              width="1536"
+              height="1152"
+              loading="lazy"
+              decoding="async"
             >
 
             <figcaption>
@@ -746,6 +844,10 @@
             <img
               src="images/88 cadillac.jpeg"
               alt="1988 Cadillac on an automotive lift during transmission service"
+              width="1152"
+              height="1536"
+              loading="lazy"
+              decoding="async"
             >
 
             <figcaption>
@@ -762,6 +864,10 @@
             <img
               src="images/seperator-plate-with-checkballs.jpeg"
               alt="Transmission separator plate with check balls positioned during assembly"
+              width="1152"
+              height="1536"
+              loading="lazy"
+              decoding="async"
             >
 
             <figcaption>
@@ -778,6 +884,10 @@
             <img
               src="images/dirt-pan-and-vb.jpeg"
               alt="Dirty transmission pan and valve body during initial inspection"
+              width="1396"
+              height="1536"
+              loading="lazy"
+              decoding="async"
             >
 
             <figcaption>
@@ -794,6 +904,10 @@
             <img
               src="images/finished-tans-converter.jpeg"
               alt="Finished rebuilt transmission with torque converter ready for pickup"
+              width="447"
+              height="447"
+              loading="lazy"
+              decoding="async"
             >
 
             <figcaption>
@@ -810,6 +924,10 @@
             <img
               src="images/3-4-clutch-assembled.jpeg"
               alt="Transmission 3-4 clutch pack during rebuild assembly"
+              width="1536"
+              height="1152"
+              loading="lazy"
+              decoding="async"
             >
 
             <figcaption>
@@ -826,6 +944,10 @@
             <img
               src="images/pump-assembled.jpeg"
               alt="Automatic transmission oil pump during assembly"
+              width="1152"
+              height="1536"
+              loading="lazy"
+              decoding="async"
             >
 
             <figcaption>
@@ -878,7 +1000,7 @@
             then complete the approved repair.
           </p>
 
-          <a href="contact.html#quote-form" class="btn btn-primary">
+          <a href="/contact#quote-form" class="btn btn-primary">
             Start My Quote
           </a>
 
@@ -961,7 +1083,7 @@
             vehicle, we will tell you before the job moves forward.
           </p>
 
-          <a href="transmissions.html" class="btn btn-secondary-dark">
+          <a href="/transmissions" class="btn btn-secondary-dark">
             View Transmission Information
           </a>
 
@@ -1030,7 +1152,7 @@
             Brake pads, rotors, and selected brake repairs for cars,
             trucks, SUVs, and vans.
           </p>
-          <a href="contact.html#quote-form">
+          <a href="/contact#quote-form">
             Request a brake quote
           </a>
         </article>
@@ -1043,7 +1165,7 @@
             Selected steering, suspension, wheel bearing, hub, CV axle,
             and related bolt-on mechanical repairs.
           </p>
-          <a href="contact.html#quote-form">
+          <a href="/contact#quote-form">
             Request a repair quote
           </a>
         </article>
@@ -1055,13 +1177,34 @@
           <p>
             Oil changes, fluid service, and selected routine automotive maintenance.
           </p>
-          <a href="contact.html#quote-form">
+          <a href="/contact#quote-form">
             Request service
           </a>
         </article>
 
       </div>
 
+    </section>
+
+
+    <!-- FOCUSED SEO GUIDES -->
+    <section class="section section-cream">
+      <div class="container">
+        <div class="section-heading">
+          <p class="eyebrow">Focused Transmission Guides</p>
+          <h2>Go directly to the service or transmission that matches the vehicle.</h2>
+          <p>These pages explain how the repair path changes by service type, transmission family, warranty and installation requirement.</p>
+        </div>
+
+        <div class="seo-resource-grid">
+          <a class="seo-resource-link" href="/services/transmission-replacement"><strong>Reman Replacement</strong><span>Complete replacement, installation planning and nationwide warranty options.</span></a>
+          <a class="seo-resource-link" href="/services/transmission-repair"><strong>Transmission Repair</strong><span>How symptoms, codes and evidence shape the next step.</span></a>
+          <a class="seo-resource-link" href="/services/transmission-rebuild"><strong>Transmission Rebuild</strong><span>Teardown, inspection, hard parts and selective rebuilding.</span></a>
+          <a class="seo-resource-link" href="/transmissions/6l80-6l90"><strong>6L80 &amp; 6L90</strong><span>GM converter, debris, programming and replacement considerations.</span></a>
+          <a class="seo-resource-link" href="/transmissions/10r80"><strong>10R80</strong><span>Ford ten-speed hydraulic, internal and adaptive concerns.</span></a>
+          <a class="seo-resource-link" href="/service-area"><strong>Service Area</strong><span>Appointment process for Springfield and Southwest Missouri.</span></a>
+        </div>
+      </div>
     </section>
 
 
@@ -1087,7 +1230,7 @@
             and what happens next.
           </p>
 
-          <a href="reviews.html" class="btn btn-secondary">
+          <a href="/reviews" class="btn btn-secondary">
             Read Customer Reviews
           </a>
         </div>
@@ -1180,9 +1323,9 @@
             Do you install the transmission?
           </h3>
           <p>
-            Yes. Complete removal and installation can be included in your quote,
-            along with fluids, supporting work, programming, and adaptive relearn
-            procedures when applicable.
+            Yes. Removal and installation can be coordinated through an approved
+            partner and included in your quote with fluids, supporting work,
+            programming, and adaptive relearn procedures when applicable.
           </p>
         </article>
 
@@ -1285,7 +1428,7 @@
             Call Now
           </a>
 
-          <a href="contact.html#quote-form" class="btn btn-secondary-dark">
+          <a href="/contact#quote-form" class="btn btn-secondary-dark">
             Request a Quote
           </a>
 
@@ -1297,9 +1440,92 @@
 
   </main>
 
-  <div data-include="partials/footer.html"></div>
+  <!-- SITE_FOOTER_START -->
+<!-- =========================================================
+  GLOBAL SITE FOOTER
+========================================================= -->
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <a class="brand brand--footer" href="/" aria-label="Integrity Transmission & Drivetrain home">
+        <span class="brand__logo-frame">
+          <img
+            class="brand__logo"
+            src="/images/integrity-logo-ITD.png"
+            alt="Integrity Transmission & Drivetrain logo"
+            width="454"
+            height="246"
+            loading="lazy"
+            decoding="async"
+          >
+        </span>
 
-  <script src="js/partials.js" defer></script>
+        <span class="brand__copy">
+          <strong>Integrity</strong>
+          <span>Transmission & Drivetrain</span>
+        </span>
+      </a>
+
+      <p>
+        Professional transmission rebuilds, bench rebuilds, transfer case repair,
+        differential service, and drivetrain work for select vehicles in Southwest Missouri.
+      </p>
+    </div>
+
+    <div class="footer-column">
+      <h2>Explore</h2>
+      <ul>
+        <li><a href="/about">About</a></li>
+        <li><a href="/services">Services</a></li>
+        <li><a href="/transmissions">Supported Units</a></li>
+        <li><a href="/rebuild-guide">Rebuild Options</a></li>
+        <li><a href="/reviews">Reviews</a></li>
+        <li><a href="/warranty">Warranty</a></li>
+        <li><a href="/service-area">Service Area</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-column">
+      <h2>Services</h2>
+      <ul>
+        <li><a href="/services/transmission-replacement">Reman Replacement</a></li>
+        <li><a href="/services/transmission-rebuild">Transmission Rebuilds</a></li>
+        <li><a href="/services/bench-transmission-rebuild">Bench Builds</a></li>
+        <li><a href="/services/transfer-case">Transfer Cases</a></li>
+        <li><a href="/services/differential">Differentials</a></li>
+        <li><a href="/contact">Quote Request</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-column footer-column--cta">
+      <h2>Contact</h2>
+      <ul>
+        <li><a href="tel:14178153315">(417) 815-3315</a></li>
+        <li><a href="sms:14178153315">Text the Shop</a></li>
+        <li><a href="mailto:info@integritydrivetrain.com">info@integritydrivetrain.com</a></li>
+        <li>
+          <a href="https://www.facebook.com/share/1BafrbBeyF/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer">
+            Facebook
+          </a>
+        </li>
+      </ul>
+
+      <a href="/contact#quote-form" class="btn btn-primary">Start Quote</a>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <div class="container footer-bottom__inner">
+      <p>
+        &copy; <span id="current-year"></span> Integrity Transmission & Drivetrain.
+        All rights reserved.
+      </p>
+      <p>Serving Springfield, Ozark, Rogersville, Nixa, Republic & Southwest Missouri.</p>
+      <p>Website by <a href="https://hullingerdigital.com/">Hullinger Digital</a>.</p>
+    </div>
+  </div>
+</footer>
+  <!-- SITE_FOOTER_END -->
 
 </body>
 </html>
