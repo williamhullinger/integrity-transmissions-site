@@ -1,0 +1,505 @@
+/* =========================================================
+  MODERN SUBPAGE SYSTEM
+  Shared visual language for primary customer-facing pages.
+========================================================= */
+
+.subpage-modern {
+  background: #f4f1ec;
+}
+
+
+/* =========================================================
+  HEADER OVER FULL-BLEED HERO
+========================================================= */
+
+.subpage-modern .site-header {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  color: #ffffff;
+  background: linear-gradient(180deg, rgba(5, 5, 5, 0.76), rgba(5, 5, 5, 0.16));
+  border-bottom-color: rgba(255, 255, 255, 0.13);
+  box-shadow: none;
+}
+
+.subpage-modern .topbar {
+  background: rgba(5, 5, 5, 0.38);
+  border-bottom-color: rgba(255, 255, 255, 0.12);
+}
+
+.subpage-modern .main-header {
+  background: transparent;
+}
+
+.subpage-modern .brand,
+.subpage-modern .brand:hover,
+.subpage-modern .brand__copy strong,
+.subpage-modern .site-nav__link {
+  color: #ffffff;
+}
+
+.subpage-modern .brand__copy span {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.subpage-modern .site-nav__link:hover,
+.subpage-modern .site-nav__link--active {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.subpage-modern .site-nav__link--button,
+.subpage-modern .site-nav__link--button:hover {
+  color: #111111;
+  background: var(--accent);
+}
+
+
+/* =========================================================
+  FULL-BLEED PAGE HERO
+========================================================= */
+
+.page-hero {
+  --page-hero-image: url("images/integrity-transmission-shop-hero.webp");
+  --page-hero-position: 58% center;
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: flex-end;
+  min-height: min(820px, 90svh);
+  overflow: hidden;
+  padding: clamp(13rem, 20vh, 16rem) 0 clamp(3.75rem, 7vh, 5.5rem);
+  color: #ffffff;
+  background: #111111;
+}
+
+.page-hero::before,
+.page-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+.page-hero::before {
+  z-index: -2;
+  background-image: var(--page-hero-image);
+  background-position: var(--page-hero-position);
+  background-size: cover;
+  transform: scale(1.012);
+}
+
+.page-hero::after {
+  z-index: -1;
+  background:
+    linear-gradient(90deg, rgba(5, 5, 5, 0.94) 0%, rgba(7, 7, 7, 0.84) 31%, rgba(7, 7, 7, 0.46) 58%, rgba(7, 7, 7, 0.14) 82%),
+    linear-gradient(180deg, rgba(5, 5, 5, 0.46) 0%, transparent 36%, rgba(5, 5, 5, 0.58) 100%);
+}
+
+.page-hero--about {
+  --page-hero-image: url("images/96-dodge-elcamino.jpeg");
+  --page-hero-position: 58% center;
+}
+
+.page-hero--services {
+  --page-hero-position: 58% center;
+}
+
+.page-hero--transmissions {
+  --page-hero-image: url("images/inside-case-clean-assembly.jpeg");
+  --page-hero-position: 68% center;
+}
+
+.page-hero--rebuild {
+  --page-hero-image: url("images/3-4-clutch-assembled.jpeg");
+  --page-hero-position: 70% center;
+}
+
+.page-hero--reviews {
+  --page-hero-image: url("images/96-dodge-elcamino.jpeg");
+  --page-hero-position: 62% center;
+}
+
+.page-hero--warranty {
+  --page-hero-image: url("images/assembled-valve-body-with-torque-paint-marks.jpeg");
+  --page-hero-position: 70% center;
+}
+
+.page-hero--contact {
+  --page-hero-position: 60% center;
+}
+
+.page-hero > [class*="visual-layer"] {
+  display: none;
+}
+
+.page-hero__grid {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  margin-inline: 0;
+  padding-inline: clamp(1.25rem, 2.5vw, 3rem);
+}
+
+.page-hero__content {
+  max-width: 760px;
+}
+
+.page-hero__grid > aside {
+  display: none;
+}
+
+.page-hero .eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 1.05rem;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.page-hero .eyebrow::before {
+  content: "";
+  width: 36px;
+  height: 2px;
+  flex: 0 0 auto;
+  background: var(--accent);
+}
+
+.page-hero h1 {
+  max-width: 780px;
+  margin: 0;
+  color: #ffffff;
+  font-family: var(--font-heading);
+  font-size: clamp(3.25rem, 5.7vw, 6.15rem);
+  line-height: 0.89;
+  letter-spacing: -0.05em;
+  text-wrap: balance;
+  text-transform: uppercase;
+  text-shadow: 0 3px 32px rgba(0, 0, 0, 0.46);
+}
+
+.page-hero [class$="__lead"] {
+  max-width: 680px;
+  margin: 1.35rem 0 0;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: clamp(1.01rem, 1.4vw, 1.16rem);
+  line-height: 1.66;
+  text-shadow: 0 2px 22px rgba(0, 0, 0, 0.44);
+}
+
+.page-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  margin-top: 1.9rem;
+}
+
+.page-hero .btn-secondary {
+  color: #ffffff;
+  background: rgba(16, 16, 16, 0.38);
+  border-color: rgba(255, 255, 255, 0.46);
+  box-shadow: none;
+  backdrop-filter: blur(10px);
+}
+
+.page-hero .btn-secondary:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.14);
+  border-color: #ffffff;
+}
+
+.page-hero .section-jump-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  max-width: 760px;
+  margin-top: 2.1rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.24);
+}
+
+.page-hero .section-jump-nav a {
+  width: auto;
+  min-height: 40px;
+  padding: 0.65rem 1rem;
+  color: rgba(255, 255, 255, 0.75);
+  background: transparent;
+  border: 0;
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0;
+  box-shadow: none;
+  font-size: 0.78rem;
+}
+
+.page-hero .section-jump-nav a:first-child {
+  padding-left: 0;
+}
+
+.page-hero .section-jump-nav a:last-child {
+  border-right: 0;
+}
+
+.page-hero .section-jump-nav a:hover,
+.page-hero .section-jump-nav a:focus-visible {
+  color: #ffffff;
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: none;
+}
+
+
+/* =========================================================
+  FULL-WIDTH SUMMARY BANDS
+========================================================= */
+
+.subpage-modern :is(
+  .services-summary,
+  .unit-summary,
+  .rebuild-summary,
+  .contact-summary
+) {
+  background: var(--accent);
+}
+
+.subpage-modern :is(
+  .services-summary__inner,
+  .unit-summary__inner,
+  .rebuild-summary__inner,
+  .contact-summary__inner
+) {
+  padding-top: 1.65rem;
+  padding-bottom: 1.65rem;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+
+/* =========================================================
+  CLEANER SURFACES
+========================================================= */
+
+.subpage-modern .section-soft {
+  background: #efede8;
+  border-color: rgba(22, 22, 22, 0.1);
+}
+
+.subpage-modern :is(
+  .about-story-panel,
+  .value-card,
+  .about-warranty-card,
+  .service-detail-card,
+  .fit-card,
+  .unit-card,
+  .fit-note-card,
+  .include-card,
+  .build-card,
+  .review-card,
+  .theme-card,
+  .leave-review-card,
+  .warranty-option,
+  .nationwide-card,
+  .bench-warranty-card,
+  .warranty-claim-card,
+  .quote-info-card,
+  .contact-option-card
+) {
+  border-radius: 10px;
+  box-shadow: none;
+}
+
+.subpage-modern :is(
+  .value-card,
+  .service-detail-card,
+  .unit-card,
+  .build-card,
+  .review-card,
+  .factor-grid article,
+  .contact-option-card
+):hover {
+  transform: none;
+  box-shadow: none;
+}
+
+
+/* =========================================================
+  DIVIDER-BASED INFORMATION ROWS
+========================================================= */
+
+.subpage-modern :is(
+  .difference-card-stack,
+  .standards-grid,
+  .about-model-cards,
+  .service-process-grid,
+  .why-services-list,
+  .decision-grid,
+  .factor-grid,
+  .drivetrain-grid,
+  .local-review-points,
+  .warranty-value-cards,
+  .warranty-condition-grid
+) {
+  gap: 0;
+  border-top: 1px solid rgba(30, 30, 30, 0.15);
+}
+
+.subpage-modern :is(
+  .difference-card-stack,
+  .standards-grid,
+  .about-model-cards,
+  .service-process-grid,
+  .why-services-list,
+  .decision-grid,
+  .factor-grid,
+  .drivetrain-grid,
+  .local-review-points,
+  .warranty-value-cards,
+  .warranty-condition-grid
+) > article {
+  padding: 1.65rem;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid rgba(30, 30, 30, 0.15);
+  border-radius: 0;
+  box-shadow: none;
+}
+
+
+/* =========================================================
+  FAQS AS EDITORIAL ROWS
+========================================================= */
+
+.subpage-modern .faq-grid {
+  gap: 0 2.5rem;
+  border-top: 1px solid rgba(30, 30, 30, 0.15);
+}
+
+.subpage-modern :is(.faq-card, .faq-item) {
+  padding: 1.7rem 0;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid rgba(30, 30, 30, 0.15);
+  border-radius: 0;
+  box-shadow: none;
+}
+
+
+/* =========================================================
+  CONTACT FORM DETAILS
+========================================================= */
+
+.subpage-modern :is(input, select, textarea) {
+  border-radius: 8px;
+}
+
+
+/* =========================================================
+  RESPONSIVE
+========================================================= */
+
+@media (max-width: 1180px) {
+  .subpage-modern .site-nav {
+    background: rgba(14, 14, 14, 0.98);
+    border-bottom-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 24px 50px rgba(0, 0, 0, 0.36);
+  }
+}
+
+@media (max-width: 980px) {
+  .subpage-modern :is(
+    .services-summary__inner,
+    .unit-summary__inner,
+    .rebuild-summary__inner,
+    .contact-summary__inner
+  ) {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .subpage-modern :is(
+    .services-summary,
+    .unit-summary,
+    .rebuild-summary,
+    .contact-summary
+  ) .btn {
+    justify-self: center;
+  }
+}
+
+@media (max-width: 720px) {
+  .page-hero {
+    min-height: 860px;
+    padding: 12.5rem 0 3.2rem;
+  }
+
+  .page-hero::before {
+    background-position: 64% center;
+  }
+
+  .page-hero::after {
+    background:
+      linear-gradient(90deg, rgba(5, 5, 5, 0.93) 0%, rgba(5, 5, 5, 0.72) 64%, rgba(5, 5, 5, 0.48) 100%),
+      linear-gradient(180deg, rgba(5, 5, 5, 0.62) 0%, rgba(5, 5, 5, 0.18) 42%, rgba(5, 5, 5, 0.74) 100%);
+  }
+
+  .page-hero h1 {
+    font-size: clamp(2.85rem, 13vw, 4.15rem);
+  }
+
+  .page-hero__actions {
+    flex-direction: column;
+  }
+
+  .page-hero .section-jump-nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0;
+  }
+
+  .page-hero .section-jump-nav a,
+  .page-hero .section-jump-nav a:first-child {
+    justify-content: flex-start;
+    padding: 0.75rem 0;
+    border-right: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+    text-align: left;
+  }
+
+  .page-hero .section-jump-nav a:nth-child(even) {
+    padding-left: 0.9rem;
+    border-left: 1px solid rgba(255, 255, 255, 0.16);
+  }
+
+  .subpage-modern .faq-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 520px) {
+  .page-hero {
+    min-height: 820px;
+  }
+
+  .page-hero h1 {
+    font-size: clamp(2.55rem, 13vw, 3.55rem);
+  }
+
+  .page-hero .eyebrow {
+    align-items: flex-start;
+    font-size: 0.69rem;
+    line-height: 1.5;
+  }
+
+  .page-hero [class$="__lead"] {
+    font-size: 1rem;
+    line-height: 1.58;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-hero::before {
+    transform: none;
+  }
+}
