@@ -97,12 +97,12 @@
 }
 
 .page-hero--about {
-  --page-hero-image: url("images/about-shop-hero.webp");
+  --page-hero-image: url("images/about-owner-hero.webp");
   --page-hero-position: center;
 }
 
 .page-hero--services {
-  --page-hero-image: url("images/services-shop-hero.webp");
+  --page-hero-image: url("images/services-owner-hero.webp");
   --page-hero-position: center;
 }
 
@@ -117,7 +117,7 @@
 }
 
 .page-hero--reviews {
-  --page-hero-image: url("images/customer-reviews-hero.webp");
+  --page-hero-image: url("images/customer-reviews-owner-hero.webp");
   --page-hero-position: center;
 }
 
@@ -127,7 +127,7 @@
 }
 
 .page-hero--contact {
-  --page-hero-image: url("images/contact-quote-hero.webp");
+  --page-hero-image: url("images/contact-owner-hero.webp");
   --page-hero-position: center;
 }
 
