@@ -25,9 +25,9 @@ Google Search Console's Links report was still processing when reviewed Septembe
 | Priority | Opportunity | Relevant link or proof | Next action | Status |
 |---:|---|---|---|---|
 | 1 | ACE Transmission relationship | Reman page, CVT guide, or a joint customer/installer resource | Send the approved integration/dealer-link request to the verified ACE Sales Support address | Recipient verified; message awaiting action-time approval |
-| 2 | ATRA | Member profile and Shop Finder listing if Integrity qualifies | Confirm membership/credential status, exact business name, service-area address policy, and profile URL | Eligibility to confirm |
-| 3 | MWACA | Legitimate member directory/profile if Integrity joins or is already a member | Confirm membership and complete a factual profile | Eligibility to confirm |
-| 4 | Springfield-area Chamber and nearby chambers | Accurate business directory/profile | Select only chambers matching the real service area and appointment model; keep name, phone, URL, and address policy consistent | Eligibility to confirm |
+| 2 | ATRA | Member profile and Shop Finder listing if Integrity qualifies | Decide whether the training, warranty, referrals, and directory value justify paid membership; confirm private-address handling before applying | Eligible category identified; paid application needs approval |
+| 3 | MWACA | Legitimate member directory/profile if Integrity joins | Decide whether the member benefits and directory justify paid shop membership; confirm private-address handling before applying | Missouri shop eligibility identified; paid application needs approval |
+| 4 | Springfield, Ozark, or Nixa chamber | Accurate business directory/profile | Choose at most the chamber that best matches real customers and business participation; confirm private-address handling and total dues before applying | Directory and application options verified; paid choice needed |
 | 5 | Installer and repair-shop partners | Reman page, installer checklist, or a co-authored case study | Identify partners that actually install, diagnose, program, tow, tune, or serve fleets; ask for a useful resource link | Partner list needed |
 | 6 | Towing, fleet, diesel, performance, body-shop, and used-car relationships | Symptom guide, reman sourcing, or case study | Build one-to-one referral/resource pages only where a real relationship exists | Partner list needed |
 | 7 | Core business citations | Homepage/service-area page | Audit Google Business Profile, Bing Places, Apple Business Connect, Yelp, BBB, and other relevant profiles for consistent service-area details | Audit after deployment |
@@ -94,6 +94,19 @@ Integrity Transmission & Drivetrain
 - Add a concise description written for that platform instead of copying a keyword list.
 - Record login owner, submission date, approval status, profile URL, and next review date.
 - Do not create duplicate listings.
+
+## Verified Membership Opportunities
+
+Reviewed September 2, 2026. These are legitimate paid relationship opportunities, not free-link submissions. Join only when the training, referrals, community access, or business benefits justify the cost without counting on a ranking increase.
+
+- [ATRA membership pricing](https://members.atra.com/membership-pricing): ATRA lists a Rebuilder category for full-service transmission shops and a Technical Subscriber category for general repair/service shops. Listed benefits include customer referrals and a Shop Finder listing; applications require approval. Current pricing must be rechecked immediately before purchase.
+- [ATRA Shop Finder](https://members.atra.com/shopfinder): Confirms that the public directory is a real member benefit and a relevant automotive citation.
+- [MWACA membership](https://mwaca.org/membership/): MWACA accepts independently owned service or collision repair facilities in Missouri and offers a public member directory. The official site currently lists shop membership at $275; recheck before purchase.
+- [Springfield Area Chamber application](https://business.springfieldchamber.com/join): Offers a member directory and application, but the form requests business/address information. Ask the chamber how a service-area, appointment-based business is displayed before paying.
+- [Ozark Chamber application](https://business.ozarkchamber.com/membership-application): Offers paid membership and an active public directory. Confirm the correct business category, address privacy, and current dues first.
+- [Nixa Chamber membership](https://www.nixachamber.com/become-member): Its entry membership includes a digital/print directory listing and currently starts at $300 per year. Join only if Nixa community participation is part of the business plan, not solely for a backlink.
+
+No membership application or payment has been submitted.
 
 ## What Not to Do
 
