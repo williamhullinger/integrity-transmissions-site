@@ -3,6 +3,8 @@ import { createRequire } from "node:module";
 
 const require = createRequire(import.meta.url);
 const { handler, _internals } = require("../../../netlify/functions/ace-lookup.js");
+const { handler: publicHandler } = require("../../../netlify/functions/reman-catalog.js");
+const { handler: shippingHandler } = require("../../../netlify/functions/reman-shipping.js");
 
 const loginHtml = `
   <form id="loginForm" method="post">
@@ -71,6 +73,30 @@ const partInfo = {
         },
       ],
     },
+    {
+      UpgradeLevelUID: "1000-upgrade",
+      UpgradeLevelName: "1000",
+      Description: "Heavy-duty calibration and component package",
+      IsOffered: true,
+      IsNonReturnable: false,
+      VendorName: "Internal",
+      SuggestedPrice: 4800,
+      MinimumSuggestedListPriceCalculationList: [],
+      LineItemList: [
+        { Part: { PartNumber: "HD-KIT", Description: "Heavy-duty component package" }, Quantity: 1, SalePricePerItem: 100 },
+      ],
+      DisplayPricingList: [
+        {
+          WarrantyTypeUID: "warranty-18-hd",
+          WarrantyMonths: 18,
+          WarrantyThousandMiles: 18,
+          PricingLevelName: "Distributor Partner",
+          TransmissionPrice: 3500,
+          LineItemsTotalPrice: 100,
+          PromotionApplied: false,
+        },
+      ],
+    },
   ],
 };
 
@@ -83,7 +109,17 @@ const stockInfo = {
   IsNonReturnable: false,
   ShowWarningLabel: true,
   WarningLabel: "Programming required",
-  WarningDetail: "Calibration and relearn must be documented.",
+  WarningDetail: "Calibration and relearn must be documented. 7-10 Day lead time for units not in stock.",
+};
+
+const stockInfo1000 = {
+  LocationName: "Omaha Warehouse",
+  UpgradeQuantity: "2",
+  CoreQuantity: "1",
+  externalQuantity: "0",
+  VendorName: "Internal",
+  IsNonReturnable: false,
+  ShowWarningLabel: false,
 };
 
 const json = (body, init = {}) => new Response(JSON.stringify(body), {
@@ -125,7 +161,17 @@ const mockFetch = async (input, options = {}) => {
   }
 
   if (url.pathname.endsWith("/GetPartInfo")) return json(partInfo);
-  if (url.pathname.endsWith("/GetPartUpgradeQuantity")) return json(stockInfo);
+  if (url.pathname.endsWith("/GetPartUpgradeQuantity")) {
+    return json(url.searchParams.get("upgradeLevelName") === "1000" ? stockInfo1000 : stockInfo);
+  }
+  if (url.pathname.endsWith("/GetFreightRates")) {
+    assert.match(String(options.body), /addressState=MO/);
+    assert.match(String(options.body), /roundTrip=True/);
+    return json({
+      rates: [{ CarrierName: "Test Freight", ServiceDays: 2, FreightCharge: 225, AccessorialCharge: 25 }],
+      localRates: [],
+    });
+  }
   throw new Error(`Unexpected test request: ${options.method || "GET"} ${url}`);
 };
 
@@ -147,16 +193,15 @@ assert.deepEqual(parsedCandidates[0], {
 });
 
 assert.equal(_internals.applySuggestedCalculations(3090.2, [{ CalculationType: "Percent", Amount: 35 }]), 4171.77);
-assert.equal(_internals.retailPrice(3090.2, 4189.38, { markupPercent: 35, minimumMargin: 1000, roundTo: 25 }), 4200);
+assert.equal(_internals.retailPrice(3090.2, 4189.38, { flatMargin: 500 }), 3590.2);
 
 process.env.ACE_CONNECTOR_MODE = "staff";
 process.env.ACE_USERNAME = "test-user";
 process.env.ACE_PASSWORD = "test-password";
 process.env.ACE_LOOKUP_TOKEN = "test-token-that-is-more-than-24-characters";
-process.env.REMAN_MARKUP_PERCENT = "35";
-process.env.REMAN_MIN_MARGIN = "1000";
-process.env.REMAN_PRICE_ROUND_TO = "25";
+process.env.REMAN_MARKUP_FLAT = "500";
 process.env.REMAN_QUOTE_EXPIRY_DAYS = "7";
+process.env.ACE_PUBLIC_LOOKUP_ENABLED = "true";
 
 const originalFetch = globalThis.fetch;
 globalThis.fetch = mockFetch;
@@ -186,13 +231,59 @@ try {
   assert.equal(payload.candidates[0].coreCharge, 1500);
   assert.equal(payload.candidates[0].stock.location, "Springfield Warehouse");
   assert.equal(payload.candidates[0].upgrades[0].packages[0].wholesale, 3090.2);
-  assert.equal(payload.candidates[0].upgrades[0].packages[0].integrityRecommendedRetail, 4200);
-  assert.equal(payload.candidates[0].upgrades[0].packages[1].integrityRecommendedRetail, 4600);
+  assert.equal(payload.candidates[0].upgrades[0].packages[0].integrityRecommendedRetail, 3590.2);
+  assert.equal(payload.candidates[0].upgrades[0].packages[1].integrityRecommendedRetail, 3906);
+  assert.equal(payload.candidates[0].upgrades[0].stock.upgradeName, "Base");
+  assert.equal(payload.candidates[0].upgrades[1].stock.location, "Omaha Warehouse");
+  assert.equal(payload.candidates[0].upgrades[1].stock.quantity, 2);
   assert.equal(payload.requiresManualApproval, true);
   assert.ok(calls.some((call) => call.path.endsWith("/GetPartInfo")));
   assert.ok(calls.some((call) => call.path.endsWith("/GetPartUpgradeQuantity")));
+
+  const publicResponse = await publicHandler({
+    httpMethod: "POST",
+    headers: {
+      origin: "https://integritydrivetrain.com",
+      "x-nf-client-connection-ip": "203.0.113.10",
+    },
+    body: JSON.stringify({ vin: "1FTFW1E50JFA00000" }),
+  });
+  assert.equal(publicResponse.statusCode, 200, publicResponse.body);
+  const publicPayload = JSON.parse(publicResponse.body);
+  const serializedPublicPayload = JSON.stringify(publicPayload);
+  assert.equal(publicPayload.vehicle.model, "F-150");
+  assert.equal(publicPayload.candidates[0].upgrades[0].packages[0].customerPrice, 3590.2);
+  assert.equal(publicPayload.candidates[0].upgrades[0].packages[0].coreDeposit, 1500);
+  assert.equal(publicPayload.candidates[0].upgrades[0].availability.code, "build_to_order");
+  assert.equal(publicPayload.candidates[0].upgrades[0].availability.leadTime, "7–10 days");
+  assert.equal(publicPayload.candidates[0].upgrades[1].name, "1000");
+  assert.equal(publicPayload.candidates[0].upgrades[1].availability.code, "in_stock");
+  assert.equal(publicPayload.candidates[0].upgrades[1].availability.location, "Omaha Warehouse");
+  assert.equal(publicPayload.candidates[0].upgrades[1].packages[0].customerPrice, 4100);
+  assert.doesNotMatch(serializedPublicPayload, /wholesale|suggested retail|Distributor Partner|ACE authenticated/i);
+
+  const shippingResponse = await shippingHandler({
+    httpMethod: "POST",
+    headers: { origin: "https://integritydrivetrain.com" },
+    body: JSON.stringify({
+      vin: "1FTFW1E50JFA00000",
+      selectionId: publicPayload.candidates[0].upgrades[0].packages[0].selectionId,
+      addressLine1: "123 Main Street",
+      city: "Springfield",
+      state: "MO",
+      postalCode: "65807",
+      roundTrip: true,
+      liftgate: false,
+      residentialDelivery: false,
+    }),
+  });
+  assert.equal(shippingResponse.statusCode, 200, shippingResponse.body);
+  const shippingPayload = JSON.parse(shippingResponse.body);
+  assert.equal(shippingPayload.rates[0].carrier, "Test Freight");
+  assert.equal(shippingPayload.rates[0].customerFreightTotal, 450);
+  assert.equal(shippingPayload.rates[0].roundTrip, true);
 } finally {
   globalThis.fetch = originalFetch;
 }
 
-console.log("ACE integration test passed: authentication guard, VIN lookup, fitment parsing, pricing normalization and markup floor.");
+console.log("ACE integration test passed: staff authentication, public VIN catalog, per-upgrade stock, $500 pricing, redaction and round-trip freight.");

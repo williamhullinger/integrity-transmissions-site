@@ -10,18 +10,18 @@ The system must prevent an attractive but dangerous failure: taking payment for 
 
 ## Recommended Model
 
-Use assisted commerce rather than a public instant-buy catalog:
+Use a customer-facing live catalog with a controlled fulfillment gate:
 
-1. Customer submits the 17-digit VIN and configuration.
-2. Integrity identifies the basic vehicle data and manually verifies exact fitment.
-3. Integrity confirms supplier inventory, package contents, price, freight, core, warranty, programming, and installer conditions.
-4. Customer receives and approves a written quote.
-5. Full payment is collected before the unit and supporting parts are ordered.
-6. Integrity places the supplier order and records the supplier order number.
+1. Customer enters the 17-digit VIN and receives current matching reman options.
+2. The site shows the Integrity price, separate core deposit, upgrade choices, package contents, inventory/build-time state, and warranty choices without exposing wholesale data.
+3. Customer selects the package, supplies the delivery address, and receives available freight choices.
+4. The server refreshes fitment, inventory, price and freight before secure payment.
+5. Full payment, including the refundable core deposit, is collected by Integrity.
+6. Integrity performs the final production-split review, manually places the supplier order, and records the supplier order number.
 7. Shipment and tracking are communicated to the customer/installer.
 8. Core return and warranty documentation are tracked through completion.
 
-This creates a national sales path now without pretending a VIN decoder is a complete transmission interchange catalog.
+This creates a national sales path while keeping the high-risk supplier-order step under staff control.
 
 ## Phase 1: VIN-Assisted Quote Intake
 
@@ -32,28 +32,34 @@ Implemented:
 - top navigation tab labeled **Reman Transmissions**;
 - national landing page at `/reman-transmissions`;
 - 17-character VIN validation;
-- on-demand basic vehicle identification through the official NHTSA vPIC API;
+- live VIN/application matching through Integrity's protected server-side remanufacturer connector;
 - manual fitment disclaimer before quote or order;
 - fields for engine, drive type, transmission, mileage, vehicle use/modifications, destination ZIP, delivery type, core, installer, and symptoms/codes;
-- Netlify form capture;
-- no card collection and no order placement from the intake form;
+- public Integrity pricing calculated as current wholesale package cost plus $500;
+- live offered-upgrade, package-content, warehouse/quantity, build-time and unavailable-state display;
+- current outbound or round-trip freight lookup after address entry;
+- Netlify form capture for the selected option and final review;
+- no automated supplier order placement;
 - written boundaries for freight, expedited delivery, core return, programming, warranty, and installer responsibility;
 - original nationwide-reman hero image, FAQ content, structured data, internal links, sitemap entry, and `.html` redirect.
 
-The NHTSA response may identify manufacturer-reported basic vehicle data. It is not treated as final transmission interchange proof.
+Supplier credentials, account pricing, raw response data and wholesale cost remain server-side. Final fitment is still refreshed before payment and supplier ordering.
 
 ## Phase 2: Verified Quote and Payment
 
-Status: the ACE-assisted staff lookup and quote-building portion is implemented locally. Payment and persistent order-state records remain pending.
+Status: the ACE-assisted staff lookup, customer catalog, freight lookup and quote-building portions are implemented. Payment and persistent order-state records remain pending.
 
 Implemented in the current release:
 
 - private staff quote desk at `/staff/ace-quote`;
 - server-side login to the existing ACE account;
-- live VIN, application, part/tag, wholesale pricing, core, warranty, included-item, warning, non-returnable and base-stock retrieval;
-- configurable Integrity margin floor using ACE suggested retail, a percentage markup and a minimum gross margin;
+- live VIN, application, part/tag, wholesale pricing, core, warranty, included-item, warning, non-returnable and per-upgrade stock retrieval;
+- exact $500 Integrity unit margin;
 - customer quote calculator with unit, freight, core, other approved items and tax separated;
 - fitment and terms confirmation required before customer quote text can be copied;
+- customer-safe public options with an allowlisted response and regression test against wholesale-data leakage;
+- ACE-supplied Base/1000/2000/3000 upgrade-selection chart;
+- current carrier freight retrieval and round-trip normalization;
 - no supplier credentials or wholesale prices in public browser code; and
 - no ACE cart or order-placement method.
 
@@ -71,7 +77,7 @@ Remaining Phase 2 work:
 - confirmation email to Integrity and the customer;
 - supplier order number and tracking fields.
 
-Do not accept an unrestricted dollar amount or create an instant checkout from a decoded VIN alone.
+Do not accept an unrestricted dollar amount or create Checkout from client-supplied prices. Every Checkout Session must come from a fresh server-side selection and freight verification.
 
 ## Phase 3: Fulfillment and Core Tracking
 
@@ -96,7 +102,7 @@ Record every handoff so the customer, installer, Integrity, and supplier are wor
 
 ## Phase 4: Selective Catalog Automation
 
-Only consider public pricing or instant availability after the supplier can provide a reliable machine-readable feed or supported integration for:
+The current account connector can support public pricing and instant availability through a customer-safe server response. A supported supplier API or written authorization is still preferred before relying on it as a permanent production contract for:
 
 - VIN/application interchange;
 - current SKU and package contents;
@@ -123,7 +129,7 @@ The read-only review confirmed that the portal can:
 - track orders, status, serial number, production estimate, tracking number, transactions, outstanding cores, warranty claims, and reports; and
 - provide installation documents and account policies.
 
-The portal is an excellent staff verification and ordering tool. Integrity's staff connector now uses the account's session-authenticated lookup calls through a protected Netlify function, never through public browser code. Keep it staff-only and read-only. Do not enable public live pricing or automate order placement until ACE or TAS supplies a supported interface or written integration permission.
+The portal is an excellent source for staff verification and ordering. Integrity's connector now performs customer-requested read-only lookups through a protected Netlify function; public browser code receives only allowlisted retail data. Keep supplier ordering manual until ACE or TAS supplies supported order semantics or written integration permission.
 
 ## ACE Policy Findings to Reflect in Quotes
 
@@ -145,16 +151,15 @@ Keep ACE wholesale cost private and calculate customer pricing only in a secure 
 
 `customer total = approved unit/package + Integrity margin + freight/accessorials + core deposit + applicable tax`
 
-Recommended margin logic:
+Approved margin logic:
 
-- apply a percentage margin to the approved transmission, required kit, and selected warranty package;
-- enforce a fixed minimum gross-margin floor so low-cost units still cover VIN verification, sourcing, customer service, payment risk, order handling, tracking, and core administration;
+- add exactly $500 to the current wholesale transmission/package cost;
 - show freight and accessorials as verified line items rather than advertising free or guaranteed overnight shipping;
 - show the core deposit separately and explain that any later credit depends on ACE inspection and deadlines;
 - calculate tax from the destination and the final taxable items; and
 - generate payment only from the approved server-side quote so the customer cannot alter the amount.
 
-The percentage, minimum margin, quote-expiration period, and any policy-compliant payment-cost treatment remain Integrity business decisions. Do not publish prices until those values are approved.
+The $500 margin is approved for launch and may be changed later if operating results justify it. Do not calculate it in browser JavaScript.
 
 ## Supplier Information Needed
 
@@ -175,7 +180,7 @@ Ask ACE for:
 
 ## Integrity Business Decisions Needed
 
-- retail margin or pricing formula;
+- retail margin or pricing formula — **decided: current wholesale package cost plus $500**;
 - whether quotes expire and after how many days;
 - who is authorized to approve exact fitment;
 - supported vehicle classes and exclusions;
@@ -225,4 +230,4 @@ Phase 2 can launch when:
 
 ## Immediate Next Step
 
-Configure the protected Netlify runtime variables, production-test the staff connector with a non-customer VIN, and ask ACE/TAS for a supported API/feed or written integration authorization. Until that response arrives, use the implemented workflow: customer VIN request, live staff ACE lookup, manually approved quote with markup, full payment, manual ACE order, then order/tracking/core status updates.
+Deploy and production-test the public VIN catalog and freight flow with a non-customer VIN. Then complete hosted Stripe Checkout, webhook-confirmed payment, tax configuration, final terms and staff notification. Keep the ACE supplier order manual until the full payment-to-core workflow has been proven.

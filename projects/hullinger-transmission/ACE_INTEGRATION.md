@@ -2,90 +2,100 @@
 
 Updated: September 2, 2026
 
-## What Is Implemented
+## Implemented Architecture
 
-Integrity now has a private, server-side ACE staff connector and quote desk:
+Integrity uses one private server-side ACE connector with two controlled presentations:
 
-- customer VIN and order details enter through `/reman-transmissions`;
-- the intake now collects the full freight destination, warranty preference, warranty-labor preference, programming capability, delivery type, core condition, and core-return freight preference;
-- staff opens `/staff/ace-quote`, enters a private staff token and the customer VIN, and runs the ACE lookup;
-- the Netlify function signs into the existing ACE account on the server;
-- ACE returns the decoded application, matching tag/part candidates, current account pricing, core charge, included line items, warranty choices, suggested list price, base inventory signal, non-returnable status, and warnings;
-- the connector keeps the ACE username, password, session cookies, and supplier traffic out of browser JavaScript;
-- the staff desk applies Integrity's configured retail floor and prepares customer-facing quote text without including ACE wholesale prices;
-- staff must confirm exact fitment, availability, freight, core, warranty, programming, and installer requirements before copying the quote; and
-- the connector has no order-placement method and cannot add anything to the ACE cart.
+1. `/staff/ace-quote` shows authorized staff the VIN matches, ACE account pricing, suggested retail, included items, warranty choices, stock warnings, per-upgrade availability and the Integrity selling price.
+2. `/reman-transmissions` gives customers a separate allowlisted catalog response. It shows only the decoded vehicle, transmission application, offered upgrade levels, included-item descriptions, current Integrity price, refundable core deposit, stock/build-time status and customer-safe warnings.
 
-## Pricing Rule
+The public page never receives the ACE username, password, session cookie, supplier account level, wholesale cost, suggested retail, vendor name, raw response or internal part UID. A regression test fails if common wholesale or internal-account labels appear in the public payload.
 
-The default customer unit price is the highest of:
+The current customer pricing rule is exact:
 
-1. ACE's current suggested retail price;
-2. ACE wholesale package cost plus 35%; or
-3. ACE wholesale package cost plus a $1,000 minimum gross-margin floor.
+`Integrity transmission price = current ACE wholesale package cost + $500.00`
 
-The result rounds up to the next $25. Core, freight/accessorials, other approved items, and tax remain separate line items. All four pricing settings are runtime variables and can be changed without editing the connector.
+Freight, the refundable core deposit and applicable sales tax remain separate. No rounding or ACE suggested-retail floor is applied.
+
+## Customer Flow
+
+1. Customer enters a valid 17-character VIN.
+2. The Netlify function signs in to ACE on the server and retrieves the current application.
+3. Each offered Base/1000/2000/3000 upgrade is checked separately for pricing and stock.
+4. The page displays the Integrity price and separate core deposit for each warranty package.
+5. In-stock, build-to-order, unavailable and manual-review states are displayed distinctly.
+6. If ACE provides a build window such as 7–10 days, the customer is told that this is remanufacturer build time and does not include freight transit.
+7. Discontinued/unavailable applications cannot proceed as ordinary order selections.
+8. After the customer selects a package and supplies a delivery address, the server requests current ACE freight rates and can display outbound or round-trip freight without exposing supplier-account data.
+9. The selected package, freight choice, VIN, contact information and core acknowledgment are submitted for the final order review.
+
+The ACE-supplied “How to Choose an Upgrade” chart is included on the public page with an attribution caption. William confirmed ACE supplied the image for authorized customer use.
+
+## Core Policy Used in the Customer Copy
+
+- The core deposit is collected with the order; a saved card or delayed charge is not treated as guaranteed payment.
+- The customer has 30 days from delivery to return the correct, complete core in the supplied container.
+- The deposit is refunded after the core is received, processed and accepted under the written core terms.
+- A wrong, incomplete, disassembled, damaged or late core may receive reduced or no credit.
+- Integrity's shorter customer deadline preserves operating time inside ACE's longer account deadline.
+
+The checkout must itemize the core deposit separately so a later partial Stripe refund can be matched to the original charge.
 
 ## Required Netlify Variables
 
-Configure these as encrypted runtime values, never in Git:
+Store these as encrypted runtime values, never in Git:
 
 - `ACE_CONNECTOR_MODE=staff`
 - `ACE_USERNAME`
 - `ACE_PASSWORD`
 - `ACE_LOOKUP_TOKEN` with at least 24 random characters
-- `REMAN_MARKUP_PERCENT=35`
-- `REMAN_MIN_MARGIN=1000`
-- `REMAN_PRICE_ROUND_TO=25`
+- `ACE_PUBLIC_LOOKUP_ENABLED=true`
+- `REMAN_MARKUP_FLAT=500`
 - `REMAN_QUOTE_EXPIRY_DAYS=7`
 
-The connector returns `503` until staff mode and the required account values are configured. It returns `401` unless the separate staff token matches.
+The existing percentage, minimum-margin and round-to variables are no longer used.
 
-## Safety Boundaries
+## Availability Rules
 
-- The public reman page continues to use NHTSA only for basic vehicle information.
-- Wholesale cost is available only through the authenticated staff endpoint.
-- The private staff page is unlinked, noindexed, uncached, and blocked in `robots.txt`; the API still requires the staff token because obscurity is not security.
-- The connector performs read-only catalog, pricing, and stock checks.
-- It does not expose ACE cookies, credentials, anti-forgery tokens, raw responses, or order controls.
-- It does not promise final fitment when ACE returns multiple tag or production-split candidates.
-- It does not calculate freight automatically because ACE's freight quote depends on the exact address, accessorials, selected unit, account freight terms, and current carrier response.
-- It does not collect payment or place a supplier order.
+- **In stock:** show the returned quantity and warehouse/location name, then refresh immediately before payment.
+- **Build to order:** show zero finished units, the returned build lead time and a separate statement that carrier transit begins after shipment.
+- **Unavailable/discontinued:** block ordinary ordering and direct the customer to Integrity for another solution.
+- **No reliable lead time:** allow a manual request but do not promise a ship date or open instant payment.
+- **Non-returnable/special order:** require assisted confirmation before payment.
 
-## Supplier Integration Status
+ACE remains the source of truth. The connector does not invent warehouse quantities, build times, upgrade descriptions, package contents or warranty coverage.
 
-No public ACE or TAS API documentation, OAuth flow, API key, webhook, inventory feed, catalog export, or CSV price feed was found. The existing TAS portal exposes private session-authenticated calls for VIN, application, pricing, freight, inventory, and ordering.
+## Payment and Fulfillment Boundary
 
-The staff connector uses those account functions only for Integrity's own read-only workflow. Before customer-facing instant pricing or automatic supplier ordering is enabled, ACE or TAS should provide written approval and preferably a supported API/feed or dedicated integration credential.
+Integrity is the customer-facing merchant. Customers pay Integrity; Integrity manually places the supplier order after:
 
-Official contacts verified September 2, 2026:
+- Stripe confirms payment;
+- fitment, pricing, availability and freight have been refreshed;
+- any production split or tag ambiguity has been resolved; and
+- the order terms are accepted.
 
-- ACE Sales Support: `salessupport@acetransmissionservice.com`, (800) 821-6552
-- TAS: `sales@tasreman.com`, (417) 366-5890
+Automatic ACE cart/order submission is intentionally excluded from the first checkout release. It should be considered only after ACE/TAS provides written integration authorization, supported order semantics, duplicate-order protection, cancellation rules and order-status tracking.
 
-## Next Automation Gate
+## Checkout Work Still Gated
 
-Automatic ACE ordering should be added only after the supplier confirms:
+The hosted Stripe Checkout implementation requires:
 
-- approved authentication and rate limits;
-- fitment and production-split decision rules;
-- live inventory and lead-time semantics;
-- price, promotion, warranty, and suggested-retail fields;
-- freight, residential, liftgate, inside-delivery, pickup, and core-return rules;
-- order creation, idempotency, cancellation, status, tracking, and webhook behavior;
-- warranty and core status access; and
-- resale, branding, drop-ship, and customer-document rules.
+- a restricted Stripe secret key stored in Netlify;
+- a Stripe webhook endpoint and signing secret;
+- confirmed sales-tax registrations/calculation mode;
+- final core, cancellation, freight-damage, returns and privacy terms; and
+- a tested staff notification/order record.
 
-Even with an approved API, customer payment should create a **paid, awaiting supplier order** record. The final supplier order should require one staff confirmation until duplicate-order prevention, freight, tax, fitment, cancellation, and refund handling have been proven in production.
+Until those items are complete, the customer can retrieve live options and submit the selected package for final confirmation, but the public page must not imply that supplier fulfillment has begun.
 
 ## Validation
 
-Run from `projects/hullinger-transmission`:
+Run from the repository root:
 
 ```bash
-node scripts/test-ace-integration.mjs
-node scripts/audit-seo.mjs
-node scripts/test-production-routes.mjs
+node projects/hullinger-transmission/scripts/test-ace-integration.mjs
+node projects/hullinger-transmission/scripts/audit-seo.mjs
+node projects/hullinger-transmission/scripts/test-production-routes.mjs
 ```
 
-The ACE integration test covers the staff authorization guard, VIN response, YMME fitment submission, candidate parser, current-pricing normalization, stock response, warranty packages, core charge, suggested retail, and Integrity margin floor without connecting to or ordering from ACE. Netlify loads the function from the repository-level `netlify/functions` directory configured for this project.
+The integration test covers staff authorization, VIN matching, $500 public pricing, per-upgrade stock, build lead-time extraction, public-data redaction and round-trip freight normalization without placing an ACE or Stripe order.

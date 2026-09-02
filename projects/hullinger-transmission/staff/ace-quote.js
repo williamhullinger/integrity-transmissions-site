@@ -114,8 +114,9 @@
     const rows = [
       ["ACE wholesale", currency.format(packageData.wholesale)],
       ["ACE suggested retail", packageData.aceSuggestedRetail ? currency.format(packageData.aceSuggestedRetail) : "Not provided"],
-      ["Integrity price floor", currency.format(packageData.integrityRecommendedRetail), "retail-price"],
+      ["Integrity selling price", currency.format(packageData.integrityRecommendedRetail), "retail-price"],
       ["Core deposit", currency.format(candidate.coreCharge || 0)],
+      ["Upgrade availability", formatStock(upgrade.stock || candidate.stock)],
     ];
     rows.forEach(([label, value, className]) => {
       const dt = node("dt", "", label);

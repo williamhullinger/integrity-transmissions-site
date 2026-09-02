@@ -200,6 +200,448 @@
   color: var(--text);
 }
 
+.upgrade-guide-section {
+  background: #ffffff;
+}
+
+.upgrade-guide-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) minmax(360px, 1.18fr);
+  gap: clamp(2rem, 6vw, 5rem);
+  align-items: start;
+}
+
+.upgrade-guide-copy {
+  position: sticky;
+  top: 130px;
+}
+
+.upgrade-guide-copy h2 {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: clamp(2.35rem, 5vw, 4.5rem);
+  line-height: 0.94;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+}
+
+.upgrade-guide-copy > p,
+.upgrade-guide-copy li {
+  color: var(--text-soft);
+}
+
+.upgrade-guide-copy ul {
+  display: grid;
+  gap: 0.65rem;
+  margin: 1.4rem 0;
+  padding-left: 1.15rem;
+}
+
+.upgrade-guide-figure {
+  margin: 0;
+  padding: clamp(0.75rem, 2vw, 1.35rem);
+  background: #f8f6f2;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: 0 24px 65px rgba(25, 21, 18, 0.12);
+}
+
+.upgrade-guide-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #ffffff;
+  border-radius: 10px;
+}
+
+.upgrade-guide-figure figcaption {
+  margin-top: 0.8rem;
+  color: var(--text-soft);
+  font-size: 0.78rem;
+  text-align: center;
+}
+
+.reman-catalog {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.1rem;
+}
+
+.reman-catalog[hidden] {
+  display: none;
+}
+
+.reman-catalog__intro {
+  padding: 1.1rem;
+  color: #ffffff;
+  background: #171717;
+  border-radius: 14px;
+}
+
+.reman-catalog__eyebrow,
+.selected-reman-summary__eyebrow {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.reman-catalog__intro h3 {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: clamp(1.55rem, 3vw, 2.2rem);
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.reman-catalog__intro p {
+  margin: 0.65rem 0 0;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.84rem;
+}
+
+.reman-candidate-card {
+  padding: 1rem;
+  background: #f4f1ec;
+  border: 1px solid var(--border-strong);
+  border-radius: 14px;
+}
+
+.reman-candidate-card__heading span {
+  color: var(--accent-dark, #b5520a);
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.reman-candidate-card__heading h3 {
+  margin: 0.18rem 0 0;
+  font-family: var(--font-heading);
+  font-size: 1.75rem;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.reman-candidate-card__heading p {
+  margin: 0.45rem 0 0;
+  color: var(--text-soft);
+  font-size: 0.84rem;
+}
+
+.reman-upgrade-grid {
+  display: grid;
+  gap: 0.9rem;
+  margin-top: 1rem;
+}
+
+.reman-upgrade-card {
+  padding: 1rem;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.reman-upgrade-card__header {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.reman-upgrade-card__header h4 {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 1.45rem;
+  text-transform: uppercase;
+}
+
+.reman-stock-pill {
+  padding: 0.34rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.64rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.reman-stock-pill.is-in-stock {
+  color: #135d30;
+  background: #ddf4e5;
+}
+
+.reman-stock-pill.is-build-time {
+  color: #805000;
+  background: #fff0c7;
+}
+
+.reman-stock-pill.is-unavailable {
+  color: #8e2117;
+  background: #ffe0dc;
+}
+
+.reman-stock-pill.is-review {
+  color: #4b4b4b;
+  background: #e9e9e9;
+}
+
+.reman-availability-title {
+  display: block;
+  margin-top: 0.85rem;
+  color: var(--text);
+  font-size: 0.92rem;
+}
+
+.reman-upgrade-description {
+  margin: 0.65rem 0 0;
+  color: var(--text-soft);
+  font-size: 0.82rem;
+}
+
+.reman-availability-detail {
+  margin: 0.3rem 0 0;
+  color: var(--text-soft);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.reman-included {
+  margin-top: 0.8rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+}
+
+.reman-included summary {
+  cursor: pointer;
+  color: var(--text);
+  font-size: 0.82rem;
+  font-weight: 850;
+}
+
+.reman-included ul {
+  margin: 0.65rem 0 0;
+  padding-left: 1.1rem;
+  color: var(--text-soft);
+  font-size: 0.78rem;
+}
+
+.reman-package-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.7rem;
+  margin-top: 0.9rem;
+}
+
+.reman-package-card {
+  display: grid;
+  align-content: start;
+  padding: 0.9rem;
+  background: #fffaf5;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.reman-package-card.is-selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(244, 123, 32, 0.14);
+}
+
+.reman-package-card__warranty {
+  min-height: 2.3em;
+  color: var(--text-soft);
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.reman-package-card__price {
+  margin-top: 0.4rem;
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.reman-package-card__label {
+  margin-top: 0.2rem;
+  color: var(--text-soft);
+  font-size: 0.67rem;
+  text-transform: uppercase;
+}
+
+.reman-core-line {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: space-between;
+  margin-top: 0.8rem;
+  padding-top: 0.7rem;
+  border-top: 1px solid var(--border);
+  color: var(--text-soft);
+  font-size: 0.74rem;
+}
+
+.reman-core-line strong {
+  color: var(--text);
+}
+
+.reman-package-card__subtotal {
+  min-height: 3.2em;
+  margin: 0.55rem 0 0.8rem;
+  color: var(--text-soft);
+  font-size: 0.7rem;
+}
+
+.reman-package-card .btn {
+  align-self: end;
+  width: 100%;
+  min-height: 42px;
+  padding: 0.7rem 0.65rem;
+  font-size: 0.72rem;
+}
+
+.reman-alert {
+  margin: 0.9rem 0 0;
+  padding: 0.8rem;
+  color: #74321f;
+  background: #fff0e8;
+  border-left: 4px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  font-size: 0.8rem;
+}
+
+.selected-reman-summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.8rem;
+  align-items: center;
+  padding: 1rem;
+  color: #ffffff;
+  background: #171717;
+  border: 2px solid var(--accent);
+  border-radius: 12px;
+}
+
+.selected-reman-summary strong {
+  display: block;
+  font-size: 0.9rem;
+}
+
+.selected-reman-summary p {
+  margin: 0.35rem 0 0;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.75rem;
+}
+
+.selected-reman-summary .btn {
+  min-height: 42px;
+  padding: 0.7rem 0.8rem;
+  white-space: nowrap;
+}
+
+.reman-catalog__checked {
+  margin: 0;
+  color: var(--text-soft);
+  font-size: 0.7rem;
+  text-align: center;
+}
+
+.reman-freight-box {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.8rem;
+  align-items: center;
+  padding: 1rem;
+  background: #f5f2ed;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.reman-freight-box > div:first-child strong,
+.reman-freight-box > div:first-child span {
+  display: block;
+}
+
+.reman-freight-box > div:first-child strong {
+  color: var(--text);
+}
+
+.reman-freight-box > div:first-child span {
+  margin-top: 0.2rem;
+  color: var(--text-soft);
+  font-size: 0.78rem;
+}
+
+.reman-freight-box .btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.reman-freight-results {
+  display: grid;
+  grid-column: 1 / -1;
+  gap: 0.7rem;
+}
+
+.reman-freight-results[hidden] {
+  display: none;
+}
+
+.reman-freight-notice {
+  margin: 0;
+  color: var(--text-soft);
+  font-size: 0.76rem;
+}
+
+.reman-freight-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.6rem;
+}
+
+.reman-freight-rate {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.8rem;
+  color: var(--text);
+  text-align: left;
+  background: #ffffff;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.reman-freight-rate:hover,
+.reman-freight-rate:focus-visible,
+.reman-freight-rate.is-selected {
+  border-color: var(--accent);
+  outline: none;
+}
+
+.reman-freight-rate span {
+  color: var(--accent-dark, #b5520a);
+  font-size: 0.65rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.reman-freight-rate strong {
+  font-family: var(--font-heading);
+  font-size: 1.45rem;
+}
+
+.reman-freight-rate small {
+  color: var(--text-soft);
+  font-size: 0.7rem;
+}
+
+.selected-reman-summary__total {
+  color: #ffffff !important;
+  font-weight: 850;
+}
+
 .symptom-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -346,11 +788,13 @@
   }
 
   .vin-quote-layout,
-  .stop-driving__layout {
+  .stop-driving__layout,
+  .upgrade-guide-layout {
     grid-template-columns: 1fr;
   }
 
-  .vin-quote-copy {
+  .vin-quote-copy,
+  .upgrade-guide-copy {
     position: static;
   }
 }
@@ -364,6 +808,13 @@
   }
 
   .vin-input-row {
+    grid-template-columns: 1fr;
+  }
+
+  .reman-package-grid,
+  .selected-reman-summary,
+  .reman-freight-box,
+  .reman-freight-grid {
     grid-template-columns: 1fr;
   }
 

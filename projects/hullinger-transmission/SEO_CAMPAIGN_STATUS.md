@@ -62,12 +62,16 @@ The staged site contains 25 indexable canonical URLs, two noindexed conversion-c
 - Root-hosted IndexNow verification key and a guarded sitemap submission script
 - Generator, partial-sync, URL-normalization, sitemap, and automated SEO audit scripts
 - Nationwide reman landing page and top-level **Reman Transmissions** navigation tab
-- VIN-assisted quote intake using NHTSA vehicle data with mandatory manual fitment confirmation
+- Customer-facing live VIN catalog using the protected remanufacturer account connection
 - Search-demand-driven transmission warning-sign and symptom guide
 - Search-demand-driven CVT problems guide with manufacturer references and an original hero
 - Documented content roadmap, real-case-study workflow, backlink campaign, and reman commerce roadmap
-- Private ACE staff connector and noindexed quote desk for live VIN, fitment, pricing, warranty, core and base-stock review
-- Expanded reman intake fields for ACE-ready freight, warranty, labor, programming and core-return review
+- Private ACE staff connector and noindexed quote desk for live VIN, fitment, wholesale pricing, warranty, core and per-upgrade stock review
+- Public allowlisted reman results with wholesale cost and supplier-account data removed
+- Exact wholesale-plus-$500 Integrity pricing, separate refundable core deposit and unavailable/discontinued blocking
+- Current carrier freight lookup with outbound and round-trip core-return options
+- ACE-supplied Base/1000/2000/3000 upgrade-selection guide
+- Expanded reman intake fields for freight, warranty, labor, programming and core-return review
 
 ## Business Rules Reflected in the Site
 
@@ -148,6 +152,20 @@ Current 25-page CVT expansion deployed September 2, 2026:
 - Submitted all 25 canonical URLs through IndexNow; the endpoint accepted the batch with HTTP 200.
 - Google Search Console and Bing Webmaster Tools submission for the new CVT URL remain pending action-time approval.
 
+Customer reman storefront expansion prepared September 2, 2026:
+
+- Replaced the NHTSA-only vehicle decoder with a live, server-side remanufacturer catalog lookup.
+- The customer sees only the VIN-matched application, current Integrity price, core deposit, offered upgrade levels, included items, stock/build-time state, warranty choices and customer-safe warnings.
+- Integrity price is the current wholesale package cost plus exactly $500; ACE suggested retail and the previous $1,000 margin floor are ignored.
+- Each upgrade level receives its own inventory request; returned warehouse/location names and quantities are displayed without inventing inventory.
+- Returned lead times are labeled as remanufacturer build time and explicitly exclude carrier transit time.
+- Discontinued/unavailable applications are blocked from ordinary selection; uncertain and non-returnable applications require assisted review.
+- Current freight rates can be requested after package selection and address entry, including residential/liftgate and round-trip core-return inputs.
+- The public response is allowlisted and tested so credentials, wholesale pricing, account levels, raw supplier responses and internal UIDs remain server-side.
+- The core copy requires an upfront deposit, a 30-day customer return window from delivery, and acceptance of the eligible matching core before refund.
+- Automated tests pass for staff authorization, $500 pricing, per-upgrade stock, build lead-time parsing, redaction and round-trip freight normalization.
+- Stripe card collection is intentionally not enabled until the restricted key, webhook, tax treatment, final terms and staff order notification are configured and tested.
+
 ## Search-Demand Baseline
 
 Google Search Console, last three months as reviewed September 2, 2026:
@@ -172,4 +190,4 @@ Bing's three-month keyword view showed meaningful symptom demand around `cvt tra
 
 ## Next Content Phase
 
-Do not create thin city pages. Next priorities are focused slipping and delayed-engagement guides plus the first evidence-backed case study. The national reman program should remain quote-first until ACE authorizes a supported integration and fitment, inventory, freight, core, warranty, pricing, and ordering data can support a safe transaction workflow.
+Do not create thin city pages. Next content priorities are focused slipping and delayed-engagement guides plus the first evidence-backed case study. The commerce priority is hosted Stripe Checkout with server-side price revalidation, an itemized refundable core deposit, webhook-confirmed payment, manual ACE ordering, written terms and staff order tracking.

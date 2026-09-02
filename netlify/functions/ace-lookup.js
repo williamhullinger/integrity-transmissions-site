@@ -321,10 +321,10 @@ const createAceClient = ({ username, password, fetchImpl = fetch }) => {
       return json(response, "ACE part pricing");
     },
 
-    async getBaseStock(partUid) {
+    async getStock(partUid, upgradeLevelName = "Base") {
       const query = new URLSearchParams({
         partID: partUid,
-        upgradeLevelName: "Base",
+        upgradeLevelName,
         customerUID: "",
       });
       const response = await request(`/ace/OnlineOrdering/GetPartUpgradeQuantity?${query}`, {
@@ -335,6 +335,41 @@ const createAceClient = ({ username, password, fetchImpl = fetch }) => {
         },
       });
       return json(response, "ACE stock lookup");
+    },
+
+    async getBaseStock(partUid) {
+      return this.getStock(partUid, "Base");
+    },
+
+    async getFreightRates({
+      addressLine1,
+      addressLine2 = "",
+      city,
+      state,
+      postalCode,
+      roundTrip = true,
+      liftgate = false,
+      insideDelivery = false,
+      residentialDelivery = false,
+      vendor = "",
+    }) {
+      const response = await postForm("/ace/OnlineOrdering/GetFreightRates", [
+        ["addressLine1", addressLine1],
+        ["addressLine2", addressLine2],
+        ["addressCity", city],
+        ["addressState", state],
+        ["addressPostalCode", postalCode],
+        ["roundTrip", roundTrip ? "True" : "False"],
+        ["liftgate", liftgate ? "True" : "False"],
+        ["insideDel", insideDelivery ? "True" : "False"],
+        ["residentialDelivery", residentialDelivery ? "True" : "False"],
+        ["wholesalerUID", ""],
+        ["vendor", vendor],
+      ], {
+        Accept: "application/json",
+        "X-Requested-With": "XMLHttpRequest",
+      });
+      return json(response, "ACE freight rates");
     },
   };
 };
@@ -353,12 +388,7 @@ const applySuggestedCalculations = (basePrice, calculations) => {
   return money(price);
 };
 
-const retailPrice = (wholesale, aceSuggested, pricing) => {
-  const percentPrice = wholesale * (1 + (pricing.markupPercent / 100));
-  const minimumMarginPrice = wholesale + pricing.minimumMargin;
-  const raw = Math.max(wholesale, aceSuggested || 0, percentPrice, minimumMarginPrice);
-  return Math.ceil(raw / pricing.roundTo) * pricing.roundTo;
-};
+const retailPrice = (wholesale, _aceSuggested, pricing) => money(wholesale + pricing.flatMargin);
 
 const warrantyLabel = (price) => {
   const months = price?.WarrantyMonths;
@@ -370,7 +400,28 @@ const warrantyLabel = (price) => {
   return `${monthText}, ${mileageText}`;
 };
 
-const normalizePartInfo = (candidate, raw, stock, pricing) => {
+const normalizeStock = (stock, upgradeName = "Base") => stock && typeof stock === "object" ? {
+  upgradeName,
+  location: stock.LocationName || null,
+  quantity: Number.parseInt(stock.UpgradeQuantity, 10) || 0,
+  coreQuantity: Number.parseInt(stock.CoreQuantity, 10) || 0,
+  externalQuantity: Number.parseInt(stock.externalQuantity, 10) || 0,
+  vendor: stock.VendorName || null,
+  nonReturnable: Boolean(stock.IsNonReturnable),
+  warning: stock.ShowWarningLabel ? {
+    label: stock.WarningLabel || "",
+    detail: stripTags(stock.WarningDetail || ""),
+  } : null,
+  error: stock.ErrorLabel ? {
+    label: stock.ErrorLabel || "",
+    detail: stripTags(stock.ErrorDetail || ""),
+  } : null,
+} : null;
+
+const normalizePartInfo = (candidate, raw, stockResults, pricing) => {
+  const normalizedStocks = (Array.isArray(stockResults) ? stockResults : [{ name: "Base", stock: stockResults }])
+    .map((entry) => normalizeStock(entry?.stock, entry?.name || "Base"))
+    .filter(Boolean);
   const upgrades = [];
 
   for (const upgrade of Array.isArray(raw?.TransmissionUpgradeViewModelList) ? raw.TransmissionUpgradeViewModelList : []) {
@@ -403,11 +454,16 @@ const normalizePartInfo = (candidate, raw, stock, pricing) => {
       };
     });
 
+    const upgradeName = upgrade?.UpgradeLevelName || upgrade?.Name || (upgrades.length === 0 ? "Base" : `Upgrade ${upgrades.length + 1}`);
+    const upgradeStock = normalizedStocks.find((item) => item.upgradeName.toLowerCase() === upgradeName.toLowerCase()) || null;
+
     upgrades.push({
       upgradeLevelUid: upgrade?.UpgradeLevelUID || null,
-      name: upgrade?.UpgradeLevelName || upgrade?.Name || (upgrades.length === 0 ? "Base" : `Upgrade ${upgrades.length + 1}`),
+      name: upgradeName,
+      description: stripTags(upgrade?.Description || upgrade?.UpgradeDescription || upgrade?.Notes || ""),
       vendor: upgrade?.VendorName || null,
       nonReturnable: Boolean(upgrade?.IsNonReturnable),
+      stock: upgradeStock,
       lineItems: (Array.isArray(upgrade?.LineItemList) ? upgrade.LineItemList : []).map((item) => ({
         partNumber: item?.Part?.PartNumber || "",
         description: item?.Part?.Description || "",
@@ -421,6 +477,15 @@ const normalizePartInfo = (candidate, raw, stock, pricing) => {
   return {
     ...candidate,
     description: raw?.Description || candidate.transmission,
+    discontinued: Boolean(raw?.IsDiscontinued || raw?.IsPartDiscontinued || raw?.Discontinued),
+    warning: raw?.ShowWarningLabel ? {
+      label: raw?.WarningLabel || "",
+      detail: stripTags(raw?.WarningDetail || ""),
+    } : null,
+    error: raw?.ErrorLabel ? {
+      label: raw?.ErrorLabel || "",
+      detail: stripTags(raw?.ErrorDetail || ""),
+    } : null,
     coreCharge: money(raw?.CoreCharge),
     standardWarrantyLaborRate: money(raw?.StandardWarrantyLaborRate),
     tax: {
@@ -428,32 +493,32 @@ const normalizePartInfo = (candidate, raw, stock, pricing) => {
       shippingRate: numberValue(raw?.ShippingTaxRate),
       pickupRate: numberValue(raw?.PickupTaxRate),
     },
-    stock: stock && typeof stock === "object" ? {
-      location: stock.LocationName || null,
-      quantity: Number.parseInt(stock.UpgradeQuantity, 10) || 0,
-      coreQuantity: Number.parseInt(stock.CoreQuantity, 10) || 0,
-      externalQuantity: Number.parseInt(stock.externalQuantity, 10) || 0,
-      vendor: stock.VendorName || null,
-      nonReturnable: Boolean(stock.IsNonReturnable),
-      warning: stock.ShowWarningLabel ? {
-        label: stock.WarningLabel || "",
-        detail: stripTags(stock.WarningDetail || ""),
-      } : null,
-      error: stock.ErrorLabel ? {
-        label: stock.ErrorLabel || "",
-        detail: stripTags(stock.ErrorDetail || ""),
-      } : null,
-    } : null,
+    stock: normalizedStocks.find((item) => item.upgradeName.toLowerCase() === "base") || normalizedStocks[0] || null,
+    stocks: normalizedStocks,
     upgrades,
   };
 };
 
 const configuredPricing = () => ({
-  markupPercent: clamp(process.env.REMAN_MARKUP_PERCENT, 0, 100, 35),
-  minimumMargin: clamp(process.env.REMAN_MIN_MARGIN, 0, 10000, 1000),
-  roundTo: clamp(process.env.REMAN_PRICE_ROUND_TO, 1, 500, 25),
+  flatMargin: clamp(process.env.REMAN_MARKUP_FLAT, 0, 10000, 500),
   quoteExpirationDays: Math.round(clamp(process.env.REMAN_QUOTE_EXPIRY_DAYS, 1, 30, 7)),
 });
+
+const loadCandidateDetails = async (client, candidate, pricing) => {
+  const partInfo = await client.getPartInfo(candidate.partUid);
+  const upgradeNames = (Array.isArray(partInfo?.TransmissionUpgradeViewModelList)
+    ? partInfo.TransmissionUpgradeViewModelList
+    : [])
+    .filter((upgrade) => upgrade?.IsOffered !== false)
+    .map((upgrade) => upgrade?.UpgradeLevelName || upgrade?.Name || "Base");
+  const uniqueNames = [...new Set(upgradeNames.length ? upgradeNames : ["Base"])];
+  const stockResults = await Promise.all(uniqueNames.map(async (name) => ({
+    name,
+    stock: await client.getStock(candidate.partUid, name).catch(() => null),
+  })));
+
+  return normalizePartInfo(candidate, partInfo, stockResults, pricing);
+};
 
 const allowedOrigin = (origin) => {
   if (!origin) return true;
@@ -506,11 +571,7 @@ const handler = async (event) => {
     const candidates = [];
     for (const candidate of lookup.candidates.slice(0, 8)) {
       try {
-        const [partInfo, stock] = await Promise.all([
-          client.getPartInfo(candidate.partUid),
-          client.getBaseStock(candidate.partUid).catch(() => null),
-        ]);
-        candidates.push(normalizePartInfo(candidate, partInfo, stock, pricing));
+        candidates.push(await loadCandidateDetails(client, candidate, pricing));
       } catch (error) {
         candidates.push({ ...candidate, pricingError: error.message });
       }
@@ -549,7 +610,9 @@ exports._internals = {
   parsePartCandidates,
   applySuggestedCalculations,
   retailPrice,
+  normalizeStock,
   normalizePartInfo,
   configuredPricing,
+  loadCandidateDetails,
   createAceClient,
 };
