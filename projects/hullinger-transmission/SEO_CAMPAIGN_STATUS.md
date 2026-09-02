@@ -89,16 +89,33 @@ Expected audit baseline:
 - 14 unique focused-page heroes
 - No SEO audit errors
 
-## Required After Deployment
+## Deployment and Search Engine Submission
 
-1. Confirm all 22 canonical URLs return successful live pages.
-2. Confirm every `.html` URL permanently redirects to its clean canonical.
-3. Resubmit `https://integritydrivetrain.com/sitemap.xml` in Google Search Console.
-4. Use URL Inspection on the homepage and the highest-priority new service/model pages.
-5. Add or import the site in Bing Webmaster Tools and submit the sitemap.
-6. Verify the live IndexNow key, then submit all changed canonical URLs with `node scripts/submit-indexnow.mjs --submit`.
-7. Review indexing, queries, click-through rate, Core Web Vitals, and conversions monthly.
-8. Align Google Business Profile and third-party listings with the appointment-based service-area model.
+Completed September 2, 2026:
+
+- Confirmed all 22 canonical URLs return successful live pages.
+- Confirmed 24 legacy `.html` URLs permanently redirect to clean canonicals and the custom 404 works.
+- Resubmitted `https://integritydrivetrain.com/sitemap.xml` in Google Search Console; status is **Success**.
+- Confirmed the homepage is indexed in Google.
+- Requested Google indexing for the five highest-priority new pages:
+  - `/services/transmission-replacement`
+  - `/services/transmission-repair`
+  - `/services/transmission-rebuild`
+  - `/transmissions/6l80-6l90`
+  - `/transmissions/10r80`
+- Added and verified `integritydrivetrain.com` in Bing Webmaster Tools.
+- Submitted the sitemap in Bing Webmaster Tools; status is **Success**.
+- Submitted all 22 canonical URLs through Bing URL Submission.
+- Submitted all 22 canonical URLs through IndexNow; Bing accepted the batch with HTTP 202.
+- Scheduled an Integrity-only SEO performance review for the first day of every month at approximately 9:00 AM Central Time, beginning October 1, 2026.
+
+## Ongoing Growth Work
+
+1. Review indexing, queries, click-through rate, Core Web Vitals, and conversions monthly.
+2. Align Google Business Profile and third-party listings with the appointment-based service-area model.
+3. Earn relevant local and automotive links through supplier relationships, associations, sponsorships, and genuinely useful resources.
+4. Publish evidence-backed case studies, symptom guides, and application-specific transmission content based on Search Console demand and real customer questions.
+5. Continue collecting authentic customer reviews and respond to them consistently.
 
 ## Next Content Phase
 
