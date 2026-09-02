@@ -34,6 +34,8 @@ const preferredOrder = [
   "https://integritydrivetrain.com/transmissions/68rfe",
   "https://integritydrivetrain.com/transmissions/700r4",
   "https://integritydrivetrain.com/transmissions/4l80e",
+  "https://integritydrivetrain.com/reman-transmissions",
+  "https://integritydrivetrain.com/guides/transmission-problems",
   "https://integritydrivetrain.com/rebuild-guide",
   "https://integritydrivetrain.com/warranty",
   "https://integritydrivetrain.com/service-area",

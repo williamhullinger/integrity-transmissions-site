@@ -1,0 +1,169 @@
+# Reman Transmission Commerce Roadmap
+
+Updated: September 2, 2026
+
+## Business Objective
+
+Let a customer or repair shop anywhere in the United States start with a VIN, receive a verified remanufactured transmission option, pay Integrity, and have the approved unit shipped to the correct destination through the supplier fulfillment process.
+
+The system must prevent an attractive but dangerous failure: taking payment for a transmission that does not match the exact application, production split, calibration, converter, electronics, or installer requirements.
+
+## Recommended Model
+
+Use assisted commerce rather than a public instant-buy catalog:
+
+1. Customer submits the 17-digit VIN and configuration.
+2. Integrity identifies the basic vehicle data and manually verifies exact fitment.
+3. Integrity confirms supplier inventory, package contents, price, freight, core, warranty, programming, and installer conditions.
+4. Customer receives and approves a written quote.
+5. Full payment is collected before the unit and supporting parts are ordered.
+6. Integrity places the supplier order and records the supplier order number.
+7. Shipment and tracking are communicated to the customer/installer.
+8. Core return and warranty documentation are tracked through completion.
+
+This creates a national sales path now without pretending a VIN decoder is a complete transmission interchange catalog.
+
+## Phase 1: VIN-Assisted Quote Intake
+
+Status: built locally and ready for deployment testing.
+
+Implemented:
+
+- top navigation tab labeled **Reman Transmissions**;
+- national landing page at `/reman-transmissions`;
+- 17-character VIN validation;
+- on-demand basic vehicle identification through the official NHTSA vPIC API;
+- manual fitment disclaimer before quote or order;
+- fields for engine, drive type, transmission, mileage, vehicle use/modifications, destination ZIP, delivery type, core, installer, and symptoms/codes;
+- Netlify form capture;
+- no card collection and no order placement from the intake form;
+- written boundaries for freight, expedited delivery, core return, programming, warranty, and installer responsibility;
+- original nationwide-reman hero image, FAQ content, structured data, internal links, sitemap entry, and `.html` redirect.
+
+The NHTSA response may identify manufacturer-reported basic vehicle data. It is not treated as final transmission interchange proof.
+
+## Phase 2: Verified Quote and Payment
+
+Recommended next build:
+
+- internal quote record with a unique quote ID;
+- exact VIN and confirmed transmission/application fields;
+- supplier SKU or order reference;
+- itemized unit, converter, fluid/parts, freight, liftgate/limited-access fees, core, tax, and optional installation;
+- attached warranty, installation, programming, and core-return terms;
+- customer acceptance checkbox and timestamp;
+- Stripe Checkout or a Stripe Payment Link generated only after manual approval;
+- paid/unpaid/expired quote states;
+- full-payment rule before the supplier order button becomes available;
+- confirmation email to Integrity and the customer;
+- supplier order number and tracking fields.
+
+Do not accept an unrestricted dollar amount or create an instant checkout from a decoded VIN alone.
+
+## Phase 3: Fulfillment and Core Tracking
+
+Add an order dashboard or lightweight operations record with these states:
+
+- New VIN request
+- Needs customer information
+- Fitment review
+- Supplier quote pending
+- Written quote sent
+- Customer approved
+- Paid in full
+- Supplier order placed
+- Shipped / tracking available
+- Delivered
+- Core pickup scheduled
+- Core received/accepted
+- Warranty documents complete
+- Closed, canceled, or refunded
+
+Record every handoff so the customer, installer, Integrity, and supplier are working from the same VIN and written terms.
+
+## Phase 4: Selective Catalog Automation
+
+Only consider public pricing or instant availability after the supplier can provide a reliable machine-readable feed or supported integration for:
+
+- VIN/application interchange;
+- current SKU and package contents;
+- real inventory and lead time;
+- wholesale cost and price changes;
+- freight class, origin, destination rules, and surcharges;
+- core eligibility, charge, return label/process, and deadline;
+- warranty by application and installer type;
+- converter, fluid, cooler, programming, relearn, and documentation requirements;
+- exclusions for modified, commercial, towing, fleet, RV, or other duty cycles.
+
+No public ACE catalog or ordering API was identified during the initial review. ACE wholesale ordering access may still offer portal or export capabilities, so the account workflow must be reviewed directly before integration is designed.
+
+## Supplier Information Needed
+
+Ask ACE for:
+
+1. Written permission and approved wording for reseller/fulfillment claims.
+2. Whether wholesale ordering offers an API, inventory feed, CSV export, saved quote, or deep link.
+3. Exact application matching workflow and what identifiers supplement the VIN.
+4. Price tiers, price protection, minimum advertised price, and retail/resale restrictions.
+5. Freight timing and cutoff rules, including when expedited or overnight service is actually available.
+6. Commercial, residential, liftgate, limited-access, Alaska/Hawaii, and remote-area rules.
+7. Core charges, eligibility, return freight, deadline, damage criteria, and dispute process.
+8. Warranty documents, registration, labor terms, claim process, and installer qualifications.
+9. Torque converter, fluid, cooler, programming, relearn, and documentation requirements by unit.
+10. Cancellation, reroute, refused delivery, freight damage, return, and refund policies.
+11. Blind shipping, packing slips, branded documents, and customer communication rules.
+12. Supplier order, shipment, tracking, delivery, core, and warranty status data available to Integrity.
+
+## Integrity Business Decisions Needed
+
+- retail margin or pricing formula;
+- whether quotes expire and after how many days;
+- who is authorized to approve exact fitment;
+- supported vehicle classes and exclusions;
+- whether Integrity sells to consumers, repair shops, or both;
+- delivery destinations allowed;
+- local installation quoting workflow;
+- customer support hours and escalation owner;
+- refund/cancellation policy before and after supplier order;
+- sales-tax registration and calculation approach;
+- written terms, privacy notice, and customer consent language;
+- chargeback evidence and document retention policy.
+
+## Technical Architecture
+
+The current static Netlify site can support Phase 1. Phase 2 should add server-side functions or a small secure backend for quote IDs, payment creation, webhook verification, and order-state records.
+
+Recommended boundaries:
+
+- keep supplier credentials and Stripe secret keys server-side;
+- never place ACE portal credentials, wholesale costs, or private API keys in browser JavaScript;
+- validate VIN and quote ID again on the server;
+- create Stripe Checkout only from the approved server-side quote amount;
+- verify Stripe webhooks before marking a quote paid;
+- log consent to the exact warranty/core/freight terms shown at payment;
+- restrict staff access to customer VIN, address, and order records;
+- define retention and deletion rules for personal information.
+
+## Launch Acceptance Criteria
+
+Phase 1 can launch when:
+
+- the new page and form work on desktop and mobile;
+- VIN service failure falls back to manual review;
+- Netlify captures the new form in production;
+- confirmation routing and notification recipients are verified;
+- all wording matches real supplier and business capabilities;
+- the canonical URL, sitemap, redirects, schema, and analytics are verified live.
+
+Phase 2 can launch when:
+
+- a test quote cannot be altered by the customer;
+- payment equals the approved quote total;
+- webhook and order-state transitions are verified;
+- taxes, refund/cancellation, freight, core, installer, and warranty terms are approved;
+- a complete test order can be traced from VIN request through core completion;
+- no supplier or payment credentials are exposed in the client.
+
+## Immediate Next Step
+
+Deploy Phase 1, test a real internal VIN quote submission without placing an order, and obtain ACE's wholesale workflow and policy details. Those facts determine whether Phase 2 should integrate with a supplier system, import a price/availability feed, or remain a fast manual quote-to-payment process.

@@ -163,7 +163,7 @@ function initConversionTracking() {
       pushConversionEvent("phone_click", { page_path: window.location.pathname });
     } else if (href.startsWith("sms:")) {
       pushConversionEvent("text_click", { page_path: window.location.pathname });
-    } else if (href.includes("/contact") || href.includes("contact.html")) {
+    } else if (href.includes("/contact") || href.includes("contact.html") || href.includes("#vin-quote")) {
       pushConversionEvent("quote_cta_click", {
         page_path: window.location.pathname,
         destination: href,
@@ -172,10 +172,14 @@ function initConversionTracking() {
   });
 
   document.querySelectorAll("form").forEach((form) => {
-    form.addEventListener("submit", () => {
-      pushConversionEvent("quote_form_submit", {
-        page_path: window.location.pathname,
-        form_name: form.getAttribute("name") || form.id || "unknown",
+    form.addEventListener("submit", (event) => {
+      queueMicrotask(() => {
+        if (event.defaultPrevented) return;
+
+        pushConversionEvent("quote_form_submit", {
+          page_path: window.location.pathname,
+          form_name: form.getAttribute("name") || form.id || "unknown",
+        });
       });
     });
   });

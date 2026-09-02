@@ -1,0 +1,125 @@
+# Integrity Backlink Campaign
+
+Updated: September 2, 2026
+
+## Goal
+
+Earn relevant third-party references that improve trust, discovery, and qualified referral traffic. The campaign should favor real business relationships and genuinely useful resources over purchased links, mass directory submissions, guest-post exchanges, or keyword-stuffed anchor text.
+
+Google Search Console's Links report was still processing when reviewed September 2, 2026. Bing showed no backlink data yet for the newly added property. This document is therefore the outreach plan and starting tracker, not a claim that the links already exist.
+
+## Assets Worth Linking To
+
+| Asset | Why another site might reference it |
+|---|---|
+| `/reman-transmissions` | A VIN-first path for customers or repair shops sourcing a verified reman unit nationwide |
+| `/guides/transmission-problems` | A plain-language warning-sign and stop-driving guide |
+| `/warranty` | A clear explanation of coverage categories and why written terms control |
+| Future installer checklist | Helps shops and customers prepare for cooler, programming, fluid, documentation, freight, and core requirements |
+| Future core-return guide | Reduces shipping mistakes, missed deadlines, and avoidable core charges |
+| Real case studies | Original diagnostic and teardown evidence that associations, suppliers, shops, and owners can reference |
+
+## Opportunity Queue
+
+| Priority | Opportunity | Relevant link or proof | Next action | Status |
+|---:|---|---|---|---|
+| 1 | ACE Transmission relationship | Reman page or a joint customer/installer resource | Confirm reseller wording, fulfillment terms, and whether ACE offers an authorized dealer, partner, customer-story, or resource link | Not contacted |
+| 2 | ATRA | Member profile and Shop Finder listing if Integrity qualifies | Confirm membership/credential status, exact business name, service-area address policy, and profile URL | Eligibility to confirm |
+| 3 | MWACA | Legitimate member directory/profile if Integrity joins or is already a member | Confirm membership and complete a factual profile | Eligibility to confirm |
+| 4 | Springfield-area Chamber and nearby chambers | Accurate business directory/profile | Select only chambers matching the real service area and appointment model; keep name, phone, URL, and address policy consistent | Eligibility to confirm |
+| 5 | Installer and repair-shop partners | Reman page, installer checklist, or a co-authored case study | Identify partners that actually install, diagnose, program, tow, tune, or serve fleets; ask for a useful resource link | Partner list needed |
+| 6 | Towing, fleet, diesel, performance, body-shop, and used-car relationships | Symptom guide, reman sourcing, or case study | Build one-to-one referral/resource pages only where a real relationship exists | Partner list needed |
+| 7 | Core business citations | Homepage/service-area page | Audit Google Business Profile, Bing Places, Apple Business Connect, Yelp, BBB, and other relevant profiles for consistent service-area details | Audit after deployment |
+| 8 | Hullinger Digital portfolio | A transparent web/SEO case study crediting the real project | Publish a substantive project case study and link to Integrity naturally; avoid sitewide footer links | Draft after results exist |
+| 9 | Local automotive education | Symptom guide or a safety/diagnostic checklist | Offer a genuinely useful resource to schools, clubs, fleet groups, and community organizations when relevant | Prospect research needed |
+
+## Supplier Outreach Draft
+
+Do not send until the relationship language and recipient are confirmed.
+
+```text
+Subject: Integrity reman transmission resource and dealer-link question
+
+Hi [Name],
+
+Integrity Transmission & Drivetrain is building a VIN-first quote process for customers and repair shops that need a verified remanufactured transmission shipped nationwide. We are designing the page so fitment, package contents, freight, core, installer, programming, and warranty requirements are confirmed before payment.
+
+We plan to source supported orders through ACE under our existing business relationship. Before we publish or promote that process, can you confirm the wording we may use about the relationship and whether ACE maintains an authorized dealer, reseller, customer-story, or resource directory where Integrity could be listed?
+
+The page is: https://integritydrivetrain.com/reman-transmissions
+
+We would also be interested in a joint installer or core-return checklist if that would be useful to ACE customers.
+
+Thank you,
+[Name]
+Integrity Transmission & Drivetrain
+```
+
+## Partner Resource Outreach Draft
+
+```text
+Subject: Useful transmission warning-sign resource for your customers
+
+Hi [Name],
+
+We published a practical guide explaining common transmission symptoms, what information helps a diagnosis, and when a vehicle should stop being driven. It is written for vehicle owners without pretending a symptom alone proves the transmission has failed.
+
+Guide: https://integritydrivetrain.com/guides/transmission-problems
+
+If it is useful for your customers, fleet drivers, or service advisors, you are welcome to reference it from your resource page. If you see a technical gap, I would value the feedback and can improve the guide.
+
+We are also looking for legitimate local partners for towing, installation, programming, and fleet work, so I would be glad to discuss whether our services complement each other.
+
+Thank you,
+[Name]
+Integrity Transmission & Drivetrain
+```
+
+## Directory and Profile Rules
+
+- Use the exact legal/public-facing business name consistently.
+- Use the real phone number and canonical homepage URL.
+- Preserve the appointment-based, service-area model; do not expose a private residential address to obtain a citation.
+- Choose the most accurate primary and secondary categories.
+- Do not claim 24/7, emergency, walk-in, nationwide installation, or guaranteed overnight delivery.
+- Add a concise description written for that platform instead of copying a keyword list.
+- Record login owner, submission date, approval status, profile URL, and next review date.
+- Do not create duplicate listings.
+
+## What Not to Do
+
+- Do not buy bulk links or “domain authority” packages.
+- Do not use private blog networks, automated comment links, spun guest posts, or reciprocal link pages.
+- Do not submit to hundreds of irrelevant directories.
+- Do not use the same exact-match anchor text in every outreach request.
+- Do not invent memberships, certifications, dealer status, partnerships, or customer outcomes.
+- Do not send mass email from a scraped list.
+
+## Tracking Fields
+
+Maintain one row per opportunity with:
+
+- organization and domain;
+- relationship or relevance;
+- contact name and verified address;
+- target asset;
+- outreach angle;
+- date contacted;
+- response and follow-up date;
+- live linking page;
+- anchor/context used;
+- referral visits and leads when measurable;
+- notes on NAP consistency or membership requirements.
+
+## 90-Day Execution Order
+
+1. Deploy and index the reman and symptom pages.
+2. Confirm ACE relationship language and fulfillment details.
+3. Audit core business profiles and remove inconsistencies.
+4. Contact five real suppliers/partners individually with a relevant asset.
+5. Confirm ATRA, MWACA, and chamber eligibility before applying.
+6. Capture and publish the first evidence-backed case study.
+7. Use that case study for a second, more specific supplier/partner outreach round.
+8. Review referring domains, referral traffic, quote submissions, and responses during the monthly SEO check.
+
+External submissions, applications, profile edits, and outreach messages must be reviewed immediately before they are sent.

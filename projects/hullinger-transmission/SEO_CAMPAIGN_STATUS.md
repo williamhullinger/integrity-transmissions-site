@@ -6,7 +6,7 @@ Updated: September 2, 2026
 
 This campaign is for **Integrity Transmission & Drivetrain** and the production domain `https://integritydrivetrain.com/`.
 
-The site contains 22 indexable canonical URLs, two noindexed conversion-confirmation pages, and a noindexed custom 404 page.
+The staged site contains 24 indexable canonical URLs, two noindexed conversion-confirmation pages, and a noindexed custom 404 page.
 
 ### Core URLs
 
@@ -14,6 +14,7 @@ The site contains 22 indexable canonical URLs, two noindexed conversion-confirma
 - `/about`
 - `/services`
 - `/transmissions`
+- `/reman-transmissions`
 - `/rebuild-guide`
 - `/reviews`
 - `/warranty`
@@ -39,22 +40,30 @@ The site contains 22 indexable canonical URLs, two noindexed conversion-confirma
 - `/transmissions/700r4`
 - `/transmissions/4l80e`
 
+### Search-Demand Guide URLs
+
+- `/guides/transmission-problems`
+
 ## Completed On-Site Work
 
 - Unique titles, descriptions, H1s, canonicals, Open Graph metadata, and structured data
 - Original service- and transmission-specific copy
 - Four useful FAQs on every new landing page
-- Fourteen distinct optimized hero images with reserved dimensions
+- Fifteen distinct optimized focused-page hero images with reserved dimensions
 - Static crawlable header and footer on every page
 - Clean extensionless internal links and canonical URLs
 - Permanent redirects from legacy `.html` URLs
-- 22-URL XML sitemap with `lastmod`
+- 24-URL XML sitemap with `lastmod`
 - `robots.txt`, custom 404, and production response headers
 - Internal topic links from the homepage, services, transmissions, rebuild guide, footer, and related-page sections
 - Noindexed quote and review confirmation pages
 - Privacy-safe `dataLayer` conversion hooks for call, text, quote CTA, and form-submit actions
 - Root-hosted IndexNow verification key and a guarded sitemap submission script
 - Generator, partial-sync, URL-normalization, sitemap, and automated SEO audit scripts
+- Nationwide reman landing page and top-level **Reman Transmissions** navigation tab
+- VIN-assisted quote intake using NHTSA vehicle data with mandatory manual fitment confirmation
+- Search-demand-driven transmission warning-sign and symptom guide
+- Documented content roadmap, real-case-study workflow, backlink campaign, and reman commerce roadmap
 
 ## Business Rules Reflected in the Site
 
@@ -79,19 +88,20 @@ node scripts/sync-partials.mjs
 node scripts/generate-sitemap.mjs
 node scripts/audit-seo.mjs
 node scripts/test-production-routes.mjs
+node scripts/preview-site.mjs
 node scripts/submit-indexnow.mjs
 ```
 
 Expected audit baseline:
 
-- 25 HTML files
-- 22 indexable pages
-- 14 unique focused-page heroes
+- 27 HTML files
+- 24 indexable pages
+- 15 unique focused-page heroes
 - No SEO audit errors
 
 ## Deployment and Search Engine Submission
 
-Completed September 2, 2026:
+Initial 22-page campaign completed September 2, 2026:
 
 - Confirmed all 22 canonical URLs return successful live pages.
 - Confirmed 24 legacy `.html` URLs permanently redirect to clean canonicals and the custom 404 works.
@@ -109,14 +119,36 @@ Completed September 2, 2026:
 - Submitted all 22 canonical URLs through IndexNow; Bing accepted the batch with HTTP 202.
 - Scheduled an Integrity-only SEO performance review for the first day of every month at approximately 9:00 AM Central Time, beginning October 1, 2026.
 
+Current 24-page expansion is staged locally and not yet represented as submitted to the search engines:
+
+- Added `/reman-transmissions` and `/guides/transmission-problems`.
+- Updated the shared header/footer, sitemap, redirect map, internal links, and production route test.
+- Production-route test passes with 24 canonical pages, 26 redirects, and the custom 404.
+- Automated audit passes with 27 HTML files, 24 indexable pages, and 15 unique focused-page heroes.
+- Deployment, live form verification, and new-URL search-engine submission remain to be completed.
+
+## Search-Demand Baseline
+
+Google Search Console, last three months as reviewed September 2, 2026:
+
+- 12 clicks
+- 1,132 impressions
+- 1.1% click-through rate
+- 14.8 average position
+- 112 queries
+
+Highest visible local demand includes `transmission repair springfield mo`, `transmission shop springfield mo`, `transmission warranty springfield mo`, `transmission rebuild springfield mo`, `transmission diagnostics springfield mo`, and `transmission replacement springfield mo`.
+
+Bing's three-month keyword view showed meaningful symptom demand around `cvt transmission problems`, with narrower Nissan and Honda CVT demand. The exact priorities and limitations are recorded in `SEO_CONTENT_ROADMAP.md`.
+
 ## Ongoing Growth Work
 
 1. Review indexing, queries, click-through rate, Core Web Vitals, and conversions monthly.
 2. Align Google Business Profile and third-party listings with the appointment-based service-area model.
-3. Earn relevant local and automotive links through supplier relationships, associations, sponsorships, and genuinely useful resources.
-4. Publish evidence-backed case studies, symptom guides, and application-specific transmission content based on Search Console demand and real customer questions.
+3. Execute the documented backlink campaign through real supplier, association, directory, and partner relationships after the new assets are live.
+4. Publish evidence-backed case studies using the job-intake and privacy workflow; never invent a vehicle, diagnosis, outcome, or testimonial.
 5. Continue collecting authentic customer reviews and respond to them consistently.
 
 ## Next Content Phase
 
-Do not create thin city pages. Use Search Console and customer demand to select the next pages, likely symptom-based guides, application-specific transmission content, and evidence-backed case studies.
+Do not create thin city pages. Next priorities are a reviewed CVT problems hub, focused symptom guides, and the first evidence-backed case study. The national reman program should remain quote-first until ACE fitment, inventory, freight, core, warranty, pricing, and ordering data can support a safe transaction workflow.

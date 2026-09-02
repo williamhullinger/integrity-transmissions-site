@@ -11,6 +11,7 @@ const routeMap = new Map([
   ["about.html", "/about"],
   ["services.html", "/services"],
   ["transmissions.html", "/transmissions"],
+  ["reman-transmissions.html", "/reman-transmissions"],
   ["rebuild-guide.html", "/rebuild-guide"],
   ["reviews.html", "/reviews"],
   ["warranty.html", "/warranty"],

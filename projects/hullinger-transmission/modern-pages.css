@@ -401,7 +401,7 @@
   RESPONSIVE
 ========================================================= */
 
-@media (max-width: 1180px) {
+@media (max-width: 1280px) {
   .subpage-modern .site-nav {
     background: rgba(14, 14, 14, 0.98);
     border-bottom-color: rgba(255, 255, 255, 0.12);
