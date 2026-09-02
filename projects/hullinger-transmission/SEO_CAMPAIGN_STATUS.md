@@ -119,13 +119,16 @@ Initial 22-page campaign completed September 2, 2026:
 - Submitted all 22 canonical URLs through IndexNow; Bing accepted the batch with HTTP 202.
 - Scheduled an Integrity-only SEO performance review for the first day of every month at approximately 9:00 AM Central Time, beginning October 1, 2026.
 
-Current 24-page expansion is staged locally and not yet represented as submitted to the search engines:
+Current 24-page expansion deployed September 2, 2026:
 
 - Added `/reman-transmissions` and `/guides/transmission-problems`.
 - Updated the shared header/footer, sitemap, redirect map, internal links, and production route test.
 - Production-route test passes with 24 canonical pages, 26 redirects, and the custom 404.
 - Automated audit passes with 27 HTML files, 24 indexable pages, and 15 unique focused-page heroes.
-- Deployment, live form verification, and new-URL search-engine submission remain to be completed.
+- Verified both new production pages, canonicals, H1s, structured data, navigation, and the legacy reman `.html` redirect.
+- Verified the VIN decoder on production with a non-customer sample VIN; it identified and prefilled basic vehicle, engine, and drive data without submitting the form.
+- Verified the production reman quote form name, POST method, honeypot, VIN requirement, and thank-you route.
+- New-URL Google/Bing submission and the updated IndexNow batch remain to be completed after action-time approval.
 
 ## Search-Demand Baseline
 
