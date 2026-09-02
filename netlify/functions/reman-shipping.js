@@ -140,7 +140,7 @@ const handler = async (event) => {
     if (!rates.length) {
       return jsonResponse(409, {
         error: "Automatic freight pricing is not available for this address",
-        message: "Submit the selected option and Integrity will obtain the freight price manually before payment.",
+        message: "Send your selected package and we will confirm the delivery price before payment.",
       });
     }
 
@@ -156,7 +156,7 @@ const handler = async (event) => {
     console.error("Public reman freight lookup failed:", error.message);
     return jsonResponse(502, {
       error: "Freight rates could not be retrieved",
-      message: "Submit the selected option and Integrity will verify freight manually before payment.",
+      message: "Send your selected package and we will confirm the delivery price before payment.",
     });
   }
 };

@@ -115,7 +115,7 @@ const availabilityFor = (stock, nonReturnable) => {
       code: "build_to_order",
       orderable: !nonReturnable,
       title: `0 finished units shown at ${location}`,
-      detail: `Estimated remanufacturer build lead time: ${leadTime}. Freight transit time begins after the unit ships and is additional.`,
+      detail: `Estimated build time: ${leadTime}. Delivery transit begins after the unit ships and is shown separately.`,
       location,
       quantity: 0,
       leadTime,
@@ -159,7 +159,7 @@ const toPublicCandidate = (vin, candidate) => {
     return {
       application: scrubText(candidate.family || candidate.transmission || "Transmission match"),
       status: "manual_review",
-      message: "The application was identified, but current options require a manual review.",
+      message: "We found the transmission, but online pricing is not available for this vehicle. Send the request or call (417) 815-3315 for help.",
       upgrades: [],
     };
   }
@@ -248,7 +248,7 @@ const buildCatalog = async (vin) => {
     candidates,
     orderableSelections,
     requiresFinalConfirmation: true,
-    notice: "Prices include Integrity's sourcing and order support. Exact fitment, inventory, freight, tax and core eligibility are refreshed before payment and confirmed before the supplier order is placed.",
+    notice: "These prices are current for the VIN and package shown. We confirm fitment, availability, delivery, tax and core eligibility again before payment.",
   };
 };
 
@@ -293,7 +293,7 @@ const handler = async (event) => {
     console.error("Public reman catalog lookup failed:", error.message);
     return jsonResponse(502, {
       error: "Current options could not be retrieved",
-      message: "Try again shortly or send the VIN to Integrity for a manual lookup.",
+      message: "Try again shortly, or send us the VIN and we will look it up for you.",
     });
   }
 };

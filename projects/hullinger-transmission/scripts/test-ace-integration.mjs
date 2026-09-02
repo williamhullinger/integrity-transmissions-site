@@ -1,10 +1,28 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 
 const require = createRequire(import.meta.url);
 const { handler, _internals } = require("../../../netlify/functions/ace-lookup.js");
 const { handler: publicHandler } = require("../../../netlify/functions/reman-catalog.js");
 const { handler: shippingHandler } = require("../../../netlify/functions/reman-shipping.js");
+
+const customerSurface = [
+  readFileSync(new URL("../reman-transmissions.html", import.meta.url), "utf8"),
+  readFileSync(new URL("../vin-decoder.js", import.meta.url), "utf8"),
+].join("\n");
+
+for (const internalPhrase of [
+  /wholesale account/i,
+  /supplier (?:login|order|ordering|pricing)/i,
+  /internal (?:account|pricing)/i,
+  /manual review/i,
+  /staff confirmation/i,
+  /secure server/i,
+]) {
+  assert.doesNotMatch(customerSurface, internalPhrase, `Customer copy contains internal wording: ${internalPhrase}`);
+}
+assert.match(customerSurface, /No payment is taken on this page/i);
 
 const loginHtml = `
   <form id="loginForm" method="post">

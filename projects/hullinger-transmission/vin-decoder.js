@@ -1,8 +1,6 @@
 /* =========================================================
-  CUSTOMER REMAN CATALOG
-  Looks up live VIN-matched options through Integrity's
-  server. Supplier credentials and wholesale data never reach
-  the browser.
+  CUSTOMER REMAN LOOKUP
+  Shows VIN-matched products, pricing, availability and freight.
 ========================================================= */
 
 function initVinDecoder() {
@@ -112,10 +110,17 @@ function initVinDecoder() {
     manual_review: "is-review",
   }[code] || "is-review");
 
+  const availabilityLabel = (code) => ({
+    in_stock: "Available now",
+    build_to_order: "Build required",
+    unavailable: "Unavailable",
+    manual_review: "Call for availability",
+  }[code] || "Check availability");
+
   const renderIncludedItems = (items) => {
     if (!items?.length) return null;
     const details = node("details", "reman-included");
-    details.append(node("summary", "", "See included package items"));
+    details.append(node("summary", "", "See what is included"));
     const list = node("ul");
     items.forEach((item) => {
       list.append(node("li", "", `${item.quantity ? `${item.quantity} × ` : ""}${item.description}`));
@@ -142,9 +147,9 @@ function initVinDecoder() {
     summary.dataset.selectedSummary = "";
     const copy = node("div");
     copy.append(
-      node("span", "selected-reman-summary__eyebrow", "Selected option"),
+      node("span", "selected-reman-summary__eyebrow", "Your selected option"),
       node("strong", "", `${candidate.application} • ${upgrade.name} • ${packageData.warranty}`),
-      node("p", "", `${currency.format(packageData.customerPrice)} transmission price + ${currency.format(packageData.coreDeposit)} refundable core deposit. Freight and applicable tax are added after the delivery address is verified.`),
+      node("p", "", `${currency.format(packageData.customerPrice)} transmission price + ${currency.format(packageData.coreDeposit)} refundable core deposit. Delivery and applicable tax are calculated separately.`),
     );
     const change = node("button", "btn btn-dark", "Change Option");
     change.type = "button";
@@ -164,7 +169,7 @@ function initVinDecoder() {
     card.append(
       node("span", "reman-package-card__warranty", packageData.warranty),
       node("strong", "reman-package-card__price", currency.format(packageData.customerPrice)),
-      node("span", "reman-package-card__label", "Integrity transmission price"),
+      node("span", "reman-package-card__label", "Transmission price"),
     );
 
     const core = node("div", "reman-core-line");
@@ -173,9 +178,9 @@ function initVinDecoder() {
       node("strong", "", currency.format(packageData.coreDeposit)),
     );
     card.append(core);
-    card.append(node("p", "reman-package-card__subtotal", `${currency.format(packageData.subtotalBeforeFreightAndTax)} due before freight and applicable tax.`));
+    card.append(node("p", "reman-package-card__subtotal", `${currency.format(packageData.subtotalBeforeFreightAndTax)} subtotal before delivery and applicable tax.`));
 
-    const button = node("button", "btn btn-primary", packageData.orderable ? "Choose This Option" : "Request Availability Review");
+    const button = node("button", "btn btn-primary", packageData.orderable ? "Choose This Package" : "Ask About This Package");
     button.type = "button";
     if (packageData.orderable) {
       button.addEventListener("click", () => selectPackage(card, candidate, upgrade, packageData));
@@ -195,7 +200,7 @@ function initVinDecoder() {
     const header = node("div", "reman-upgrade-card__header");
     header.append(
       node("h4", "", upgrade.name),
-      node("span", `reman-stock-pill ${availabilityClass(upgrade.availability.code)}`, upgrade.availability.code.replaceAll("_", " ")),
+      node("span", `reman-stock-pill ${availabilityClass(upgrade.availability.code)}`, availabilityLabel(upgrade.availability.code)),
     );
     card.append(header);
     if (upgrade.description) card.append(node("p", "reman-upgrade-description", upgrade.description));
@@ -205,12 +210,12 @@ function initVinDecoder() {
     const included = renderIncludedItems(upgrade.includedItems);
     if (included) card.append(included);
     if (upgrade.requiresAssistedOrder) {
-      card.append(node("p", "reman-alert", "This option has special ordering or return restrictions and requires staff confirmation."));
+      card.append(node("p", "reman-alert", "Please contact us before ordering this package because additional return requirements may apply."));
     }
 
     const packages = node("div", "reman-package-grid");
     (upgrade.packages || []).forEach((packageData) => packages.append(renderPackage(candidate, upgrade, packageData)));
-    if (!packages.children.length) packages.append(node("p", "reman-alert", "Current package pricing requires a manual review."));
+    if (!packages.children.length) packages.append(node("p", "reman-alert", "Online pricing is not available for this package. Call (417) 815-3315 for help."));
     card.append(packages);
     return card;
   };
@@ -223,21 +228,21 @@ function initVinDecoder() {
 
     const intro = node("div", "reman-catalog__intro");
     intro.append(
-      node("span", "reman-catalog__eyebrow", "Current VIN-matched results"),
-      node("h3", "", "Choose a remanufactured transmission option"),
+      node("span", "reman-catalog__eyebrow", "Options for your VIN"),
+      node("h3", "", "Choose your remanufactured transmission"),
       node("p", "", data.notice),
     );
     catalog.append(intro);
 
     if (!data.candidates?.length) {
-      catalog.append(node("p", "reman-alert", "No supported online match was returned. Complete the form or call (417) 815-3315 and Integrity will identify the unit manually."));
+      catalog.append(node("p", "reman-alert", "We could not match this VIN online. Complete the form or call (417) 815-3315 and we will help identify the correct transmission."));
       return;
     }
 
     data.candidates.forEach((candidate) => {
       const candidateCard = node("section", "reman-candidate-card");
       const heading = node("div", "reman-candidate-card__heading");
-      heading.append(node("span", "", "VIN-matched application"), node("h3", "", candidate.application));
+      heading.append(node("span", "", "Transmission matched to your VIN"), node("h3", "", candidate.application));
       if (candidate.description && candidate.description !== candidate.application) heading.append(node("p", "", candidate.description));
       candidateCard.append(heading);
       if (candidate.status === "manual_review" || candidate.status === "unavailable") {
@@ -250,7 +255,7 @@ function initVinDecoder() {
       catalog.append(candidateCard);
     });
 
-    catalog.append(node("p", "reman-catalog__checked", `Catalog checked ${new Date(data.checkedAt).toLocaleString()}. Inventory and pricing are refreshed before payment.`));
+    catalog.append(node("p", "reman-catalog__checked", `Price and availability checked ${new Date(data.checkedAt).toLocaleString()}. We confirm both again before payment.`));
   };
 
   const chooseFreight = (card, rate, checkedAt) => {
@@ -265,7 +270,7 @@ function initVinDecoder() {
     if (summary && selectedOption) {
       summary.querySelector("[data-order-total]")?.remove();
       const due = selectedOption.packageData.customerPrice + selectedOption.packageData.coreDeposit + rate.customerFreightTotal;
-      const totalLine = node("p", "selected-reman-summary__total", `${currency.format(due)} before applicable tax, including the selected freight and refundable core deposit.`);
+      const totalLine = node("p", "selected-reman-summary__total", `${currency.format(due)} before applicable tax, including delivery and the refundable core deposit.`);
       totalLine.dataset.orderTotal = "";
       summary.querySelector("div")?.append(totalLine);
     }
@@ -282,7 +287,7 @@ function initVinDecoder() {
       card.type = "button";
       const transit = rate.transitDays ? `${rate.transitDays} ${rate.transitDays === 1 ? "day" : "days"} after shipment` : "Transit time to be confirmed";
       card.append(
-        node("span", "", index === 0 ? "Lowest current rate" : "Current freight option"),
+        node("span", "", index === 0 ? "Lowest available rate" : "Another delivery option"),
         node("strong", "", currency.format(rate.customerFreightTotal)),
         node("small", "", `${rate.carrier} • ${transit}`),
       );
@@ -323,7 +328,7 @@ function initVinDecoder() {
     freightButton.textContent = "Checking Freight…";
     clearFreight();
     freightResults.hidden = false;
-    freightResults.append(node("p", "reman-freight-notice", "Checking current carrier and accessorial pricing…"));
+    freightResults.append(node("p", "reman-freight-notice", "Checking current delivery rates for this address…"));
 
     try {
       const response = await fetch("/api/reman-shipping", {
@@ -343,11 +348,11 @@ function initVinDecoder() {
         }),
       });
       const data = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(data.message || data.error || `Freight lookup failed with HTTP ${response.status}`);
+      if (!response.ok) throw new Error(data.message || data.error || "Delivery rates could not be loaded.");
       renderFreight(data);
     } catch (error) {
       freightResults.hidden = false;
-      freightResults.replaceChildren(node("p", "reman-alert", `${error.message} You can still submit the selected option for a manual freight quote.`));
+      freightResults.replaceChildren(node("p", "reman-alert", `${error.message} Send the request and we will confirm the delivery cost for you.`));
     } finally {
       freightButton.disabled = false;
       freightButton.textContent = "Calculate Current Freight";
@@ -381,7 +386,7 @@ function initVinDecoder() {
       catalog.replaceChildren();
       lookupData = null;
       clearSelection();
-      setResult("idle", "Ready for your VIN", "Enter all 17 characters to retrieve current applications, prices and availability.");
+      setResult("idle", "Enter your VIN to begin", "We will show the matching transmission options, prices and availability.");
     }
   });
 
@@ -400,7 +405,7 @@ function initVinDecoder() {
     lookupButton.disabled = true;
     lookupButton.textContent = "Checking Current Options…";
     catalog.hidden = true;
-    setResult("loading", "Checking live reman catalog data", "Retrieving the VIN-matched application, upgrade levels, prices and current availability.");
+    setResult("loading", "Finding the right transmission", "Matching your vehicle and loading current packages, prices and availability.");
 
     try {
       const response = await fetch("/api/reman-catalog", {
@@ -409,21 +414,21 @@ function initVinDecoder() {
         body: JSON.stringify({ vin }),
       });
       const data = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(data.message || data.error || `Lookup failed with HTTP ${response.status}`);
+      if (!response.ok) throw new Error(data.message || data.error || "The lookup could not be completed.");
 
       const vehicle = fillVehicle(data.vehicle || {});
       result.dataset.vin = vin;
       setResult(
         "success",
         vehicle.vehicleName || "Vehicle identified",
-        `${[vehicle.engine, data.vehicle?.driveType].filter(Boolean).join(" • ") || "VIN match found"}. Review the current options and pricing below.`,
+        `${[vehicle.engine, data.vehicle?.driveType].filter(Boolean).join(" • ") || "VIN match found"}. Choose from the available options below.`,
       );
       renderCatalog(data);
     } catch (error) {
       console.warn("Reman catalog lookup unavailable", error);
-      setResult("error", "Current options could not be retrieved", `${error.message} You can still complete the request or call Integrity at (417) 815-3315.`);
+      setResult("error", "We could not load your options", `${error.message} Try again or call us at (417) 815-3315.`);
       catalog.hidden = false;
-      catalog.replaceChildren(node("p", "reman-alert", "The live catalog is temporarily unavailable. Complete the vehicle and contact fields below for a manual lookup."));
+      catalog.replaceChildren(node("p", "reman-alert", "Complete the vehicle and contact information below and we will look it up for you."));
     } finally {
       lookupButton.disabled = false;
       lookupButton.textContent = "Find Options & Prices";
