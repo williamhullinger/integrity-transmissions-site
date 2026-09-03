@@ -6,7 +6,7 @@ const { _internals: shipping } = require("./reman-shipping.js");
 
 const SITE_URL = "https://integritydrivetrain.com";
 const TERMS_VERSION = "2026-09-03";
-const TERMS_SHA256 = "164638adeaa82c1287f590979560f2a966551afaa2b0bdda69dd1f66937e1ebf";
+const TERMS_SHA256 = "eac3959b946009361e625a252d6f95ff7b7bb4e0f111c81f9f9144cd914e2d76";
 const CHECKOUT_WINDOW_MS = 10 * 60 * 1000;
 const CHECKOUT_LIMIT = 6;
 const requestCounts = new Map();

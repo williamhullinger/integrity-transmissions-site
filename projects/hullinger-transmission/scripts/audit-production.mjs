@@ -49,6 +49,18 @@ if (!process.argv.includes("--syntax-only")) {
     for (const match of html.matchAll(/<form\b[^>]*\baction=["']([^"']+)["']/gi)) {
       if (/^\/[^?#]+\.html(?:[?#]|$)/i.test(match[1])) failures.push(`${label}: form action should use a clean URL (${match[1]})`);
     }
+    for (const match of html.matchAll(/<link\b[^>]*>/gi)) {
+      const href = match[0].match(/\bhref=["']([^"']+)["']/i)?.[1] || "";
+      if (/\brel=["'][^"']*stylesheet/i.test(match[0]) && /^(?:\/|\.\/|[a-z0-9_-])[^:]*\.css(?:\?|$)/i.test(href) && !/[?&]v=/.test(href)) {
+        failures.push(`${label}: first-party stylesheet is missing a cache-busting version (${href})`);
+      }
+    }
+    for (const match of html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi)) {
+      const src = match[1];
+      if (/^(?:\/|\.\/|[a-z0-9_-])[^:]*\.js(?:\?|$)/i.test(src) && !/[?&]v=/.test(src)) {
+        failures.push(`${label}: first-party script is missing a cache-busting version (${src})`);
+      }
+    }
     if (/\b(?:staff only|wholesale account|integrity price floor)\b/i.test(html)) {
       failures.push(`${label}: customer page contains internal operations language`);
     }
