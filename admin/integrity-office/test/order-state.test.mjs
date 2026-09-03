@@ -4,6 +4,9 @@ import {
   FULFILLMENT_TRANSITIONS,
   PAYMENT_TRANSITIONS,
   assertTransition,
+  assertBalancedJournal,
+  calculatePromotionDiscount,
+  normalizePromotionCode,
   summarizeOrderMoney,
 } from "../domain/order-state.mjs";
 
@@ -39,4 +42,54 @@ assert.throws(() => summarizeOrderMoney({
   supplierFreightCostCents: 0,
 }), /Discount cannot exceed/);
 
-console.log("Integrity Office domain test passed: states and liability-aware accounting are enforced.");
+assert.equal(normalizePromotionCode(" fall-500 "), "FALL-500");
+const promotion = calculatePromotionDiscount({
+  code: "fall-500",
+  active: true,
+  approved: true,
+  startsAt: "2026-09-01T00:00:00Z",
+  endsAt: "2026-10-01T00:00:00Z",
+  now: "2026-09-03T00:00:00Z",
+  amountOffCents: 10_000,
+  merchandiseCents: 350_000,
+  supplierCostCents: 290_000,
+  minimumMarginCents: 50_000,
+});
+assert.deepEqual(promotion, { code: "FALL-500", discountCents: 10_000, remainingMarginCents: 50_000 });
+assert.throws(() => calculatePromotionDiscount({
+  code: "too-much",
+  active: true,
+  approved: true,
+  startsAt: "2026-09-01T00:00:00Z",
+  now: "2026-09-03T00:00:00Z",
+  amountOffCents: 10_001,
+  merchandiseCents: 350_000,
+  supplierCostCents: 290_000,
+  minimumMarginCents: 50_000,
+}), /minimum margin/);
+assert.throws(() => calculatePromotionDiscount({
+  code: "used-up",
+  active: true,
+  approved: true,
+  startsAt: "2026-09-01T00:00:00Z",
+  now: "2026-09-03T00:00:00Z",
+  amountOffCents: 1_000,
+  merchandiseCents: 350_000,
+  supplierCostCents: 290_000,
+  minimumMarginCents: 50_000,
+  redemptionCount: 10,
+  maxRedemptions: 10,
+}), /limit/);
+
+assert.deepEqual(assertBalancedJournal([
+  { debitCents: 500_750, creditCents: 0 },
+  { debitCents: 0, creditCents: 371_750 },
+  { debitCents: 0, creditCents: 29_000 },
+  { debitCents: 0, creditCents: 100_000 },
+]), { debits: 500_750, credits: 500_750 });
+assert.throws(() => assertBalancedJournal([
+  { debitCents: 100, creditCents: 0 },
+  { debitCents: 0, creditCents: 99 },
+]), /not balanced/);
+
+console.log("Integrity Office domain test passed: states, promotions, margins, and balanced accounting are enforced.");

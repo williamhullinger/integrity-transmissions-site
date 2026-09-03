@@ -8,6 +8,31 @@ const siteRoot = resolve(import.meta.dirname, "..");
 const functionRoot = join(repositoryRoot, "netlify/functions");
 const failures = [];
 
+const hasBalancedCssBlocks = (source) => {
+  let depth = 0;
+  let quote = "";
+  let inComment = false;
+  for (let index = 0; index < source.length; index += 1) {
+    const current = source[index];
+    const next = source[index + 1];
+    if (inComment) {
+      if (current === "*" && next === "/") { inComment = false; index += 1; }
+      continue;
+    }
+    if (!quote && current === "/" && next === "*") { inComment = true; index += 1; continue; }
+    if (quote) {
+      if (current === "\\") index += 1;
+      else if (current === quote) quote = "";
+      continue;
+    }
+    if (current === '"' || current === "'") { quote = current; continue; }
+    if (current === "{") depth += 1;
+    if (current === "}") depth -= 1;
+    if (depth < 0) return false;
+  }
+  return depth === 0 && !quote && !inComment;
+};
+
 const walk = (root) => readdirSync(root, { withFileTypes: true }).flatMap((entry) => {
   const path = join(root, entry.name);
   if (entry.isDirectory()) return walk(path);
@@ -32,6 +57,12 @@ if (!process.argv.includes("--syntax-only")) {
     && !path.includes(`${join(siteRoot, "staff")}/`)
     && !path.includes(`${join(siteRoot, "partials")}/`));
   const routeFiles = new Map();
+
+  for (const stylesheet of walk(siteRoot).filter((path) => extname(path) === ".css")) {
+    if (!hasBalancedCssBlocks(readFileSync(stylesheet, "utf8"))) {
+      failures.push(`${relative(repositoryRoot, stylesheet)}: unbalanced CSS blocks, comments, or strings`);
+    }
+  }
 
   for (const page of publicHtml) {
     const html = readFileSync(page, "utf8");
@@ -63,6 +94,9 @@ if (!process.argv.includes("--syntax-only")) {
     }
     if (/\b(?:staff only|wholesale account|integrity price floor)\b/i.test(html)) {
       failures.push(`${label}: customer page contains internal operations language`);
+    }
+    if (/\b(?:keyword data|search demand|thin pages?|SEO campaign|content strategy)\b/i.test(html)) {
+      failures.push(`${label}: customer page contains internal marketing language`);
     }
   }
 

@@ -216,22 +216,7 @@ function initSiteScripts() {
 }
 
 
-/* =========================================================
-  PARTIALS SUPPORT
-========================================================= */
-
-document.addEventListener("partialsLoaded", initSiteScripts);
-
-
-/* =========================================================
-  FALLBACK FOR PAGES WITHOUT PARTIALS
-========================================================= */
-
-document.addEventListener("DOMContentLoaded", () => {
-  if (!document.querySelector("[data-include]")) {
-    initSiteScripts();
-  }
-});
+document.addEventListener("DOMContentLoaded", initSiteScripts);
 
 
 /* =========================================================
@@ -269,6 +254,7 @@ function initGalleryStage() {
   let currentIndex = 0;
   let autoplayTimer = null;
   let autoplayPaused = false;
+  let galleryVisible = false;
   let touchStartX = 0;
   let touchEndX = 0;
 
@@ -277,6 +263,7 @@ function initGalleryStage() {
   const prefersReducedMotion = window.matchMedia(
     "(prefers-reduced-motion: reduce)"
   ).matches;
+  const prefersReducedData = navigator.connection?.saveData === true;
 
 
   /* ---------------------------------------------------------
@@ -395,7 +382,9 @@ function initGalleryStage() {
 
   function startAutoplay() {
     if (prefersReducedMotion) return;
+    if (prefersReducedData) return;
     if (autoplayPaused) return;
+    if (!galleryVisible) return;
     if (slides.length <= 1) return;
 
     stopAutoplay();
@@ -539,7 +528,12 @@ function initGalleryStage() {
   --------------------------------------------------------- */
 
   showSlide(0);
-  startAutoplay();
+  const observer = new IntersectionObserver((entries) => {
+    galleryVisible = entries.some((entry) => entry.isIntersecting);
+    if (galleryVisible) startAutoplay();
+    else stopAutoplay();
+  }, { rootMargin: "200px 0px" });
+  observer.observe(gallery);
 }
 
 
@@ -549,10 +543,5 @@ function initGalleryStage() {
 
 document.addEventListener(
   "DOMContentLoaded",
-  initGalleryStage
-);
-
-document.addEventListener(
-  "partialsLoaded",
   initGalleryStage
 );

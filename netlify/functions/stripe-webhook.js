@@ -3,13 +3,15 @@ const processingSessions = new Set();
 
 const formValue = (value, max = 500) => String(value ?? "").replace(/[<>]/g, "").trim().slice(0, max);
 
-const orderFormFields = (session, customer) => {
+const orderFormFields = (session, customer, stripeEventId = "") => {
   const metadata = session.metadata || {};
   const shipping = customer?.shipping || session.shipping_details || {};
   const address = shipping.address || {};
   return {
     "form-name": "reman-paid-order",
     "stripe-session-id": session.id,
+    "stripe-event-id": stripeEventId,
+    "payment-verification": "Confirm this payment directly in Stripe before fulfillment",
     "payment-status": session.payment_status,
     "amount-total": ((session.amount_total || 0) / 100).toFixed(2),
     "amount-tax": ((session.total_details?.amount_tax || 0) / 100).toFixed(2),
@@ -34,13 +36,12 @@ const orderFormFields = (session, customer) => {
     installer: metadata.installer_status,
     programming: metadata.programming,
     "vehicle-use": metadata.vehicle_use,
-    message: metadata.customer_note,
   };
 };
 
-const postOrderNotification = async (session, customer, fetchImpl = fetch) => {
+const postOrderNotification = async (session, customer, fetchImpl = fetch, stripeEventId = "") => {
   const params = new URLSearchParams();
-  for (const [name, value] of Object.entries(orderFormFields(session, customer))) {
+  for (const [name, value] of Object.entries(orderFormFields(session, customer, stripeEventId))) {
     params.set(name, formValue(value));
   }
   const notificationUrl = new URL(process.env.REMAN_ORDER_NOTIFICATION_URL || "https://integritydrivetrain.com/");
@@ -56,7 +57,7 @@ const postOrderNotification = async (session, customer, fetchImpl = fetch) => {
   if (!response.ok) throw new Error(`Order notification returned HTTP ${response.status}`);
 };
 
-const processPaidCheckout = async (stripe, eventSession, fetchImpl = fetch) => {
+const processPaidCheckout = async (stripe, eventSession, fetchImpl = fetch, stripeEventId = "") => {
   if (processingSessions.has(eventSession.id)) return false;
   processingSessions.add(eventSession.id);
   try {
@@ -71,11 +72,12 @@ const processPaidCheckout = async (stripe, eventSession, fetchImpl = fetch) => {
         notification_state: "pending",
         order_state: "paid_risk_review",
         paid_at: paidAt,
+        last_stripe_event: formValue(stripeEventId, 120),
       },
     });
 
     const customer = session.customer && typeof session.customer === "object" ? session.customer : null;
-    await postOrderNotification(session, customer, fetchImpl);
+    await postOrderNotification(session, customer, fetchImpl, stripeEventId);
     await stripe.checkout.sessions.update(session.id, {
       metadata: {
         ...session.metadata,
@@ -83,12 +85,29 @@ const processPaidCheckout = async (stripe, eventSession, fetchImpl = fetch) => {
         notification_state: "sent",
         order_state: "paid_risk_review",
         paid_at: paidAt,
+        last_stripe_event: formValue(stripeEventId, 120),
       },
     });
     return true;
   } finally {
     processingSessions.delete(eventSession.id);
   }
+};
+
+const processFailedCheckout = async (stripe, eventSession, stripeEventId = "") => {
+  const session = await stripe.checkout.sessions.retrieve(eventSession.id);
+  if (session.metadata?.order_type !== "reman_transmission") return false;
+  if (["paid", "no_payment_required"].includes(session.payment_status)) return false;
+  if (["paid_risk_review", "fitment_review", "supplier_ordered", "shipped", "delivered", "closed"]
+    .includes(session.metadata?.order_state)) return false;
+  await stripe.checkout.sessions.update(session.id, {
+    metadata: {
+      ...session.metadata,
+      order_state: "payment_failed",
+      last_stripe_event: formValue(stripeEventId, 120),
+    },
+  });
+  return true;
 };
 
 const createWebhookHandler = ({ stripeFactory, fetchImpl = fetch } = {}) => async (event) => {
@@ -106,6 +125,7 @@ const createWebhookHandler = ({ stripeFactory, fetchImpl = fetch } = {}) => asyn
     : new Stripe(key, { apiVersion: "2026-07-29.dahlia", maxNetworkRetries: 2 });
   const signature = event.headers?.["stripe-signature"] || event.headers?.["Stripe-Signature"] || "";
   const rawBody = Buffer.from(event.body || "", event.isBase64Encoded ? "base64" : "utf8");
+  if (rawBody.length > 500_000) return { statusCode: 413, body: "Payload too large" };
 
   let stripeEvent;
   try {
@@ -117,14 +137,9 @@ const createWebhookHandler = ({ stripeFactory, fetchImpl = fetch } = {}) => asyn
 
   try {
     if (["checkout.session.completed", "checkout.session.async_payment_succeeded"].includes(stripeEvent.type)) {
-      await processPaidCheckout(stripe, stripeEvent.data.object, fetchImpl);
+      await processPaidCheckout(stripe, stripeEvent.data.object, fetchImpl, stripeEvent.id);
     } else if (stripeEvent.type === "checkout.session.async_payment_failed") {
-      const session = stripeEvent.data.object;
-      if (session.metadata?.order_type === "reman_transmission") {
-        await stripe.checkout.sessions.update(session.id, {
-          metadata: { ...session.metadata, order_state: "payment_failed" },
-        });
-      }
+      await processFailedCheckout(stripe, stripeEvent.data.object, stripeEvent.id);
     }
     return { statusCode: 200, body: "received" };
   } catch (error) {
@@ -138,5 +153,6 @@ exports._internals = {
   createWebhookHandler,
   orderFormFields,
   postOrderNotification,
+  processFailedCheckout,
   processPaidCheckout,
 };

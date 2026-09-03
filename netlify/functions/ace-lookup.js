@@ -202,11 +202,13 @@ const createAceClient = ({ username, password, fetchImpl = fetch }) => {
     return response;
   };
 
-  const postForm = (path, entries, extraHeaders = {}) => request(path, {
+  const postForm = (path, entries, extraHeaders = {}, requestOptions = {}) => request(path, {
+    ...requestOptions,
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
       ...extraHeaders,
+      ...(requestOptions.headers || {}),
     },
     body: formBody(entries),
   });
@@ -362,6 +364,7 @@ const createAceClient = ({ username, password, fetchImpl = fetch }) => {
       insideDelivery = false,
       residentialDelivery = false,
       vendor = "",
+      requestTimeoutMs = 6_500,
     }) {
       const response = await postForm("/ace/OnlineOrdering/GetFreightRates", [
         ["addressLine1", addressLine1],
@@ -378,6 +381,8 @@ const createAceClient = ({ username, password, fetchImpl = fetch }) => {
       ], {
         Accept: "application/json",
         "X-Requested-With": "XMLHttpRequest",
+      }, {
+        signal: AbortSignal.timeout(requestTimeoutMs),
       });
       return json(response, "ACE freight rates");
     },

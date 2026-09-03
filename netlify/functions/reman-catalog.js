@@ -30,10 +30,16 @@ const jsonResponse = (statusCode, body, extraHeaders = {}) => ({
 
 const allowedOrigin = (origin) => {
   if (!origin) return true;
-  if (origin === "https://integritydrivetrain.com") return true;
-  if (/^https:\/\/[a-z0-9-]+\.netlify\.app$/i.test(origin)) return true;
+  const deployedOrigins = [
+    "https://integritydrivetrain.com",
+    process.env.URL,
+    process.env.DEPLOY_PRIME_URL,
+  ].filter(Boolean).map((value) => String(value).replace(/\/$/, ""));
+  if (deployedOrigins.includes(origin)) return true;
   return /^http:\/\/(?:127\.0\.0\.1|localhost)(?::\d+)?$/i.test(origin);
 };
+
+const bodyWithinLimit = (body, maximumBytes = 24_000) => Buffer.byteLength(String(body || ""), "utf8") <= maximumBytes;
 
 const scrubText = (value) => String(value || "")
   .replace(/\bACE(?:\s+Transmission)?\b/gi, "the remanufacturer")
@@ -166,7 +172,7 @@ const selectionId = (vin, candidate, upgrade, packageData) => {
     packageData.warrantyTypeUid || packageData.warranty,
   ].join("|");
   const secret = crypto.createHash("sha256")
-    .update(`integrity-reman-catalog-v1|${process.env.ACE_LOOKUP_TOKEN || process.env.ACE_PASSWORD || ""}`)
+    .update(`integrity-reman-catalog-v1|${process.env.REMAN_SIGNING_SECRET || process.env.ACE_LOOKUP_TOKEN || process.env.ACE_PASSWORD || ""}`)
     .digest();
   return crypto.createHmac("sha256", secret).update(material).digest("base64url").slice(0, 32);
 };
@@ -293,6 +299,7 @@ const handler = async (event) => {
 
   const origin = event.headers?.origin || event.headers?.Origin || "";
   if (!allowedOrigin(origin)) return jsonResponse(403, { error: "Origin not allowed" });
+  if (!bodyWithinLimit(event.body)) return jsonResponse(413, { error: "Request is too large" });
 
   if (!withinRateLimit(sourceIp(event))) {
     return jsonResponse(429, {
@@ -342,6 +349,8 @@ const handler = async (event) => {
 exports.handler = handler;
 exports._internals = {
   availabilityFor,
+  allowedOrigin,
+  bodyWithinLimit,
   selectionId,
   sourceIp,
   publicLineItems,

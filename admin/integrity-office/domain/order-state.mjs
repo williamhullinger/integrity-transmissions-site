@@ -83,3 +83,81 @@ export function summarizeOrderMoney({
     refundedCents,
   });
 }
+
+export function normalizePromotionCode(value) {
+  const normalized = String(value || "").trim().toUpperCase();
+  if (!/^[A-Z0-9][A-Z0-9_-]{2,31}$/.test(normalized)) {
+    throw new TypeError("Promotion code must contain 3 to 32 letters, numbers, underscores, or hyphens");
+  }
+  return normalized;
+}
+
+export function calculatePromotionDiscount({
+  code,
+  active,
+  approved,
+  startsAt,
+  endsAt = null,
+  now = new Date(),
+  amountOffCents = null,
+  percentOff = null,
+  merchandiseCents,
+  supplierCostCents,
+  minimumMarginCents,
+  redemptionCount = 0,
+  maxRedemptions = null,
+  customerRedemptionCount = 0,
+  maxRedemptionsPerCustomer = 1,
+}) {
+  const normalizedCode = normalizePromotionCode(code);
+  for (const [name, value] of Object.entries({
+    merchandiseCents,
+    supplierCostCents,
+    minimumMarginCents,
+    redemptionCount,
+    customerRedemptionCount,
+    maxRedemptionsPerCustomer,
+  })) assertCents(name, value);
+  if (maxRedemptions !== null) assertCents("maxRedemptions", maxRedemptions);
+  if (!active || !approved) throw new Error("Promotion is not approved and active");
+
+  const instant = new Date(now).getTime();
+  const start = new Date(startsAt).getTime();
+  const end = endsAt === null ? null : new Date(endsAt).getTime();
+  if (![instant, start, ...(end === null ? [] : [end])].every(Number.isFinite)) throw new TypeError("Promotion dates are invalid");
+  if (instant < start || (end !== null && instant >= end)) throw new Error("Promotion is outside its active date range");
+  if (maxRedemptions !== null && redemptionCount >= maxRedemptions) throw new Error("Promotion redemption limit has been reached");
+  if (customerRedemptionCount >= maxRedemptionsPerCustomer) throw new Error("Customer promotion redemption limit has been reached");
+
+  const hasAmount = amountOffCents !== null;
+  const hasPercent = percentOff !== null;
+  if (hasAmount === hasPercent) throw new TypeError("Promotion must define exactly one discount mode");
+  let discountCents;
+  if (hasAmount) {
+    assertCents("amountOffCents", amountOffCents);
+    discountCents = amountOffCents;
+  } else {
+    if (!Number.isFinite(percentOff) || percentOff <= 0 || percentOff > 100) throw new TypeError("percentOff must be greater than 0 and no more than 100");
+    discountCents = Math.round(merchandiseCents * percentOff / 100);
+  }
+
+  discountCents = Math.min(discountCents, merchandiseCents);
+  const remainingMarginCents = merchandiseCents - discountCents - supplierCostCents;
+  if (remainingMarginCents < minimumMarginCents) throw new RangeError("Promotion would reduce the order below its minimum margin");
+
+  return Object.freeze({ code: normalizedCode, discountCents, remainingMarginCents });
+}
+
+export function assertBalancedJournal(lines) {
+  if (!Array.isArray(lines) || lines.length < 2) throw new TypeError("A journal entry requires at least two lines");
+  const totals = lines.reduce((sum, line) => {
+    assertCents("debitCents", line.debitCents || 0);
+    assertCents("creditCents", line.creditCents || 0);
+    if ((line.debitCents > 0) === (line.creditCents > 0)) throw new TypeError("Each journal line must contain exactly one positive side");
+    sum.debits += line.debitCents || 0;
+    sum.credits += line.creditCents || 0;
+    return sum;
+  }, { debits: 0, credits: 0 });
+  if (totals.debits !== totals.credits) throw new RangeError("Journal entry is not balanced");
+  return Object.freeze(totals);
+}

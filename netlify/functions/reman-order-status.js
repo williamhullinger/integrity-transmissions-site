@@ -10,8 +10,13 @@ const headers = {
 const jsonResponse = (statusCode, body) => ({ statusCode, headers, body: JSON.stringify(body) });
 
 const allowedOrigin = (origin) => {
-  if (!origin || origin === "https://integritydrivetrain.com") return true;
-  if (/^https:\/\/[a-z0-9-]+\.netlify\.app$/i.test(origin)) return true;
+  if (!origin) return true;
+  const deployedOrigins = [
+    "https://integritydrivetrain.com",
+    process.env.URL,
+    process.env.DEPLOY_PRIME_URL,
+  ].filter(Boolean).map((value) => String(value).replace(/\/$/, ""));
+  if (deployedOrigins.includes(origin)) return true;
   return /^http:\/\/(?:127\.0\.0\.1|localhost)(?::\d+)?$/i.test(origin);
 };
 

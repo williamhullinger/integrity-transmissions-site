@@ -24,9 +24,10 @@ Integrity Office is the planned private operations application for remanufacture
 
 ## Included foundation
 
-- `db/001_initial.sql`: initial PostgreSQL schema, constraints, immutable snapshots, audit/outbox records, and indexes.
-- `domain/order-state.mjs`: enforceable payment, fulfillment, and core-return state machines.
-- `test/order-state.test.mjs`: dependency-free tests for allowed and forbidden transitions and accounting treatment.
+- `db/001_initial.sql`: initial PostgreSQL schema with customer-bound foreign keys, immutable snapshots, role history, promotion reservations, margin enforcement, fitment/documents, idempotent commands, durable event/outbox leases, and balanced double-entry journals.
+- `domain/order-state.mjs`: enforceable payment, fulfillment, core-return, promotion, margin, and journal rules.
+- `test/order-state.test.mjs`: dependency-free tests for allowed and forbidden transitions, promotions, margin floors, and accounting treatment.
+- `test/schema-controls.test.mjs`: regression checks for the non-negotiable database controls.
 - `contracts/order-api.md`: first API boundary for the eventual office application.
 
 ## Production activation checklist

@@ -6,7 +6,7 @@ const { _internals: shipping } = require("./reman-shipping.js");
 
 const SITE_URL = "https://integritydrivetrain.com";
 const TERMS_VERSION = "2026-09-03";
-const TERMS_SHA256 = "d8e779163b76ff8ac6a7759e68139355ee72eb42b110bd8a70dc4fc03bce124d";
+const TERMS_SHA256 = "2a50eb8026ab66a6a4126381f66a7436c809f714ead78f2c784019884b5615be";
 const CHECKOUT_WINDOW_MS = 10 * 60 * 1000;
 const CHECKOUT_LIMIT = 6;
 const requestCounts = new Map();
@@ -22,8 +22,10 @@ const jsonResponse = (statusCode, body) => ({ statusCode, headers, body: JSON.st
 
 const allowedOrigin = (origin) => {
   if (!origin) return true;
-  if (origin === SITE_URL) return true;
-  if (/^https:\/\/[a-z0-9-]+\.netlify\.app$/i.test(origin)) return true;
+  const deployedOrigins = [SITE_URL, process.env.URL, process.env.DEPLOY_PRIME_URL]
+    .filter(Boolean)
+    .map((value) => String(value).replace(/\/$/, ""));
+  if (deployedOrigins.includes(origin)) return true;
   return /^http:\/\/(?:127\.0\.0\.1|localhost)(?::\d+)?$/i.test(origin);
 };
 
@@ -219,7 +221,6 @@ const stripeMetadata = (order) => ({
   installer_status: order.installerStatus,
   programming: order.programmingCapability,
   vehicle_use: order.vehicleUse,
-  customer_note: order.message,
   terms_version: TERMS_VERSION,
   terms_sha256: TERMS_SHA256,
   terms_accepted_at: order.termsAcceptedAt,
@@ -347,6 +348,7 @@ const createCheckoutHandler = ({ stripeFactory = defaultStripeFactory, quoteLoad
 
   const origin = event.headers?.origin || event.headers?.Origin || "";
   if (!allowedOrigin(origin)) return jsonResponse(403, { error: "Origin not allowed" });
+  if (!catalog.bodyWithinLimit(event.body)) return jsonResponse(413, { error: "Request is too large" });
   if ((process.env.REMAN_CHECKOUT_ENABLED || "false").toLowerCase() !== "true") {
     return jsonResponse(503, { error: "Secure checkout is not available yet.", assistedOrder: true });
   }
@@ -380,7 +382,12 @@ const createCheckoutHandler = ({ stripeFactory = defaultStripeFactory, quoteLoad
     const statusCode = error.statusCode || (error.type === "StripeInvalidRequestError" ? 400 : 502);
     if (statusCode >= 500) console.error("Reman checkout creation failed:", error.message);
     return jsonResponse(statusCode, {
-      error: statusCode >= 500 ? "Secure checkout could not be opened. Please try again or call (417) 815-3315." : error.message,
+      error: error.retryable
+        ? "The delivery rate is still being confirmed. We will retry it before asking you to request a callback."
+        : statusCode >= 500 ? "Secure checkout could not be opened. Please try again or call (417) 815-3315." : error.message,
+      freightPending: error.retryable === true,
+      retryable: error.retryable === true,
+      retryAfterSeconds: error.retryAfterSeconds,
       ...(error.extra || {}),
     });
   }

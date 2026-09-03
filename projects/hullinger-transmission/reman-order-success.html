@@ -6,6 +6,7 @@
   <title>Reman Order Status | Integrity Transmission & Drivetrain</title>
   <meta name="description" content="View the payment status and next steps for your Integrity remanufactured transmission order.">
   <meta name="robots" content="noindex, nofollow, noarchive">
+  <meta name="referrer" content="no-referrer">
   <meta name="author" content="Integrity Transmission & Drivetrain">
   <meta name="theme-color" content="#f47b20">
   <link rel="canonical" href="https://integritydrivetrain.com/reman-order-success">
@@ -14,9 +15,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css?v=20260903-launch3">
-  <link rel="stylesheet" href="/thank-you.css?v=20260903-launch3">
-  <link rel="stylesheet" href="/commerce-guides.css?v=20260903-launch3">
+  <link rel="stylesheet" href="/styles.css?v=20260903.1">
+  <link rel="stylesheet" href="/thank-you.css?v=20260903.1">
+  <link rel="stylesheet" href="/commerce-guides.css?v=20260903.1">
 </head>
 <body>
   <!-- SITE_HEADER_START -->
@@ -94,7 +95,7 @@
   <main id="main-content">
     <section class="thank-you-page reman-order-result" data-order-result>
       <div class="container">
-        <div class="thank-you-card">
+        <div class="thank-you-card" role="status" aria-live="polite" aria-busy="true">
           <div class="thank-you-icon" aria-hidden="true" data-order-icon>…</div>
           <p class="eyebrow" data-order-eyebrow>Checking Payment</p>
           <h1 data-order-title>One moment.</h1>
@@ -117,6 +118,7 @@
           </div>
 
           <div class="thank-you-actions">
+            <button type="button" class="btn btn-primary" data-order-retry hidden>Check Again</button>
             <a href="tel:14178153315" class="btn btn-primary">Call Integrity</a>
             <a href="sms:14178153315" class="btn btn-secondary">Text the Shop</a>
             <a href="/reman-transmissions" class="btn btn-secondary">Back to Reman Options</a>
@@ -217,7 +219,7 @@
   </div>
 </footer>
   <!-- SITE_FOOTER_END -->
-  <script src="/script.js?v=20260903-launch3" defer></script>
-  <script src="/reman-order-success.js?v=20260903-launch3" defer></script>
+  <script src="/script.js?v=20260903.1" defer></script>
+  <script src="/reman-order-success.js?v=20260903.1" defer></script>
 </body>
 </html>

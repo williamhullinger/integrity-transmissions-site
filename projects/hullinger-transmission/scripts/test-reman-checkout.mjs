@@ -119,6 +119,14 @@ assert.equal(response.statusCode, 200, response.body);
 assert.equal(calls.customers.length, 1);
 assert.equal(calls.sessions.length, 1);
 
+const oversizedCheckout = await handler({
+  httpMethod: "POST",
+  headers: { origin: "https://integritydrivetrain.com", "x-nf-client-connection-ip": "203.0.113.24" },
+  body: JSON.stringify({ ...payload, padding: "x".repeat(25_000) }),
+});
+assert.equal(oversizedCheckout.statusCode, 413);
+assert.equal(calls.sessions.length, 1, "An oversized request must not reach Stripe");
+
 const customerParams = calls.customers[0].params;
 const sessionParams = calls.sessions[0].params;
 assert.equal(customerParams.shipping.address.postal_code, "65807");
@@ -241,6 +249,7 @@ const notified = await webhook.processPaidCheckout({
 assert.equal(notified, true);
 assert.equal(notificationRequests.length, 1);
 assert.match(notificationRequests[0].body, /form-name=reman-paid-order/);
+assert.match(notificationRequests[0].body, /payment-verification=Confirm\+this\+payment\+directly\+in\+Stripe/);
 assert.doesNotMatch(notificationRequests[0].body, /wholesale/i);
 assert.equal(webhookUpdates.length, 2);
 assert.equal(webhookUpdates[0].params.metadata.order_state, "paid_risk_review");
@@ -248,4 +257,29 @@ assert.equal(webhookUpdates[0].params.metadata.notification_state, "pending");
 assert.equal(webhookUpdates[1].params.metadata.order_state, "paid_risk_review");
 assert.equal(webhookUpdates[1].params.metadata.notification_state, "sent");
 
-console.log("Reman checkout test passed: server-priced Stripe Checkout, automatic tax, itemized core/freight, status and paid-order notification.");
+const failedUpdates = [];
+const ignoredLateFailure = await webhook.processFailedCheckout({
+  checkout: {
+    sessions: {
+      retrieve: async () => ({ ...paidSession, metadata: { ...paidSession.metadata, order_state: "paid_risk_review" } }),
+      update: async (id, params) => failedUpdates.push({ id, params }),
+    },
+  },
+}, paidSession, "evt_late_failure");
+assert.equal(ignoredLateFailure, false);
+assert.equal(failedUpdates.length, 0, "A late failure event must not regress an already-paid order");
+
+const failedSession = { ...paidSession, payment_status: "unpaid", metadata: { ...paidSession.metadata, order_state: "payment_pending" } };
+const recordedFailure = await webhook.processFailedCheckout({
+  checkout: {
+    sessions: {
+      retrieve: async () => failedSession,
+      update: async (id, params) => failedUpdates.push({ id, params }),
+    },
+  },
+}, failedSession, "evt_current_failure");
+assert.equal(recordedFailure, true);
+assert.equal(failedUpdates[0].params.metadata.order_state, "payment_failed");
+assert.equal(failedUpdates[0].params.metadata.last_stripe_event, "evt_current_failure");
+
+console.log("Reman checkout test passed: server-priced Stripe Checkout, automatic tax, itemized core/freight, status, notifications, and monotonic payment state.");

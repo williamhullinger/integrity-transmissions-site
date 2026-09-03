@@ -3,20 +3,23 @@
   "version": "1.0.0",
   "private": true,
   "description": "Netlify functions for Integrity Transmission & Drivetrain",
+  "packageManager": "npm@10.9.4",
   "engines": {
     "node": "22.x"
   },
   "scripts": {
     "build": "node scripts/build-integrity-site.mjs",
     "audit": "node projects/hullinger-transmission/scripts/audit-production.mjs",
-    "test": "npm run audit && npm run test:ace && npm run test:checkout && npm run test:office && npm run test:seo && npm run test:build && npm run test:routes",
+    "test": "npm run audit && npm run test:ace && npm run test:checkout && npm run test:office && npm run test:generated && npm run test:seo && npm run test:build && npm run test:routes && npm run test:dependencies",
     "test:syntax": "node projects/hullinger-transmission/scripts/audit-production.mjs --syntax-only",
     "test:ace": "node projects/hullinger-transmission/scripts/test-ace-integration.mjs",
     "test:checkout": "node projects/hullinger-transmission/scripts/test-reman-checkout.mjs",
-    "test:office": "node admin/integrity-office/test/order-state.test.mjs",
+    "test:office": "node admin/integrity-office/test/order-state.test.mjs && node admin/integrity-office/test/schema-controls.test.mjs",
+    "test:generated": "node scripts/test-integrity-generated.mjs",
     "test:seo": "node projects/hullinger-transmission/scripts/audit-seo.mjs",
     "test:build": "node scripts/test-integrity-build.mjs",
-    "test:routes": "INTEGRITY_SITE_ROOT=dist/integrity node projects/hullinger-transmission/scripts/test-production-routes.mjs"
+    "test:routes": "INTEGRITY_SITE_ROOT=dist/integrity node projects/hullinger-transmission/scripts/test-production-routes.mjs",
+    "test:dependencies": "npm audit --omit=dev --audit-level=high"
   },
   "dependencies": {
     "stripe": "22.6.1"

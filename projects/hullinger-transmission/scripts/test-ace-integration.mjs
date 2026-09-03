@@ -5,7 +5,7 @@ import { createRequire } from "node:module";
 const require = createRequire(import.meta.url);
 const { handler, _internals } = require("../../../netlify/functions/ace-lookup.js");
 const { handler: publicHandler, _internals: publicCatalog } = require("../../../netlify/functions/reman-catalog.js");
-const { handler: shippingHandler } = require("../../../netlify/functions/reman-shipping.js");
+const { handler: shippingHandler, _internals: shipping } = require("../../../netlify/functions/reman-shipping.js");
 
 const customerSurface = [
   readFileSync(new URL("../reman-transmissions.html", import.meta.url), "utf8"),
@@ -63,7 +63,7 @@ const partInfo = {
       UpgradeLevelName: "Base",
       IsOffered: true,
       IsNonReturnable: false,
-      VendorName: "Internal",
+      VendorName: "",
       SuggestedPrice: 4189.38,
       MinimumSuggestedListPriceCalculationList: [{ CalculationType: "Percent", Amount: 35 }],
       MaximumSuggestedListPriceCalculationList: [],
@@ -151,6 +151,7 @@ const html = (body, init = {}) => new Response(body, {
 });
 
 const calls = [];
+let freightMode = "success";
 const mockFetch = async (input, options = {}) => {
   const url = new URL(String(input));
   calls.push({ path: url.pathname, method: options.method || "GET", body: String(options.body || "") });
@@ -185,6 +186,8 @@ const mockFetch = async (input, options = {}) => {
   if (url.pathname.endsWith("/GetFreightRates")) {
     assert.match(String(options.body), /addressState=MO/);
     assert.match(String(options.body), /roundTrip=True/);
+    assert.match(String(options.body), /vendor=Internal/);
+    if (freightMode === "empty") return json({ rates: [], localRates: [] });
     return new Response(JSON.stringify({
       rates: [{ CarrierName: "Test Freight", ServiceDays: 2, FreightCharge: 225, AccessorialCharge: 25 }],
       localRates: [],
@@ -220,11 +223,46 @@ assert.equal(_internals.retailPrice(3090.2, 4189.38, { flatMargin: 500 }), 3590.
 assert.equal(_internals.strictNumberValue("50O"), null);
 assert.equal(_internals.strictNumberValue("500.00"), 500);
 assert.equal(
-  require("../../../netlify/functions/reman-shipping.js")._internals.normalizeFreightRequest({
+  shipping.normalizeFreightRequest({
     coreReturnFreight: "Outbound delivery only — I will arrange the core return",
   }).roundTrip,
   false,
 );
+
+let directFreightAttempts = 0;
+const directRetry = await shipping.getFreightRatesWithRetry({
+  client: {
+    getFreightRates: async () => {
+      directFreightAttempts += 1;
+      return directFreightAttempts === 1
+        ? { rates: [], localRates: [] }
+        : { rates: [{ CarrierName: "Recovery Freight", ServiceDays: 3, FreightCharge: 190 }] };
+    },
+  },
+  request: {},
+  roundTrip: false,
+  wait: async () => {},
+});
+assert.equal(directFreightAttempts, 2);
+assert.equal(directRetry.attempts, 2);
+assert.equal(directRetry.rates[0].customerFreightTotal, 190);
+
+let permanentFailureAttempts = 0;
+await assert.rejects(
+  shipping.getFreightRatesWithRetry({
+    client: {
+      getFreightRates: async () => {
+        permanentFailureAttempts += 1;
+        throw new Error("ACE freight rates returned HTTP 400");
+      },
+    },
+    request: {},
+    roundTrip: true,
+    wait: async () => {},
+  }),
+  /HTTP 400/,
+);
+assert.equal(permanentFailureAttempts, 1, "Permanent upstream errors must not be retried");
 
 process.env.ACE_CONNECTOR_MODE = "staff";
 process.env.ACE_USERNAME = "test-user";
@@ -315,6 +353,20 @@ try {
   assert.equal(publicPayload.candidates[0].upgrades[1].packages[0].customerPrice, 4100);
   assert.doesNotMatch(serializedPublicPayload, /wholesale|suggested retail|Distributor Partner|ACE authenticated/i);
 
+  const untrustedPreview = await publicHandler({
+    httpMethod: "POST",
+    headers: { origin: "https://unrelated-preview.netlify.app" },
+    body: JSON.stringify({ vin: "1FTFW1E50JFA00000" }),
+  });
+  assert.equal(untrustedPreview.statusCode, 403, "An arbitrary Netlify subdomain must not be trusted");
+
+  const oversizedLookup = await publicHandler({
+    httpMethod: "POST",
+    headers: { origin: "https://integritydrivetrain.com" },
+    body: JSON.stringify({ vin: "1FTFW1E50JFA00000", padding: "x".repeat(25_000) }),
+  });
+  assert.equal(oversizedLookup.statusCode, 413);
+
   const shippingResponse = await shippingHandler({
     httpMethod: "POST",
     headers: { origin: "https://integritydrivetrain.com" },
@@ -353,14 +405,37 @@ try {
     }),
   });
   assert.equal(outboundOnlyResponse.statusCode, 200, outboundOnlyResponse.body);
-  assert.equal(outboundOnlyResponse.headers["X-Integrity-Shipping-Version"], "2026-09-03.2");
+  assert.equal(outboundOnlyResponse.headers["X-Integrity-Shipping-Version"], "2026-09-03.3");
   const outboundOnlyPayload = JSON.parse(outboundOnlyResponse.body);
   assert.equal(outboundOnlyPayload.roundTrip, false);
   assert.equal(outboundOnlyPayload.rates[0].roundTrip, false);
   assert.equal(outboundOnlyPayload.rates[0].customerFreightTotal, 225);
   assert.match(outboundOnlyPayload.notice, /outbound only/i);
+
+  freightMode = "empty";
+  const pendingFreightResponse = await shippingHandler({
+    httpMethod: "POST",
+    headers: { origin: "https://integritydrivetrain.com", "x-nf-client-connection-ip": "203.0.113.11" },
+    body: JSON.stringify({
+      vin: "1FTFW1E50JFA00000",
+      selectionId: publicPayload.candidates[0].upgrades[0].packages[0].selectionId,
+      addressLine1: "123 Main Street",
+      city: "Springfield",
+      state: "MO",
+      postalCode: "65807",
+      deliveryLocation: "Repair shop or commercial dock",
+      coreReturnFreight: "Include delivery and prepaid core return",
+    }),
+  });
+  assert.equal(pendingFreightResponse.statusCode, 503, pendingFreightResponse.body);
+  assert.equal(pendingFreightResponse.headers["Retry-After"], "4");
+  const pendingFreightPayload = JSON.parse(pendingFreightResponse.body);
+  assert.equal(pendingFreightPayload.state, "pending");
+  assert.equal(pendingFreightPayload.retryable, true);
+  assert.equal(pendingFreightPayload.attempts, 2);
+  assert.match(pendingFreightPayload.requestId, /^[a-f0-9-]{12}$/i);
 } finally {
   globalThis.fetch = originalFetch;
 }
 
-console.log("ACE integration test passed: staff authentication, public VIN catalog, per-upgrade stock, $500 pricing, redaction, and one-way/round-trip freight.");
+console.log("ACE integration test passed: staff authentication, public VIN catalog, $500 pricing, vendor fallback, bounded freight retries, and pending recovery.");

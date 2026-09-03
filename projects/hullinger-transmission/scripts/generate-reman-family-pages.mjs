@@ -14,6 +14,11 @@ const families = [
     image: "/images/seo-10r80-hero.webp",
     applications: ["Ford F-150", "Ford Mustang", "Ford Expedition and Lincoln Navigator", "Ford Ranger", "Selected Ford Transit applications"],
     summary: "Ford's electronically controlled 10-speed automatic appears in several rear-wheel-drive and four-wheel-drive applications. Engine, drive type, model year, calibration and production changes can affect the correct unit.",
+    buyingNotes: [
+      ["Strategy and electronics", "Solenoid-body strategy, valve-body content and vehicle programming must match the exact Ford application. Confirm what setup work the installer will perform."],
+      ["Known updates", "Ask which application-specific hydraulic, sealing and drum updates are included in the quoted build rather than assuming every 10R80 package is identical."],
+      ["Installation planning", "Correct fluid level at temperature, cooler service, programming and an intentional adaptive-learning drive are part of a successful installation."],
+    ],
   },
   {
     slug: "6l80",
@@ -21,6 +26,11 @@ const families = [
     image: "/images/seo-6l80-6l90-hero.webp",
     applications: ["Chevrolet Silverado 1500", "GMC Sierra 1500", "Tahoe, Suburban, Yukon and Escalade", "Camaro and Corvette", "Selected GM vans and utility vehicles"],
     summary: "The GM 6L80 six-speed automatic is used across trucks, SUVs and performance vehicles. The VIN, RPO information, engine, drive type and controller strategy all matter when matching a replacement.",
+    buyingNotes: [
+      ["Converter contamination", "A failed torque-converter clutch can distribute material through the pump, valve body, cooler and lines. The replacement plan must address the entire fluid circuit."],
+      ["TEHCM compatibility", "Electronics, solenoid calibration and programming requirements vary. Verify whether the quoted package includes the needed control components."],
+      ["Cooler requirements", "Follow the remanufacturer's written flush or cooler-replacement procedure; installing a clean unit into a contaminated system risks immediate damage."],
+    ],
   },
   {
     slug: "6l90",
@@ -28,6 +38,11 @@ const families = [
     image: "/images/seo-6l80-6l90-hero.webp",
     applications: ["Chevrolet Silverado HD", "GMC Sierra HD", "Chevrolet Express and GMC Savana", "Selected Cadillac and performance applications", "Commercial GM vehicles"],
     summary: "The heavier-duty GM 6L90 serves truck, van, commercial and selected performance applications. Vehicle weight rating, engine, output configuration and production information must be checked before ordering.",
+    buyingNotes: [
+      ["Duty cycle", "Commercial weight, towing frequency and idle time change heat and converter load. Share how the vehicle works, not only its VIN."],
+      ["Output configuration", "Case, output, sensor and controller details can differ among truck, van and specialty applications, making VIN and production verification essential."],
+      ["Complete fluid system", "Converter debris can reach the cooler and lines. Warranty-compliant cleaning or replacement requirements belong in the installation plan."],
+    ],
   },
   {
     slug: "68rfe",
@@ -35,6 +50,11 @@ const families = [
     image: "/images/seo-68rfe-hero.webp",
     applications: ["Ram 2500 with 6.7L Cummins", "Ram 3500 with 6.7L Cummins", "Stock and modified diesel trucks", "Towing and work-truck applications"],
     summary: "The 68RFE six-speed automatic is widely used behind the 6.7L Cummins in Ram heavy-duty trucks. Tuning, tire size, towing weight, horsepower and vehicle use help determine the suitable upgrade level.",
+    buyingNotes: [
+      ["Disclose the tune", "Added torque and altered shift strategy can exceed a stock package's assumptions. Provide engine tuning, tire size and other power modifications before choosing a level."],
+      ["Match the towing load", "Trailer weight, terrain and frequency affect clutch, converter and cooling requirements. The strongest-sounding package is not automatically the best match."],
+      ["Calibration matters", "Mechanical capacity and transmission tuning must work together. Confirm the installer and calibrator understand the selected build's requirements."],
+    ],
   },
   {
     slug: "4l60e",
@@ -42,6 +62,11 @@ const families = [
     image: "/images/seo-4l60e-hero.webp",
     applications: ["Chevrolet and GMC half-ton trucks", "Tahoe, Suburban, Yukon and Escalade", "Camaro, Firebird and Corvette", "S-series trucks and utility vehicles", "Selected GM vans and rear-wheel-drive cars"],
     summary: "The 4L60E family covers many years and applications, with important differences in cases, shafts, converters, electronics and calibration. The VIN and transmission identification tag are essential.",
+    buyingNotes: [
+      ["Interchange details", "Case style, bellhousing, input shaft, speed sensors and converter can change across the long 4L60E production run. Use both VIN and unit identification when available."],
+      ["Build for the vehicle", "A stock car, heavy SUV, towing truck and modified engine do not place the same demands on the 3-4 clutch, shell, servo or converter."],
+      ["Protect the replacement", "Cooler and line contamination, engine problems and calibration issues should be corrected before the new transmission is placed in service."],
+    ],
   },
   {
     slug: "4l80e",
@@ -49,6 +74,11 @@ const families = [
     image: "/images/seo-4l80e-hero.webp",
     applications: ["Chevrolet and GMC heavy-duty trucks", "Express and Savana vans", "Suburban and commercial utility applications", "Motorhome and fleet applications", "Performance and conversion projects requiring verification"],
     summary: "The GM 4L80E is a heavy-duty four-speed automatic used in trucks, vans, fleet vehicles and specialty applications. Case style, speed sensors, converter and controller details vary by year and use.",
+    buyingNotes: [
+      ["Factory or conversion", "A factory replacement can be VIN-matched; a conversion also requires the transmission tag, controller, wiring, speed-sensor arrangement and driveline details."],
+      ["Converter and heat", "Vehicle weight, stall speed, lockup strategy and towing load determine heat. Include the converter and cooling plan when comparing packages."],
+      ["Output and case", "Two- and four-wheel-drive outputs, early and late electronics, and specialty applications are not interchangeable without verification."],
+    ],
   },
   {
     slug: "700r4",
@@ -56,6 +86,11 @@ const families = [
     image: "/images/seo-700r4-hero.webp",
     applications: ["Classic Chevrolet and GMC trucks", "Camaro, Firebird and Corvette", "Full-size GM rear-wheel-drive cars", "Street rods and verified conversion projects"],
     summary: "The hydraulically controlled 700R4 combines overdrive with classic GM applications. Correct year range, input and output configuration, converter, gearing, TV-cable setup and intended use must be matched carefully.",
+    buyingNotes: [
+      ["TV geometry is critical", "The throttle-valve cable controls pressure, not merely kickdown. Incorrect carburetor or throttle-body geometry can damage a fresh transmission quickly."],
+      ["Plan the combination", "Engine torque, axle ratio, tire height, vehicle weight, converter stall and lockup control determine how a 700R4 will shift and run."],
+      ["Verify the core family", "Production changes affect internal and external components. Confirm the year range, case, input and output configuration before ordering."],
+    ],
   },
 ];
 
@@ -86,7 +121,7 @@ const render = (family) => {
         url,
         name: title,
         description,
-        isPartOf: { "@id": `${baseUrl}/reman-transmissions#webpage` },
+        isPartOf: { "@id": `${baseUrl}/reman-transmissions#page` },
       },
       {
         "@type": "Service",
@@ -124,19 +159,27 @@ const render = (family) => {
   <meta name="theme-color" content="#f47b20">
   <link rel="canonical" href="${url}">
   <link rel="icon" type="image/png" href="/images/integrity-logo-ITD.png">
+  <link rel="apple-touch-icon" href="/images/integrity-logo-ITD.png">
   <link rel="preload" as="image" href="${family.image}" type="image/webp">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css?v=20260903-launch3">
-  <link rel="stylesheet" href="/modern-pages.css?v=20260903-launch3">
-  <link rel="stylesheet" href="/seo-landing.css?v=20260903-launch3">
-  <link rel="stylesheet" href="/commerce-guides.css?v=20260903-launch3">
+  <link rel="stylesheet" href="/styles.css?v=20260903.1">
+  <link rel="stylesheet" href="/modern-pages.css?v=20260903.1">
+  <link rel="stylesheet" href="/seo-landing.css?v=20260903.1">
+  <link rel="stylesheet" href="/commerce-guides.css?v=20260903.1">
   <meta property="og:type" content="website">
   <meta property="og:title" content="${escapeHtml(title)}">
   <meta property="og:description" content="${escapeHtml(description)}">
   <meta property="og:url" content="${url}">
+  <meta property="og:site_name" content="Integrity Transmission & Drivetrain">
+  <meta property="og:locale" content="en_US">
   <meta property="og:image" content="${baseUrl}${family.image}">
+  <meta property="og:image:alt" content="${family.unit} remanufactured transmission information from Integrity Transmission & Drivetrain">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="${escapeHtml(title)}">
+  <meta name="twitter:description" content="${escapeHtml(description)}">
+  <meta name="twitter:image" content="${baseUrl}${family.image}">
   <script type="application/ld+json">${JSON.stringify(schema)}</script>
 </head>
 <body class="subpage-modern reman-family-page">
@@ -177,6 +220,10 @@ ${header}
       <article class="seo-process-step"><span>04</span><h3>Pay Securely</h3><p>Review tax and the complete total in Stripe Checkout.</p></article>
     </div></div></section>
 
+    <section class="section section-soft"><div class="container"><div class="seo-section-heading"><p class="eyebrow">Before You Order</p><h2>${family.unit} details worth confirming.</h2><p>Use these application-specific questions when comparing the VIN-matched packages returned for your vehicle.</p></div><div class="seo-card-grid">
+      ${family.buyingNotes.map(([heading, text], index) => `<article class="seo-card"><span class="seo-card__number">${String(index + 1).padStart(2, "0")}</span><h3>${escapeHtml(heading)}</h3><p>${escapeHtml(text)}</p></article>`).join("\n      ")}
+    </div></div></section>
+
     <section class="section reman-family-cta"><div class="container seo-final"><p class="eyebrow">Shop ${family.unit} Options</p><h2>Get the current VIN-matched price.</h2><p>Have the VIN ready. You can review the package, warranty, core deposit, availability and freight before making a payment.</p><div class="seo-final__actions"><a class="btn btn-primary" href="${shopUrl}">Find My ${family.unit}</a><a class="btn btn-dark" href="/reman-order-terms">Read Order & Core Terms</a></div></div></section>
 
     <section class="section section-soft"><div class="container"><div class="seo-section-heading"><p class="eyebrow">Questions</p><h2>${family.unit} ordering questions</h2></div><div class="seo-faq-list">
@@ -188,7 +235,7 @@ ${header}
   <!-- SITE_FOOTER_START -->
 ${footer}
   <!-- SITE_FOOTER_END -->
-  <script src="/script.js?v=20260903-launch3" defer></script>
+  <script src="/script.js?v=20260903.1" defer></script>
 </body>
 </html>
 `;

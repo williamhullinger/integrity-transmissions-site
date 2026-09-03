@@ -1,9 +1,15 @@
 name: Integrity site checks
 
+concurrency:
+  group: integrity-site-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
   pull_request:
     paths:
       - "netlify/functions/**"
+      - "admin/integrity-office/**"
+      - "docs/integrity/**"
       - "projects/hullinger-transmission/**"
       - "scripts/**"
       - "package.json"
@@ -14,6 +20,8 @@ on:
     branches: [main]
     paths:
       - "netlify/functions/**"
+      - "admin/integrity-office/**"
+      - "docs/integrity/**"
       - "projects/hullinger-transmission/**"
       - "scripts/**"
       - "package.json"
@@ -29,8 +37,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: actions/setup-node@1e60f620b9541dca15154036b4c6b397ad28c1b6
         with:
           node-version: 22
           cache: npm

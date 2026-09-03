@@ -42,6 +42,13 @@
   --font-heading: "Oswald", system-ui, sans-serif;
 }
 
+/* A two-tone focus ring stays visible on both light and dark surfaces. */
+:focus-visible {
+  outline: 3px solid #111111 !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 5px #ffffff !important;
+}
+
 /* =========================================================
   RESET
 ========================================================= */
@@ -187,6 +194,11 @@ ol {
   font-weight: 900;
   letter-spacing: 0.17em;
   text-transform: uppercase;
+}
+
+.section:not(.section-dark) .eyebrow,
+.thank-you-card .eyebrow {
+  color: #a84605;
 }
 
 /* =========================================================
@@ -661,15 +673,15 @@ ol {
     display: grid;
     gap: 0.35rem;
     padding: 1rem;
-    background: rgba(255, 250, 242, 0.98);
-    border: 1px solid var(--border);
+    background: rgba(14, 14, 14, 0.98);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 26px;
     box-shadow: var(--shadow-lg);
     opacity: 0;
     visibility: hidden;
     transform: translateY(-12px);
     pointer-events: none;
-    max-height: calc(100vh - 1rem);
+    max-height: calc(100dvh - 120px);
     overflow-y: auto;
     overscroll-behavior: contain;
     transition:
@@ -690,6 +702,18 @@ ol {
     min-height: 50px;
     padding: 0.8rem 1rem;
     border-radius: 16px;
+    color: #ffffff;
+  }
+
+  .site-nav__link:hover,
+  .site-nav__link--active {
+    color: #ffffff;
+    background: rgba(244, 123, 32, 0.2);
+  }
+
+  .site-nav__link--button,
+  .site-nav__link--button:hover {
+    color: #111111;
   }
 
   .site-nav__link--button {

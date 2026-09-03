@@ -135,6 +135,18 @@ for (const filePath of htmlFiles) {
     errors.push(`${relative}: missing JSON-LD`);
   }
 
+  if (/^reman-transmissions\/[^/]+\.html$/.test(relative)) {
+    for (const tag of ["og:site_name", "og:locale", "og:image:alt", "twitter:card", "twitter:title", "twitter:description", "twitter:image"]) {
+      const attribute = tag.startsWith("og:") ? "property" : "name";
+      if (!new RegExp(`<meta\\s+${attribute}="${tag}"\\s+content="[^"]+"`, "i").test(html)) {
+        errors.push(`${relative}: missing ${tag} social metadata`);
+      }
+    }
+    if (!html.includes(`${baseUrl}/reman-transmissions#page`)) {
+      errors.push(`${relative}: JSON-LD does not reference the reman storefront page node`);
+    }
+  }
+
   for (const match of html.matchAll(/href="([^"]+)"/gi)) {
     const href = match[1];
     if (!href.startsWith("/") || href.startsWith("//")) continue;

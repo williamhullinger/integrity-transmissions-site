@@ -16,11 +16,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css?v=20260903-launch3">
-  <link rel="stylesheet" href="/modern-pages.css?v=20260903-launch3">
-  <link rel="stylesheet" href="/seo-landing.css?v=20260903-launch3">
-  <link rel="stylesheet" href="/contact.css?v=20260903-launch3">
-  <link rel="stylesheet" href="/commerce-guides.css?v=20260903-launch3">
+  <link rel="stylesheet" href="/styles.css?v=20260903.1">
+  <link rel="stylesheet" href="/modern-pages.css?v=20260903.1">
+  <link rel="stylesheet" href="/seo-landing.css?v=20260903.1">
+  <link rel="stylesheet" href="/contact.css?v=20260903.1">
+  <link rel="stylesheet" href="/commerce-guides.css?v=20260903.1">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Remanufactured Transmissions for Sale | Integrity">
   <meta property="og:description" content="Start with the VIN. Integrity verifies the application, price, warranty, freight and core terms before a reman transmission is ordered.">
@@ -454,6 +454,10 @@
           <input type="hidden" name="catalog-freight-total" value="">
           <input type="hidden" name="catalog-freight-transit" value="">
           <input type="hidden" name="catalog-freight-checked-at" value="">
+          <input type="hidden" name="freight-retry-status" value="">
+          <input type="hidden" name="freight-request-reference" value="">
+          <input type="hidden" name="callback-phone-confirmed" value="">
+          <input type="hidden" name="lead-reference" value="">
           <p class="form-hidden"><label>Do not fill this out if you are human: <input name="bot-field"></label></p>
 
           <div class="form-header">
@@ -484,7 +488,7 @@
             </div>
             <div class="form-field">
               <label for="reman-phone">Phone</label>
-              <input id="reman-phone" name="phone" type="tel" autocomplete="tel" required>
+              <input id="reman-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" minlength="10" pattern="[0-9() +.\-]{10,}" required>
             </div>
             <div class="form-field">
               <label for="reman-email">Email</label>
@@ -589,7 +593,7 @@
             <div class="form-field form-field--full reman-freight-box">
               <div>
                 <strong>Delivery Price</strong>
-                <span>Choose a transmission package and enter the complete delivery address.</span>
+                <span>Choose a transmission package and enter the complete delivery address. If the rate service is slow, we retry it automatically.</span>
               </div>
               <button type="button" class="btn btn-dark" data-reman-freight disabled>Calculate Current Freight</button>
               <div class="reman-freight-results" data-reman-freight-results hidden aria-live="polite"></div>
@@ -622,6 +626,8 @@
 
         <form name="reman-paid-order" method="POST" data-netlify="true" hidden aria-hidden="true">
           <input type="hidden" name="form-name" value="reman-paid-order">
+          <input type="hidden" name="stripe-event-id">
+          <input type="hidden" name="payment-verification">
           <input name="stripe-session-id"><input name="payment-status"><input name="amount-total"><input name="amount-tax">
           <input name="name"><input name="email"><input name="phone"><input name="vin"><input name="vehicle">
           <input name="application"><input name="upgrade"><input name="warranty"><input name="availability">
@@ -754,7 +760,7 @@
   </div>
 </footer>
   <!-- SITE_FOOTER_END -->
-  <script src="/script.js?v=20260903-launch3" defer></script>
-  <script src="/vin-decoder.js?v=20260903-launch3" defer></script>
+  <script src="/script.js?v=20260903.1" defer></script>
+  <script src="/vin-decoder.js?v=20260903.1" defer></script>
 </body>
 </html>

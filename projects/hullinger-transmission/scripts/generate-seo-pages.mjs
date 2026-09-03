@@ -8,6 +8,14 @@ const siteRoot = path.resolve(scriptDir, "..");
 const header = fs.readFileSync(path.join(siteRoot, "partials/header.html"), "utf8").trim();
 const footer = fs.readFileSync(path.join(siteRoot, "partials/footer.html"), "utf8").trim();
 const baseUrl = "https://integritydrivetrain.com";
+const remanRouteByGuide = new Map([
+  ["/transmissions/4l60e", "/reman-transmissions/4l60e"],
+  ["/transmissions/6l80-6l90", "/reman-transmissions/6l80"],
+  ["/transmissions/10r80", "/reman-transmissions/10r80"],
+  ["/transmissions/68rfe", "/reman-transmissions/68rfe"],
+  ["/transmissions/700r4", "/reman-transmissions/700r4"],
+  ["/transmissions/4l80e", "/reman-transmissions/4l80e"],
+]);
 
 const escapeHtml = (value) => String(value)
   .replaceAll("&", "&amp;")
@@ -109,6 +117,16 @@ const renderPage = (page) => {
   const canonical = `${baseUrl}${page.path}`;
   const parentLabel = page.parent?.[0] || "Local Service";
   const parentHref = page.parent?.[1] || "/service-area";
+  const remanRoute = remanRouteByGuide.get(page.path);
+  const related = page.path === "/transmissions/6l80-6l90"
+    ? [
+      ["/reman-transmissions/6l80", "Shop 6L80", "Check current VIN-matched 6L80 packages"],
+      ["/reman-transmissions/6l90", "Shop 6L90", "Check current VIN-matched 6L90 packages"],
+      page.related[0],
+    ]
+    : remanRoute
+      ? [[remanRoute, "Shop Reman", `Check current ${page.eyebrow.replace(/\s+Transmission$/, "")} packages`], ...page.related.slice(0, 2)]
+      : page.related;
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -128,9 +146,9 @@ const renderPage = (page) => {
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css?v=20260903-launch3">
-  <link rel="stylesheet" href="/modern-pages.css?v=20260903-launch3">
-  <link rel="stylesheet" href="/seo-landing.css?v=20260903-launch3">
+  <link rel="stylesheet" href="/styles.css?v=20260903.1">
+  <link rel="stylesheet" href="/modern-pages.css?v=20260903.1">
+  <link rel="stylesheet" href="/seo-landing.css?v=20260903.1">
   <meta property="og:type" content="website">
   <meta property="og:title" content="${escapeHtml(page.title)}">
   <meta property="og:description" content="${escapeHtml(page.description)}">
@@ -254,7 +272,7 @@ ${areaNames.slice(0, 6).map((area) => `            <span>${escapeHtml(area)}, MO
         <p class="eyebrow">Related Next Steps</p>
         <h2>Continue with the information that fits your vehicle.</h2>
         <div class="seo-related__grid">
-${page.related.map(([href, kicker, title]) => `          <a class="seo-related__link" href="${escapeHtml(href)}"><span>${escapeHtml(kicker)}</span><strong>${escapeHtml(title)} →</strong></a>`).join("\n")}
+${related.map(([href, kicker, title]) => `          <a class="seo-related__link" href="${escapeHtml(href)}"><span>${escapeHtml(kicker)}</span><strong>${escapeHtml(title)} →</strong></a>`).join("\n")}
         </div>
       </div>
     </section>
@@ -289,7 +307,7 @@ ${page.faqs.map(([question, answer]) => `          <article class="seo-faq-item"
   <!-- SITE_FOOTER_START -->
 ${footer}
   <!-- SITE_FOOTER_END -->
-  <script src="/script.js?v=20260903-launch3" defer></script>
+  <script src="/script.js?v=20260903.1" defer></script>
 </body>
 </html>
 `;
