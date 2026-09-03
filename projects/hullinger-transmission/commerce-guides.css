@@ -124,6 +124,19 @@
   font-weight: 950;
 }
 
+.quote-form-section .vin-quote-copy > p,
+.quote-form-section .vin-quote-checklist li {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.quote-form-section .vin-quote-checklist {
+  border-top-color: rgba(255, 255, 255, 0.2);
+}
+
+.quote-form-section .vin-quote-checklist li {
+  border-bottom-color: rgba(255, 255, 255, 0.2);
+}
+
 .reman-form {
   box-shadow: 0 30px 80px rgba(25, 21, 18, 0.14);
 }
