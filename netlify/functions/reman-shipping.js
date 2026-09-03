@@ -5,6 +5,7 @@ const { _internals: catalog } = require("./reman-catalog.js");
 const headers = {
   "Content-Type": "application/json; charset=utf-8",
   "Cache-Control": "no-store, max-age=0",
+  "X-Integrity-Shipping-Version": "2026-09-03.2",
   "X-Content-Type-Options": "nosniff",
   "Referrer-Policy": "strict-origin-when-cross-origin",
 };

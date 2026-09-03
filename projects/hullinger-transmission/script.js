@@ -94,7 +94,7 @@ function initSiteNavigation() {
 
   // Reset mobile navigation when returning to desktop width
   window.addEventListener("resize", () => {
-    if (window.innerWidth > 1440) {
+    if (window.innerWidth > 1520) {
       closeNav();
     }
   });

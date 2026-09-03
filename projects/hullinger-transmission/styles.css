@@ -342,7 +342,7 @@ ol {
   grid-template-columns: auto 1fr;
   align-items: center;
   gap: 1.5rem;
-  width: min(1320px, calc(100% - 2rem));
+  width: min(1540px, calc(100% - 2rem));
   min-height: 112px;
   padding-top: 1.1rem;
   padding-bottom: 1.1rem;
@@ -641,7 +641,7 @@ ol {
   RESPONSIVE GLOBAL
 ========================================================= */
 
-@media (max-width: 1440px) {
+@media (max-width: 1520px) {
   .main-header__inner {
     grid-template-columns: minmax(0, 1fr) auto;
   }

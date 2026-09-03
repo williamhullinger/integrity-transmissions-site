@@ -353,6 +353,7 @@ try {
     }),
   });
   assert.equal(outboundOnlyResponse.statusCode, 200, outboundOnlyResponse.body);
+  assert.equal(outboundOnlyResponse.headers["X-Integrity-Shipping-Version"], "2026-09-03.2");
   const outboundOnlyPayload = JSON.parse(outboundOnlyResponse.body);
   assert.equal(outboundOnlyPayload.roundTrip, false);
   assert.equal(outboundOnlyPayload.rates[0].roundTrip, false);
