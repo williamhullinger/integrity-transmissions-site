@@ -27,8 +27,16 @@
 /guides/cvt-transmission-problems.html           /guides/cvt-transmission-problems  301!
 /reman-order-terms.html                          /reman-order-terms                 301!
 /reman-order-success.html                        /reman-order-success               301!
-/staff/ace-quote.html                            /staff/ace-quote                   301!
 /staff/*                                         /404                              404!
+/ACE_INTEGRATION.md                              /404                              404!
+/STRIPE_REMAN_OPERATIONS.md                      /404                              404!
+/REMAN_COMMERCE_ROADMAP.md                       /404                              404!
+/SEO_CAMPAIGN_STATUS.md                          /404                              404!
+/SEO_CONTENT_ROADMAP.md                          /404                              404!
+/BACKLINK_CAMPAIGN.md                            /404                              404!
+/CASE_STUDY_WORKFLOW.md                          /404                              404!
+/readme.md                                       /404                              404!
+/README.md                                       /404                              404!
 /*.md                                            /404                              404!
 /scripts/*                                       /404                              404!
 /partials/*                                      /404                              404!
