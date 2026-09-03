@@ -28,6 +28,11 @@
 /reman-order-terms.html                          /reman-order-terms                 301!
 /reman-order-success.html                        /reman-order-success               301!
 /staff/ace-quote.html                            /staff/ace-quote                   301!
+/staff/*                                         /404                              404!
+/*.md                                            /404                              404!
+/scripts/*                                       /404                              404!
+/partials/*                                      /404                              404!
+/Js/*                                            /404                              404!
 /api/ace-lookup                                  /.netlify/functions/ace-lookup     200
 /api/reman-catalog                               /.netlify/functions/reman-catalog  200
 /api/reman-shipping                              /.netlify/functions/reman-shipping 200
