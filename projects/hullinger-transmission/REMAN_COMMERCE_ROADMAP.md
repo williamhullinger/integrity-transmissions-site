@@ -47,7 +47,7 @@ Supplier credentials, account pricing, raw response data and wholesale cost rema
 
 ## Phase 2: Verified Quote and Payment
 
-Status: the ACE-assisted staff lookup, customer catalog, freight lookup and quote-building portions are implemented. Payment and persistent order-state records remain pending.
+Status: hosted payment, tax, invoice and webhook notification are implemented in code. Live activation is pending the restricted Stripe key, webhook signing secret, deployment and test-mode checkout.
 
 Implemented in the current release:
 
@@ -63,6 +63,16 @@ Implemented in the current release:
 - no supplier credentials or wholesale prices in public browser code; and
 - no ACE cart or order-placement method.
 
+Added for the checkout release:
+
+- hosted Stripe Checkout created only from freshly revalidated server amounts;
+- signed freight selections and price/core change detection;
+- automatic Stripe Tax with separate tangible-goods, refundable-core and shipping lines;
+- a post-purchase invoice that supports an exact core-line credit note and tax adjustment;
+- webhook-confirmed paid-order notification;
+- a customer payment-status page; and
+- customer-facing order, fitment, cancellation, freight, installation and core-return terms.
+
 Remaining Phase 2 work:
 
 - internal quote record with a unique quote ID;
@@ -71,10 +81,9 @@ Remaining Phase 2 work:
 - itemized unit, converter, fluid/parts, freight, liftgate/limited-access fees, core, tax, and optional installation;
 - attached warranty, installation, programming, and core-return terms;
 - customer acceptance checkbox and timestamp;
-- Stripe Checkout or a Stripe Payment Link generated only after manual approval;
-- paid/unpaid/expired quote states;
+- a persistent ShopOps order record and paid/unpaid/expired dashboard states;
 - full-payment rule before the supplier order button becomes available;
-- confirmation email to Integrity and the customer;
+- a customer confirmation beyond Stripe's receipt and invoice;
 - supplier order number and tracking fields.
 
 Do not accept an unrestricted dollar amount or create Checkout from client-supplied prices. Every Checkout Session must come from a fresh server-side selection and freight verification.

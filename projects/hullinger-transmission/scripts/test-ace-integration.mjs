@@ -22,7 +22,7 @@ for (const internalPhrase of [
 ]) {
   assert.doesNotMatch(customerSurface, internalPhrase, `Customer copy contains internal wording: ${internalPhrase}`);
 }
-assert.match(customerSurface, /No payment is taken on this page/i);
+assert.match(customerSurface, /Continue to Secure Checkout/i);
 
 const loginHtml = `
   <form id="loginForm" method="post">
@@ -305,6 +305,7 @@ try {
   assert.equal(shippingPayload.rates[0].carrier, "Test Freight");
   assert.equal(shippingPayload.rates[0].customerFreightTotal, 450);
   assert.equal(shippingPayload.rates[0].roundTrip, true);
+  assert.match(shippingPayload.rates[0].rateId, /^[A-Za-z0-9_-]{32}$/);
 } finally {
   globalThis.fetch = originalFetch;
 }

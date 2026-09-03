@@ -25,7 +25,12 @@
 /reman-transmissions.html                        /reman-transmissions               301!
 /guides/transmission-problems.html               /guides/transmission-problems      301!
 /guides/cvt-transmission-problems.html           /guides/cvt-transmission-problems  301!
+/reman-order-terms.html                          /reman-order-terms                 301!
+/reman-order-success.html                        /reman-order-success               301!
 /staff/ace-quote.html                            /staff/ace-quote                   301!
 /api/ace-lookup                                  /.netlify/functions/ace-lookup     200
 /api/reman-catalog                               /.netlify/functions/reman-catalog  200
 /api/reman-shipping                              /.netlify/functions/reman-shipping 200
+/api/reman-checkout                              /.netlify/functions/reman-checkout 200
+/api/reman-order-status                          /.netlify/functions/reman-order-status 200
+/api/stripe-webhook                              /.netlify/functions/stripe-webhook 200

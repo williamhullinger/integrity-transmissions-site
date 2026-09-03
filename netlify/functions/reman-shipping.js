@@ -26,6 +26,68 @@ const sameOpaqueId = (left, right) => {
 
 const addressValue = (value, max = 100) => String(value || "").replace(/[<>]/g, "").trim().slice(0, max);
 
+const FREIGHT_SELECTION_PATTERN = /^[A-Za-z0-9_-]{20,64}$/;
+
+const freightSigningSecret = () => crypto.createHash("sha256")
+  .update(`integrity-reman-freight-v1|${process.env.ACE_LOOKUP_TOKEN || process.env.ACE_PASSWORD || ""}`)
+  .digest();
+
+const freightSelectionId = ({ vin, selectionId, address, roundTrip, liftgate, insideDelivery, residentialDelivery, rate }) => {
+  const material = [
+    vin,
+    selectionId,
+    address.addressLine1,
+    address.addressLine2,
+    address.city,
+    address.state,
+    address.postalCode,
+    roundTrip ? "round-trip" : "outbound-only",
+    liftgate ? "liftgate" : "no-liftgate",
+    insideDelivery ? "inside" : "outside",
+    residentialDelivery ? "residential" : "commercial",
+    rate.carrier,
+    rate.transitDays || "",
+    rate.customerFreightTotal.toFixed(2),
+  ].join("|");
+  return crypto.createHmac("sha256", freightSigningSecret()).update(material).digest("base64url").slice(0, 32);
+};
+
+const normalizeFreightRequest = (payload = {}) => {
+  const deliveryLocation = addressValue(payload.deliveryLocation || payload["delivery-location"], 80);
+  const coreReturnFreight = addressValue(payload.coreReturnFreight || payload["core-return-freight"], 80);
+  const delivery = deliveryLocation.toLowerCase();
+
+  let roundTrip;
+  if (coreReturnFreight) {
+    roundTrip = !/outbound only|quote outbound|freight account/i.test(coreReturnFreight);
+  } else {
+    roundTrip = payload.roundTrip !== false;
+  }
+
+  return {
+    address: {
+      addressLine1: addressValue(payload.addressLine1 || payload["shipping-street"]),
+      addressLine2: addressValue(payload.addressLine2 || payload["shipping-street-2"]),
+      city: addressValue(payload.city || payload["shipping-city"], 60),
+      state: addressValue(payload.state || payload["shipping-state"], 2).toUpperCase(),
+      postalCode: addressValue(payload.postalCode || payload["shipping-zip"], 5),
+    },
+    deliveryLocation,
+    coreReturnFreight,
+    roundTrip,
+    liftgate: delivery.includes("without dock") || delivery.includes("liftgate") || delivery.includes("residential") || Boolean(payload.liftgate),
+    insideDelivery: Boolean(payload.insideDelivery),
+    residentialDelivery: delivery.includes("residential") || Boolean(payload.residentialDelivery),
+  };
+};
+
+const validAddress = (address) => Boolean(
+  address.addressLine1
+  && address.city
+  && /^[A-Z]{2}$/.test(address.state)
+  && /^\d{5}$/.test(address.postalCode),
+);
+
 const normalizeRates = (raw, roundTrip) => {
   const rows = [
     ...(Array.isArray(raw?.rates) ? raw.rates : []),
@@ -80,6 +142,64 @@ const findSelection = async (vin, opaqueId) => {
   return null;
 };
 
+const loadFreightQuote = async (payload) => {
+  const vin = ace.normalizeVin(payload.vin);
+  const selectionId = String(payload.selectionId || "").trim();
+  const freightRequest = normalizeFreightRequest(payload);
+
+  if (!ace.VIN_PATTERN.test(vin) || !FREIGHT_SELECTION_PATTERN.test(selectionId)) {
+    const error = new Error("Run the VIN lookup and select a current package first");
+    error.statusCode = 400;
+    throw error;
+  }
+  if (!validAddress(freightRequest.address)) {
+    const error = new Error("Enter a complete U.S. delivery address with a two-letter state and five-digit ZIP code");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const selected = await findSelection(vin, selectionId);
+  if (!selected) {
+    const error = new Error("That option changed. Run the VIN lookup again before calculating freight.");
+    error.statusCode = 409;
+    throw error;
+  }
+
+  const availability = catalog.availabilityFor(
+    selected.upgrade.stock || selected.candidate.stock,
+    selected.upgrade.nonReturnable || selected.upgrade.stock?.nonReturnable,
+  );
+  if (!availability.orderable) {
+    const error = new Error(availability.code === "unavailable"
+      ? "This option is no longer available. Contact Integrity for another solution."
+      : "This option needs personal confirmation before it can be ordered online.");
+    error.statusCode = 409;
+    throw error;
+  }
+
+  const freight = await selected.client.getFreightRates({
+    ...freightRequest.address,
+    roundTrip: freightRequest.roundTrip,
+    liftgate: freightRequest.liftgate,
+    insideDelivery: freightRequest.insideDelivery,
+    residentialDelivery: freightRequest.residentialDelivery,
+    vendor: selected.upgrade.vendor || "",
+  });
+  const rates = normalizeRates(freight, freightRequest.roundTrip).map((rate) => ({
+    ...rate,
+    rateId: freightSelectionId({ vin, selectionId, ...freightRequest, rate }),
+  }));
+
+  if (!rates.length) {
+    const error = new Error("Automatic freight pricing is not available for this address");
+    error.statusCode = 409;
+    error.customerMessage = "Send your selected package and we will confirm the delivery price before payment.";
+    throw error;
+  }
+
+  return { vin, selectionId, selected, availability, freightRequest, rates };
+};
+
 const handler = async (event) => {
   if (event.httpMethod === "OPTIONS") return { statusCode: 204, headers, body: "" };
   if (event.httpMethod !== "POST") return jsonResponse(405, { error: "POST required" });
@@ -97,69 +217,34 @@ const handler = async (event) => {
     return jsonResponse(400, { error: "Invalid JSON request" });
   }
 
-  const vin = ace.normalizeVin(payload.vin);
-  const selectionId = String(payload.selectionId || "").trim();
-  const address = {
-    addressLine1: addressValue(payload.addressLine1),
-    addressLine2: addressValue(payload.addressLine2),
-    city: addressValue(payload.city, 60),
-    state: addressValue(payload.state, 2).toUpperCase(),
-    postalCode: addressValue(payload.postalCode, 5),
-  };
-
-  if (!ace.VIN_PATTERN.test(vin) || !/^[A-Za-z0-9_-]{20,64}$/.test(selectionId)) {
-    return jsonResponse(400, { error: "Run the VIN lookup and select a current package first" });
-  }
-  if (!address.addressLine1 || !address.city || !/^[A-Z]{2}$/.test(address.state) || !/^\d{5}$/.test(address.postalCode)) {
-    return jsonResponse(400, { error: "Enter a complete U.S. delivery address with a two-letter state and five-digit ZIP code" });
-  }
-
   try {
-    const selected = await findSelection(vin, selectionId);
-    if (!selected) return jsonResponse(409, { error: "That option changed. Run the VIN lookup again before calculating freight." });
-
-    const availability = catalog.availabilityFor(
-      selected.upgrade.stock || selected.candidate.stock,
-      selected.upgrade.nonReturnable || selected.upgrade.stock?.nonReturnable,
-    );
-    if (availability.code === "unavailable") {
-      return jsonResponse(409, { error: "This option is no longer available. Contact Integrity for another solution." });
-    }
-
-    const roundTrip = payload.roundTrip !== false;
-    const freight = await selected.client.getFreightRates({
-      ...address,
-      roundTrip,
-      liftgate: Boolean(payload.liftgate),
-      insideDelivery: Boolean(payload.insideDelivery),
-      residentialDelivery: Boolean(payload.residentialDelivery),
-      vendor: selected.upgrade.vendor || "",
-    });
-    const rates = normalizeRates(freight, roundTrip);
-
-    if (!rates.length) {
-      return jsonResponse(409, {
-        error: "Automatic freight pricing is not available for this address",
-        message: "Send your selected package and we will confirm the delivery price before payment.",
-      });
-    }
+    const quote = await loadFreightQuote(payload);
 
     return jsonResponse(200, {
       checkedAt: new Date().toISOString(),
-      rates,
-      roundTrip,
-      notice: roundTrip
+      rates: quote.rates,
+      roundTrip: quote.freightRequest.roundTrip,
+      notice: quote.freightRequest.roundTrip
         ? "The displayed freight total includes outbound delivery and one core-return shipment. Build lead time, when shown, is separate from carrier transit time."
         : "The displayed freight total is outbound only. Core-return freight will be confirmed separately.",
     });
   } catch (error) {
     console.error("Public reman freight lookup failed:", error.message);
-    return jsonResponse(502, {
-      error: "Freight rates could not be retrieved",
-      message: "Send your selected package and we will confirm the delivery price before payment.",
+    return jsonResponse(error.statusCode || 502, {
+      error: error.statusCode ? error.message : "Freight rates could not be retrieved",
+      message: error.customerMessage || "Send your selected package and we will confirm the delivery price before payment.",
     });
   }
 };
 
 exports.handler = handler;
-exports._internals = { normalizeRates, sameOpaqueId };
+exports._internals = {
+  addressValue,
+  findSelection,
+  freightSelectionId,
+  loadFreightQuote,
+  normalizeFreightRequest,
+  normalizeRates,
+  sameOpaqueId,
+  validAddress,
+};

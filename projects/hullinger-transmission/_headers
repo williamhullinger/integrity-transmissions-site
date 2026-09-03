@@ -18,6 +18,14 @@
   Cache-Control: no-store, max-age=0
   X-Robots-Tag: noindex, nofollow, noarchive
 
+/reman-order-success
+  Cache-Control: no-store, max-age=0
+  X-Robots-Tag: noindex, nofollow, noarchive
+
+/reman-order-terms
+  Cache-Control: no-store, max-age=0
+  X-Robots-Tag: noindex, follow
+
 /api/*
   Cache-Control: no-store, max-age=0
   X-Robots-Tag: noindex, nofollow, noarchive

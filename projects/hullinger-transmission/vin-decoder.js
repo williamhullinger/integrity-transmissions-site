@@ -24,12 +24,16 @@ function initVinDecoder() {
   const availabilityInput = form.querySelector("[name='catalog-availability']");
   const checkedAtInput = form.querySelector("[name='catalog-checked-at']");
   const freightCarrierInput = form.querySelector("[name='catalog-freight-carrier']");
+  const freightRateIdInput = form.querySelector("[name='catalog-freight-rate-id']");
   const freightTotalInput = form.querySelector("[name='catalog-freight-total']");
   const freightTransitInput = form.querySelector("[name='catalog-freight-transit']");
   const freightCheckedInput = form.querySelector("[name='catalog-freight-checked-at']");
   const freightButton = form.querySelector("[data-reman-freight]");
   const freightResults = form.querySelector("[data-reman-freight-results]");
+  const checkoutButton = form.querySelector("[data-reman-checkout]");
+  const checkoutStatus = form.querySelector("[data-reman-checkout-status]");
   const streetInput = form.querySelector("[name='shipping-street']");
+  const street2Input = form.querySelector("[name='shipping-street-2']");
   const cityInput = form.querySelector("[name='shipping-city']");
   const stateInput = form.querySelector("[name='shipping-state']");
   const postalInput = form.querySelector("[name='shipping-zip']");
@@ -54,8 +58,20 @@ function initVinDecoder() {
     result.replaceChildren(node("strong", "", title), node("span", "", message));
   };
 
+  const setCheckoutStatus = (state, message) => {
+    if (!checkoutStatus) return;
+    checkoutStatus.hidden = !message;
+    checkoutStatus.dataset.state = state;
+    checkoutStatus.textContent = message || "";
+  };
+
+  const updateCheckoutButton = () => {
+    if (!checkoutButton) return;
+    checkoutButton.disabled = !selectedOption || !freightRateIdInput?.value;
+  };
+
   const clearFreight = () => {
-    [freightCarrierInput, freightTotalInput, freightTransitInput, freightCheckedInput]
+    [freightCarrierInput, freightRateIdInput, freightTotalInput, freightTransitInput, freightCheckedInput]
       .filter(Boolean)
       .forEach((input) => { input.value = ""; });
     if (freightResults) {
@@ -63,6 +79,8 @@ function initVinDecoder() {
       freightResults.replaceChildren();
     }
     form.querySelector("[data-selected-summary] [data-order-total]")?.remove();
+    setCheckoutStatus("", "");
+    updateCheckoutButton();
   };
 
   const clearSelection = () => {
@@ -74,6 +92,7 @@ function initVinDecoder() {
     catalog.querySelector("[data-selected-summary]")?.remove();
     clearFreight();
     if (freightButton) freightButton.disabled = true;
+    updateCheckoutButton();
   };
 
   const fillDrive = (value) => {
@@ -262,6 +281,7 @@ function initVinDecoder() {
     freightResults.querySelectorAll(".reman-freight-rate.is-selected").forEach((item) => item.classList.remove("is-selected"));
     card.classList.add("is-selected");
     if (freightCarrierInput) freightCarrierInput.value = rate.carrier;
+    if (freightRateIdInput) freightRateIdInput.value = rate.rateId;
     if (freightTotalInput) freightTotalInput.value = rate.customerFreightTotal.toFixed(2);
     if (freightTransitInput) freightTransitInput.value = rate.transitDays ? `${rate.transitDays} days after shipment` : "Confirm with carrier";
     if (freightCheckedInput) freightCheckedInput.value = checkedAt;
@@ -274,6 +294,8 @@ function initVinDecoder() {
       totalLine.dataset.orderTotal = "";
       summary.querySelector("div")?.append(totalLine);
     }
+    setCheckoutStatus("ready", "Your package and delivery option are ready. Continue to Stripe to see applicable tax and the complete total.");
+    updateCheckoutButton();
   };
 
   const renderFreight = (data) => {
@@ -321,9 +343,6 @@ function initVinDecoder() {
       return;
     }
 
-    const delivery = deliveryInput.value.toLowerCase();
-    const freightPreference = coreFreightInput.value;
-    const roundTrip = freightPreference !== "Quote outbound first" && freightPreference !== "Customer has freight account";
     freightButton.disabled = true;
     freightButton.textContent = "Checking Freight…";
     clearFreight();
@@ -338,13 +357,12 @@ function initVinDecoder() {
           vin: vinInput.value,
           selectionId: selectedOption.packageData.selectionId,
           addressLine1: streetInput.value,
+          addressLine2: street2Input?.value || "",
           city: cityInput.value,
           state: stateInput.value,
           postalCode: postalInput.value,
-          roundTrip,
-          liftgate: delivery.includes("without dock") || delivery.includes("liftgate") || delivery.includes("residential"),
-          residentialDelivery: delivery.includes("residential"),
-          insideDelivery: false,
+          deliveryLocation: deliveryInput.value,
+          coreReturnFreight: coreFreightInput.value,
         }),
       });
       const data = await response.json().catch(() => ({}));
@@ -359,7 +377,7 @@ function initVinDecoder() {
     }
   });
 
-  [streetInput, cityInput, stateInput, postalInput, deliveryInput, coreFreightInput].forEach((input) => {
+  [streetInput, street2Input, cityInput, stateInput, postalInput, deliveryInput, coreFreightInput].forEach((input) => {
     input?.addEventListener("change", () => {
       if (freightTotalInput?.value) clearFreight();
     });
@@ -435,24 +453,110 @@ function initVinDecoder() {
     }
   });
 
-  form.addEventListener("submit", (event) => {
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
     const vin = normalizeVin(vinInput.value);
     vinInput.value = vin;
 
     if (!vinPattern.test(vin)) {
-      event.preventDefault();
       vinInput.setCustomValidity("A valid 17-character VIN is required for a reman transmission request.");
       vinInput.reportValidity();
       vinInput.focus();
       return;
     }
 
-    if (lookupData?.orderableSelections > 0 && !selectedOption) {
-      event.preventDefault();
+    if (!form.reportValidity()) return;
+
+    if (!selectedOption) {
       setResult("error", "Choose an option first", "Select one of the available price and warranty packages before submitting the order details.");
       catalog.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+
+    if (!freightRateIdInput?.value) {
+      setCheckoutStatus("error", "Calculate delivery and choose one of the current freight options before checkout.");
+      freightButton?.focus();
+      return;
+    }
+
+    const fields = Object.fromEntries(new FormData(form).entries());
+    const attemptId = globalThis.crypto?.randomUUID?.()
+      || `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}-${Math.random().toString(36).slice(2)}`;
+    const originalLabel = checkoutButton?.textContent || "Continue to Secure Checkout";
+    if (checkoutButton) {
+      checkoutButton.disabled = true;
+      checkoutButton.textContent = "Rechecking Order…";
+    }
+    setCheckoutStatus("loading", "Rechecking the VIN match, package price, availability and delivery rate before opening secure checkout…");
+
+    try {
+      const response = await fetch("/api/reman-checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...fields,
+          vin,
+          selectionId: selectedIdInput?.value || "",
+          freightRateId: freightRateIdInput.value,
+          name: fields.name,
+          email: fields.email,
+          phone: fields.phone,
+          addressLine1: fields["shipping-street"],
+          addressLine2: fields["shipping-street-2"],
+          city: fields["shipping-city"],
+          state: fields["shipping-state"],
+          postalCode: fields["shipping-zip"],
+          deliveryLocation: fields["delivery-location"],
+          coreReturnFreight: fields["core-return-freight"],
+          coreStatus: fields["core-status"],
+          installerStatus: fields["installer-status"],
+          programmingCapability: fields["programming-capability"],
+          vehicleUse: fields["vehicle-use-modifications"],
+          driveType: fields["drive-type"],
+          termsAccepted: fields["quote-acknowledgment"] === "Understood",
+          checkoutAttemptId: attemptId,
+          checkoutExpiresAt: Math.floor((Date.now() + 36 * 60 * 1000) / 1000),
+        }),
+      });
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        if (data.freightChanged && Array.isArray(data.rates)) {
+          renderFreight({
+            rates: data.rates,
+            checkedAt: data.checkedAt || new Date().toISOString(),
+            roundTrip: data.roundTrip,
+            notice: "The delivery price changed while we rechecked it. Choose one of the refreshed options below, then continue again.",
+          });
+        }
+        if (data.priceChanged) {
+          clearSelection();
+          setResult(
+            "error",
+            "The package price changed",
+            "Run the VIN lookup again to review the current options before continuing.",
+          );
+          result.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+        throw new Error(data.error || "Secure checkout could not be opened.");
+      }
+
+      if (!/^https:\/\/checkout\.stripe\.com\//i.test(data.checkoutUrl || "")) {
+        throw new Error("The secure payment page did not load correctly. Please try again.");
+      }
+      setCheckoutStatus("success", "Secure checkout is ready. Taking you to Stripe…");
+      window.location.assign(data.checkoutUrl);
+    } catch (error) {
+      setCheckoutStatus("error", `${error.message} No payment was taken.`);
+    } finally {
+      if (checkoutButton) {
+        checkoutButton.textContent = originalLabel;
+        updateCheckoutButton();
+      }
     }
   });
+
+  updateCheckoutButton();
 }
 
 document.addEventListener("DOMContentLoaded", initVinDecoder);

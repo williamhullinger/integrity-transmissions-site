@@ -1,0 +1,119 @@
+const Stripe = require("stripe");
+
+const formValue = (value, max = 500) => String(value ?? "").replace(/[<>]/g, "").trim().slice(0, max);
+
+const orderFormFields = (session, customer) => {
+  const metadata = session.metadata || {};
+  const shipping = customer?.shipping || session.shipping_details || {};
+  const address = shipping.address || {};
+  return {
+    "form-name": "reman-paid-order",
+    "stripe-session-id": session.id,
+    "payment-status": session.payment_status,
+    "amount-total": ((session.amount_total || 0) / 100).toFixed(2),
+    "amount-tax": ((session.total_details?.amount_tax || 0) / 100).toFixed(2),
+    name: customer?.name || session.customer_details?.name || shipping.name,
+    email: customer?.email || session.customer_details?.email,
+    phone: customer?.phone || session.customer_details?.phone || shipping.phone,
+    vin: metadata.vin,
+    vehicle: metadata.vehicle,
+    application: metadata.application,
+    upgrade: metadata.upgrade,
+    warranty: metadata.warranty,
+    availability: metadata.availability,
+    "transmission-price": metadata.unit_price,
+    "core-deposit": metadata.core_deposit,
+    freight: metadata.freight,
+    "freight-carrier": metadata.freight_carrier,
+    "freight-transit": metadata.freight_transit,
+    "freight-scope": metadata.freight_scope,
+    "delivery-type": metadata.delivery_type,
+    "delivery-address": [address.line1, address.line2, address.city, address.state, address.postal_code].filter(Boolean).join(", "),
+    "core-status": metadata.core_status,
+    installer: metadata.installer_status,
+    programming: metadata.programming,
+    "vehicle-use": metadata.vehicle_use,
+    message: metadata.customer_note,
+  };
+};
+
+const postOrderNotification = async (session, customer, fetchImpl = fetch) => {
+  const params = new URLSearchParams();
+  for (const [name, value] of Object.entries(orderFormFields(session, customer))) {
+    params.set(name, formValue(value));
+  }
+  const response = await fetchImpl(process.env.REMAN_ORDER_NOTIFICATION_URL || "https://integritydrivetrain.com/", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: params,
+  });
+  if (!response.ok) throw new Error(`Order notification returned HTTP ${response.status}`);
+};
+
+const processPaidCheckout = async (stripe, eventSession, fetchImpl = fetch) => {
+  const session = await stripe.checkout.sessions.retrieve(eventSession.id, { expand: ["customer"] });
+  if (session.metadata?.order_type !== "reman_transmission" || session.payment_status !== "paid") return false;
+  if (session.metadata?.notification_sent === "true") return false;
+
+  const customer = session.customer && typeof session.customer === "object" ? session.customer : null;
+  await postOrderNotification(session, customer, fetchImpl);
+  await stripe.checkout.sessions.update(session.id, {
+    metadata: {
+      ...session.metadata,
+      notification_sent: "true",
+      order_state: "paid_fitment_review",
+      paid_at: new Date().toISOString(),
+    },
+  });
+  return true;
+};
+
+const createWebhookHandler = ({ stripeFactory, fetchImpl = fetch } = {}) => async (event) => {
+  if (event.httpMethod !== "POST") return { statusCode: 405, body: "POST required" };
+
+  const key = process.env.STRIPE_RESTRICTED_KEY || "";
+  const secret = process.env.STRIPE_WEBHOOK_SECRET || "";
+  if ((!key && !stripeFactory) || !secret) {
+    console.error("Stripe webhook environment is incomplete");
+    return { statusCode: 503, body: "Webhook unavailable" };
+  }
+
+  const stripe = stripeFactory
+    ? stripeFactory()
+    : new Stripe(key, { apiVersion: "2026-07-29.dahlia", maxNetworkRetries: 2 });
+  const signature = event.headers?.["stripe-signature"] || event.headers?.["Stripe-Signature"] || "";
+  const rawBody = Buffer.from(event.body || "", event.isBase64Encoded ? "base64" : "utf8");
+
+  let stripeEvent;
+  try {
+    stripeEvent = stripe.webhooks.constructEvent(rawBody, signature, secret);
+  } catch (error) {
+    console.error("Stripe webhook signature verification failed:", error.message);
+    return { statusCode: 400, body: "Invalid signature" };
+  }
+
+  try {
+    if (["checkout.session.completed", "checkout.session.async_payment_succeeded"].includes(stripeEvent.type)) {
+      await processPaidCheckout(stripe, stripeEvent.data.object, fetchImpl);
+    } else if (stripeEvent.type === "checkout.session.async_payment_failed") {
+      const session = stripeEvent.data.object;
+      if (session.metadata?.order_type === "reman_transmission") {
+        await stripe.checkout.sessions.update(session.id, {
+          metadata: { ...session.metadata, order_state: "payment_failed" },
+        });
+      }
+    }
+    return { statusCode: 200, body: "received" };
+  } catch (error) {
+    console.error("Stripe reman webhook processing failed:", error.message);
+    return { statusCode: 500, body: "Webhook processing failed" };
+  }
+};
+
+exports.handler = createWebhookHandler();
+exports._internals = {
+  createWebhookHandler,
+  orderFormFields,
+  postOrderNotification,
+  processPaidCheckout,
+};

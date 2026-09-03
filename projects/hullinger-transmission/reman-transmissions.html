@@ -100,7 +100,7 @@
             "name": "Can the VIN identify the exact transmission I need?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "A VIN identifies the vehicle and narrows the correct application. Some vehicles still have factory production splits, so Integrity confirms the exact fit before payment."
+              "text": "A VIN identifies the vehicle and narrows the correct application. Current fitment, availability, price and freight are rechecked before checkout, and Integrity completes a final fitment review after payment. If the correct unit cannot be supplied, the order is refunded."
             }
           },
           {
@@ -266,7 +266,7 @@
         <div class="seo-intro-copy">
           <p>Year, make and model are not always enough. Similar vehicles can use different transmissions, converters, electronics or calibrations, so your VIN is the safest place to start.</p>
           <p>Your results show the matching transmission, available Base or upgraded packages, warranty choices, current price, core deposit, and whether the unit is ready to ship or needs to be built. Build time and delivery time are shown separately.</p>
-          <p>Choose the option you want and enter the delivery address to compare freight rates. Before payment, we confirm the exact fit one more time so you do not order the wrong transmission. Springfield-area installation can also be requested when available.</p>
+          <p>Choose the option you want and enter the delivery address to compare freight rates. When you continue, we refresh the VIN match, package price, availability and selected freight rate before Stripe opens the payment page. After payment, we complete the final fitment review before placing the transmission order. If the correct unit cannot be supplied, you receive a full refund.</p>
           <aside class="seo-notice">
             <strong>Know the Cost Before You Commit</strong>
             <p>You can review the transmission price, refundable core deposit, delivery cost and applicable tax before making a payment.</p>
@@ -358,13 +358,13 @@
         <div class="seo-section-heading">
           <p class="eyebrow">How Ordering Works</p>
           <h2>Four steps from VIN to delivery.</h2>
-          <p>See your options online, then let us confirm the details before any payment is collected.</p>
+          <p>See your options, calculate delivery and pay securely online. We recheck the live order details before checkout opens.</p>
         </div>
         <div class="seo-process-list">
           <article class="seo-process-step"><span>STEP 01</span><h3>Enter Your VIN</h3><p>We identify the vehicle and show the remanufactured transmission choices available for it.</p></article>
           <article class="seo-process-step"><span>STEP 02</span><h3>Choose a Package</h3><p>Compare price, warranty, upgrade level, availability and the refundable core deposit.</p></article>
-          <article class="seo-process-step"><span>STEP 03</span><h3>Review the Total</h3><p>Add the delivery address, select a shipping option and send the request so we can confirm the exact transmission match and final total.</p></article>
-          <article class="seo-process-step"><span>STEP 04</span><h3>Pay & Ship</h3><p>After you approve the final total and payment clears, the transmission is ordered and shipped to the approved destination.</p></article>
+          <article class="seo-process-step"><span>STEP 03</span><h3>Review the Total</h3><p>Add the delivery address and choose a current freight option. Stripe calculates applicable sales tax and shows the complete total before you pay.</p></article>
+          <article class="seo-process-step"><span>STEP 04</span><h3>Pay & Ship</h3><p>Pay Integrity through secure Stripe Checkout. After payment and final fitment review, we place the transmission order and send your delivery updates.</p></article>
         </div>
       </div>
     </section>
@@ -394,7 +394,7 @@
         >
           <input type="hidden" name="form-name" value="reman-transmission-quote">
           <input type="hidden" name="request-type" value="Nationwide reman transmission quote">
-          <input type="hidden" name="order-workflow" value="Exact transmission match, price and availability confirmation required">
+          <input type="hidden" name="order-workflow" value="Paid online; final fitment review required before fulfillment">
           <input type="hidden" name="decoded-vehicle" value="">
           <input type="hidden" name="selected-option-id" value="">
           <input type="hidden" name="selected-package" value="">
@@ -403,6 +403,7 @@
           <input type="hidden" name="catalog-availability" value="">
           <input type="hidden" name="catalog-checked-at" value="">
           <input type="hidden" name="catalog-freight-carrier" value="">
+          <input type="hidden" name="catalog-freight-rate-id" value="">
           <input type="hidden" name="catalog-freight-total" value="">
           <input type="hidden" name="catalog-freight-transit" value="">
           <input type="hidden" name="catalog-freight-checked-at" value="">
@@ -445,6 +446,10 @@
             <div class="form-field">
               <label for="shipping-street">Delivery Street Address</label>
               <input id="shipping-street" name="shipping-street" type="text" autocomplete="street-address" required>
+            </div>
+            <div class="form-field">
+              <label for="shipping-street-2">Suite, Unit or Building <span class="field-note">Optional</span></label>
+              <input id="shipping-street-2" name="shipping-street-2" type="text" autocomplete="address-line2">
             </div>
             <div class="form-field">
               <label for="shipping-city">Delivery City</label>
@@ -530,10 +535,8 @@
               <label for="core-return-freight">Core Return Shipping</label>
               <select id="core-return-freight" name="core-return-freight" required>
                 <option value="">Choose one</option>
-                <option value="Include round-trip freight">Include delivery and prepaid core return</option>
-                <option value="Quote outbound first">Show delivery only</option>
-                <option value="Customer has freight account">I have a freight account</option>
-                <option value="Unknown">Not sure</option>
+                <option value="Include delivery and prepaid core return">Include delivery and prepaid core return</option>
+                <option value="Outbound delivery only — I will arrange the core return">Delivery only — I will arrange the core return</option>
               </select>
             </div>
             <div class="form-field form-field--full reman-freight-box">
@@ -555,16 +558,28 @@
             <div class="form-field form-field--full">
               <label class="form-consent" for="reman-acknowledgment">
                 <input id="reman-acknowledgment" name="quote-acknowledgment" type="checkbox" value="Understood" required>
-                <span>I understand that delivery and applicable tax are added to the displayed transmission price, and that the core deposit is refunded only after the correct, complete original transmission is returned in the supplied container within 30 days and accepted under the core-return terms.</span>
+                <span>I agree to the <a href="/reman-order-terms" target="_blank" rel="noopener">Reman Transmission Order & Core Return Terms</a>. I understand that the displayed total includes a refundable core deposit, and that the correct, complete original transmission must be returned within 30 days and accepted before the core deposit and its applicable tax are refunded.</span>
               </label>
             </div>
           </div>
 
           <div class="quote-form__submit">
-            <button type="submit" class="btn btn-primary">Send My Order Request</button>
-            <p>No payment is taken on this page. We will confirm the exact transmission match, availability, delivery price and tax before sending a secure payment request.</p>
+            <button type="submit" class="btn btn-primary" data-reman-checkout disabled>Continue to Secure Checkout</button>
+            <p>Stripe shows applicable sales tax and the complete amount before you pay. Payment is made directly to Integrity Transmission & Drivetrain.</p>
+            <div class="reman-checkout-status" data-reman-checkout-status hidden aria-live="polite"></div>
+            <noscript><p class="reman-alert">Online checkout requires JavaScript. Call (417) 815-3315 and we will help complete the order.</p></noscript>
           </div>
-          <p class="order-notice"><strong>Why we confirm every order:</strong> Some vehicles have multiple factory transmission variations. We check the exact application again before payment to help prevent an incorrect order.</p>
+          <p class="order-notice"><strong>What happens after payment:</strong> We complete a final VIN and fitment review before placing the transmission order. If the selected unit cannot be supplied for your vehicle, we contact you and issue a full refund. We do not release the order for fulfillment until your Stripe payment is confirmed.</p>
+        </form>
+
+        <form name="reman-paid-order" method="POST" data-netlify="true" hidden aria-hidden="true">
+          <input type="hidden" name="form-name" value="reman-paid-order">
+          <input name="stripe-session-id"><input name="payment-status"><input name="amount-total"><input name="amount-tax">
+          <input name="name"><input name="email"><input name="phone"><input name="vin"><input name="vehicle">
+          <input name="application"><input name="upgrade"><input name="warranty"><input name="availability">
+          <input name="transmission-price"><input name="core-deposit"><input name="freight"><input name="freight-carrier">
+          <input name="freight-transit"><input name="freight-scope"><input name="delivery-type"><input name="delivery-address">
+          <input name="core-status"><input name="installer"><input name="programming"><input name="vehicle-use"><textarea name="message"></textarea>
         </form>
       </div>
     </section>
@@ -577,7 +592,7 @@
           <p>Here are the details customers most often want to know before placing an order.</p>
         </div>
         <div class="seo-faq-grid">
-          <article class="seo-faq-item"><h3>Can the VIN identify the exact transmission I need?</h3><p>The VIN identifies your vehicle and narrows the correct transmission application. Some vehicles still have factory production splits, so we confirm the exact fit before payment.</p></article>
+          <article class="seo-faq-item"><h3>Can the VIN identify the exact transmission I need?</h3><p>The VIN identifies your vehicle and narrows the correct transmission application. We refresh the match before checkout and complete a final fitment review after payment. If we cannot supply the correct unit, we issue a full refund.</p></article>
           <article class="seo-faq-item"><h3>Can a remanufactured transmission be shipped overnight?</h3><p>Same-day outbound shipping and expedited freight may be available for an in-stock application, but overnight delivery is not guaranteed. Delivery timing depends on inventory, destination, carrier and address type and is confirmed in the written quote.</p></article>
           <article class="seo-faq-item"><h3>How does the transmission core return work?</h3><p>The core deposit is paid with the order. Return the correct, complete core in the supplied freight container within 30 days of delivery. The deposit is refunded after the core is received, processed and accepted under the written core terms. A wrong, incomplete, disassembled, damaged or late core may receive reduced or no credit.</p></article>
           <article class="seo-faq-item"><h3>Does the unit include a torque converter and fluid?</h3><p>Package contents vary by transmission. Each available option lists what is included, and we confirm the components and installation requirements before payment.</p></article>
@@ -627,8 +642,8 @@
       </a>
 
       <p>
-        VIN-matched remanufactured transmissions with nationwide delivery,
-        plus selective rebuilding and drivetrain service in Southwest Missouri.
+        VIN-verified remanufactured transmission sourcing with nationwide shipping,
+        plus selective rebuilding and drivetrain work in Southwest Missouri.
       </p>
     </div>
 
