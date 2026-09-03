@@ -23,6 +23,13 @@
 /transmissions/700r4.html                        /transmissions/700r4               301!
 /transmissions/4l80e.html                        /transmissions/4l80e               301!
 /reman-transmissions.html                        /reman-transmissions               301!
+/reman-transmissions/10r80.html                  /reman-transmissions/10r80         301!
+/reman-transmissions/6l80.html                   /reman-transmissions/6l80          301!
+/reman-transmissions/6l90.html                   /reman-transmissions/6l90          301!
+/reman-transmissions/68rfe.html                  /reman-transmissions/68rfe         301!
+/reman-transmissions/4l60e.html                  /reman-transmissions/4l60e         301!
+/reman-transmissions/4l80e.html                  /reman-transmissions/4l80e         301!
+/reman-transmissions/700r4.html                  /reman-transmissions/700r4         301!
 /guides/transmission-problems.html               /guides/transmission-problems      301!
 /guides/cvt-transmission-problems.html           /guides/cvt-transmission-problems  301!
 /reman-order-terms.html                          /reman-order-terms                 301!
@@ -37,7 +44,6 @@
 /CASE_STUDY_WORKFLOW.md                          /404                              404!
 /readme.md                                       /404                              404!
 /README.md                                       /404                              404!
-/*.md                                            /404                              404!
 /scripts/*                                       /404                              404!
 /partials/*                                      /404                              404!
 /Js/*                                            /404                              404!

@@ -29,12 +29,16 @@ const numberValue = (value, fallback = 0) => {
   return Number.isFinite(parsed) ? parsed : fallback;
 };
 
-const money = (value) => Math.round((numberValue(value) + Number.EPSILON) * 100) / 100;
-
-const clamp = (value, min, max, fallback) => {
-  const parsed = numberValue(value, fallback);
-  return Math.min(max, Math.max(min, parsed));
+const strictNumberValue = (value) => {
+  if (typeof value === "number") return Number.isFinite(value) ? value : null;
+  if (typeof value !== "string" || !value.trim()) return null;
+  const normalized = value.trim();
+  if (!/^-?(?:\d+(?:\.\d+)?|\.\d+)$/.test(normalized)) return null;
+  const parsed = Number(normalized);
+  return Number.isFinite(parsed) ? parsed : null;
 };
+
+const money = (value) => Math.round((numberValue(value) + Number.EPSILON) * 100) / 100;
 
 const timingSafeEqual = (left, right) => {
   const leftBuffer = Buffer.from(String(left || ""));
@@ -161,10 +165,12 @@ const createAceClient = ({ username, password, fetchImpl = fetch }) => {
     if (!headers.has("Accept")) headers.set("Accept", "text/html,application/json;q=0.9,*/*;q=0.8");
     if (!headers.has("Referer")) headers.set("Referer", `${ACE_ORIGIN}${ACE_ORDER_PATH}`);
 
+    const requestSignal = options.signal || AbortSignal.timeout(12_000);
     let response = await fetchImpl(`${ACE_ORIGIN}${path}`, {
       ...options,
       headers,
       redirect: "manual",
+      signal: requestSignal,
     });
     jar.absorb(response);
 
@@ -173,6 +179,9 @@ const createAceClient = ({ username, password, fetchImpl = fetch }) => {
       const location = response.headers.get("location");
       if (!location) break;
       const redirectUrl = new URL(location, ACE_ORIGIN);
+      if (redirectUrl.origin !== ACE_ORIGIN) {
+        throw new Error("ACE returned an unexpected cross-origin redirect");
+      }
       const redirectHeaders = new Headers({
         Accept: headers.get("Accept"),
         Referer: `${ACE_ORIGIN}${path}`,
@@ -184,6 +193,7 @@ const createAceClient = ({ username, password, fetchImpl = fetch }) => {
         method: response.status === 307 || response.status === 308 ? options.method || "GET" : "GET",
         headers: redirectHeaders,
         redirect: "manual",
+        signal: requestSignal,
       });
       jar.absorb(response);
       redirectCount += 1;
@@ -432,10 +442,23 @@ const normalizePartInfo = (candidate, raw, stockResults, pricing) => {
       : Array.isArray(upgrade?.PricingList) ? upgrade.PricingList : [];
 
     const packages = priceRows.map((price) => {
-      const promoted = price?.PromotionApplied
-        ? numberValue(price?.TransmissionPriceAfterDiscount) + numberValue(price?.LineItemsTotalPriceAfterDiscount)
-        : numberValue(price?.TransmissionPrice) + numberValue(price?.LineItemsTotalPrice);
-      const wholesale = money(promoted);
+      const transmissionSource = price?.PromotionApplied
+        ? price?.TransmissionPriceAfterDiscount
+        : price?.TransmissionPrice;
+      const lineItemsSource = price?.PromotionApplied
+        ? price?.LineItemsTotalPriceAfterDiscount
+        : price?.LineItemsTotalPrice;
+      const transmissionPrice = strictNumberValue(transmissionSource);
+      const lineItemsPrice = lineItemsSource == null || lineItemsSource === ""
+        ? 0
+        : strictNumberValue(lineItemsSource);
+
+      if (transmissionPrice == null || transmissionPrice <= 0 || lineItemsPrice == null || lineItemsPrice < 0) {
+        return null;
+      }
+
+      const wholesale = money(transmissionPrice + lineItemsPrice);
+      if (wholesale <= 0) return null;
       const calculatedSuggested = applySuggestedCalculations(
         wholesale,
         upgrade?.MinimumSuggestedListPriceCalculationList,
@@ -452,7 +475,7 @@ const normalizePartInfo = (candidate, raw, stockResults, pricing) => {
         integrityRecommendedRetail: money(retailPrice(wholesale, aceSuggested, pricing)),
         promotionApplied: Boolean(price?.PromotionApplied),
       };
-    });
+    }).filter(Boolean);
 
     const upgradeName = upgrade?.UpgradeLevelName || upgrade?.Name || (upgrades.length === 0 ? "Base" : `Upgrade ${upgrades.length + 1}`);
     const upgradeStock = normalizedStocks.find((item) => item.upgradeName.toLowerCase() === upgradeName.toLowerCase()) || null;
@@ -474,6 +497,8 @@ const normalizePartInfo = (candidate, raw, stockResults, pricing) => {
     });
   }
 
+  const coreChargeValue = strictNumberValue(raw?.CoreCharge);
+
   return {
     ...candidate,
     description: raw?.Description || candidate.transmission,
@@ -486,7 +511,10 @@ const normalizePartInfo = (candidate, raw, stockResults, pricing) => {
       label: raw?.ErrorLabel || "",
       detail: stripTags(raw?.ErrorDetail || ""),
     } : null,
-    coreCharge: money(raw?.CoreCharge),
+    coreCharge: coreChargeValue != null && coreChargeValue >= 0 ? money(coreChargeValue) : null,
+    pricingError: coreChargeValue == null || coreChargeValue < 0
+      ? "Core deposit could not be confirmed"
+      : undefined,
     standardWarrantyLaborRate: money(raw?.StandardWarrantyLaborRate),
     tax: {
       exempt: Boolean(raw?.IsTaxExempt),
@@ -499,10 +527,21 @@ const normalizePartInfo = (candidate, raw, stockResults, pricing) => {
   };
 };
 
-const configuredPricing = () => ({
-  flatMargin: clamp(process.env.REMAN_MARKUP_FLAT, 0, 10000, 500),
-  quoteExpirationDays: Math.round(clamp(process.env.REMAN_QUOTE_EXPIRY_DAYS, 1, 30, 7)),
-});
+const configuredNumber = (name, fallback, min, max, { integer = false } = {}) => {
+  const configured = process.env[name];
+  if (configured == null || configured === "") return fallback;
+  const parsed = strictNumberValue(configured);
+  if (parsed == null || parsed < min || parsed > max || (integer && !Number.isInteger(parsed))) {
+    throw new Error(`${name} is not configured with a valid ${integer ? "whole number" : "number"}`);
+  }
+  return parsed;
+};
+
+const configuredPricing = () => {
+  const flatMargin = configuredNumber("REMAN_MARKUP_FLAT", 500, 500, 500);
+  const quoteExpirationDays = configuredNumber("REMAN_QUOTE_EXPIRY_DAYS", 7, 1, 30, { integer: true });
+  return { flatMargin, quoteExpirationDays };
+};
 
 const loadCandidateDetails = async (client, candidate, pricing) => {
   const partInfo = await client.getPartInfo(candidate.partUid);
@@ -606,6 +645,7 @@ exports.handler = handler;
 exports._internals = {
   VIN_PATTERN,
   normalizeVin,
+  strictNumberValue,
   parseHiddenInputs,
   parsePartCandidates,
   applySuggestedCalculations,

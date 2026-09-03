@@ -59,7 +59,7 @@ const normalizeFreightRequest = (payload = {}) => {
 
   let roundTrip;
   if (coreReturnFreight) {
-    roundTrip = !/outbound only|quote outbound|freight account/i.test(coreReturnFreight);
+    roundTrip = !/outbound(?: delivery)? only|quote outbound|freight account/i.test(coreReturnFreight);
   } else {
     roundTrip = payload.roundTrip !== false;
   }
@@ -100,6 +100,8 @@ const normalizeRates = (raw, roundTrip) => {
     const oneWay = Math.round((Number(row?.FreightCharge) || 0) * 100) / 100;
     if (oneWay <= 0) continue;
     const transitDays = Math.max(0, Number.parseInt(row?.ServiceDays, 10) || 0);
+    // ACE's FreightCharge is the quoted one-way total. AccessorialCharge is the
+    // included liftgate/residential component, not an additional amount.
     const accessorial = Math.round((Number(row?.AccessorialCharge) || 0) * 100) / 100;
     const total = Math.round(oneWay * (roundTrip ? 2 : 1) * 100) / 100;
     const key = `${carrier}|${transitDays}|${total}`;

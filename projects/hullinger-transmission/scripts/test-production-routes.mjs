@@ -4,7 +4,9 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
-const siteRoot = path.resolve(scriptDir, "..");
+const siteRoot = process.env.INTEGRITY_SITE_ROOT
+  ? path.resolve(process.cwd(), process.env.INTEGRITY_SITE_ROOT)
+  : path.resolve(scriptDir, "..");
 const sitemap = fs.readFileSync(path.join(siteRoot, "sitemap.xml"), "utf8");
 const canonicalUrls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
 const redirectRules = fs.readFileSync(path.join(siteRoot, "_redirects"), "utf8")
@@ -14,6 +16,9 @@ const redirectRules = fs.readFileSync(path.join(siteRoot, "_redirects"), "utf8")
   .map((line) => line.split(/\s+/))
   .map(([from, to, status]) => [from, to, Number.parseInt(status, 10)]);
 const redirectMap = new Map(redirectRules.map((rule) => [rule[0], rule]));
+
+const findRedirect = (pathname) => redirectMap.get(pathname)
+  || redirectRules.find(([from]) => from.endsWith("*") && pathname.startsWith(from.slice(0, -1)));
 
 const mimeTypes = new Map([
   [".css", "text/css; charset=utf-8"],
@@ -33,7 +38,7 @@ const routeFile = (pathname) => {
 
 const server = http.createServer((request, response) => {
   const requestUrl = new URL(request.url, "http://127.0.0.1");
-  const redirect = redirectMap.get(requestUrl.pathname);
+  const redirect = findRedirect(requestUrl.pathname);
 
   if (redirect) {
     response.writeHead(redirect[2], { Location: redirect[1] });
@@ -72,8 +77,9 @@ for (const canonical of canonicalUrls) {
   }
 }
 
-for (const [from, to, status] of redirectRules) {
-  const response = await fetch(`${origin}${from}`, { redirect: "manual" });
+for (const [from, to, status] of redirectRules.filter(([, , status]) => status !== 200)) {
+  const testPath = from.replace("*", "contract-test");
+  const response = await fetch(`${origin}${testPath}`, { redirect: "manual" });
   if (response.status !== status) failures.push(`${from}: expected ${status}, received ${response.status}`);
   if (response.headers.get("location") !== to) failures.push(`${from}: expected location ${to}, received ${response.headers.get("location")}`);
 }
@@ -89,4 +95,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log(`Production route test passed: ${canonicalUrls.length} canonical pages, ${redirectRules.length} redirects, and custom 404.`);
+console.log(`Route contract test passed: ${canonicalUrls.length} canonical pages, ${redirectRules.length} rules, and custom 404.`);

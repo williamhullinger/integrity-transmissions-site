@@ -1,5 +1,8 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
+import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
+import { resolve } from "node:path";
 
 const require = createRequire(import.meta.url);
 const { _internals: checkout } = require("../../../netlify/functions/reman-checkout.js");
@@ -139,6 +142,11 @@ assert.deepEqual(sessionParams.line_items.map((item) => item.metadata.order_comp
 ]);
 assert.doesNotMatch(JSON.stringify(sessionParams), /wholesale|ACE authenticated|Distributor Partner/i);
 assert.equal(calls.sessions[0].options.idempotencyKey.startsWith("reman_session_"), true);
+assert.equal(sessionParams.metadata.terms_version, "2026-09-03");
+const termsPath = resolve(import.meta.dirname, "../reman-order-terms.html");
+const currentTermsHash = createHash("sha256").update(readFileSync(termsPath)).digest("hex");
+assert.equal(sessionParams.metadata.terms_sha256, currentTermsHash, "Checkout terms fingerprint must match the published terms file");
+assert.match(sessionParams.metadata.terms_accepted_at, /^\d{4}-\d{2}-\d{2}T/);
 
 const tamperedPrice = await handler({
   httpMethod: "POST",
@@ -157,6 +165,24 @@ const staleRate = await handler({
 assert.equal(staleRate.statusCode, 409, staleRate.body);
 assert.equal(JSON.parse(staleRate.body).freightChanged, true);
 assert.equal(calls.sessions.length, 1, "A changed freight rate must not create a Stripe session");
+
+const zeroWholesaleHandler = checkout.createCheckoutHandler({
+  stripeFactory: () => fakeStripe,
+  quoteLoader: async () => ({
+    ...quote,
+    selected: {
+      ...selected,
+      packageData: { ...selected.packageData, integrityRecommendedRetail: 500 },
+    },
+  }),
+});
+const zeroWholesaleResponse = await zeroWholesaleHandler({
+  httpMethod: "POST",
+  headers: { origin: "https://integritydrivetrain.com", "x-nf-client-connection-ip": "203.0.113.23" },
+  body: JSON.stringify({ ...payload, "catalog-unit-price": "500.00" }),
+});
+assert.equal(zeroWholesaleResponse.statusCode, 409, zeroWholesaleResponse.body);
+assert.equal(calls.sessions.length, 1, "A missing wholesale price must never create a Stripe session");
 
 const statusHandler = status.createStatusHandler({
   stripeFactory: () => ({
@@ -216,6 +242,10 @@ assert.equal(notified, true);
 assert.equal(notificationRequests.length, 1);
 assert.match(notificationRequests[0].body, /form-name=reman-paid-order/);
 assert.doesNotMatch(notificationRequests[0].body, /wholesale/i);
-assert.equal(webhookUpdates[0].params.metadata.order_state, "paid_fitment_review");
+assert.equal(webhookUpdates.length, 2);
+assert.equal(webhookUpdates[0].params.metadata.order_state, "paid_risk_review");
+assert.equal(webhookUpdates[0].params.metadata.notification_state, "pending");
+assert.equal(webhookUpdates[1].params.metadata.order_state, "paid_risk_review");
+assert.equal(webhookUpdates[1].params.metadata.notification_state, "sent");
 
 console.log("Reman checkout test passed: server-priced Stripe Checkout, automatic tax, itemized core/freight, status and paid-order notification.");

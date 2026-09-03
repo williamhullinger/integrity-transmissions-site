@@ -1,4 +1,5 @@
 const Stripe = require("stripe");
+const processingSessions = new Set();
 
 const formValue = (value, max = 500) => String(value ?? "").replace(/[<>]/g, "").trim().slice(0, max);
 
@@ -42,30 +43,52 @@ const postOrderNotification = async (session, customer, fetchImpl = fetch) => {
   for (const [name, value] of Object.entries(orderFormFields(session, customer))) {
     params.set(name, formValue(value));
   }
-  const response = await fetchImpl(process.env.REMAN_ORDER_NOTIFICATION_URL || "https://integritydrivetrain.com/", {
+  const notificationUrl = new URL(process.env.REMAN_ORDER_NOTIFICATION_URL || "https://integritydrivetrain.com/");
+  if (notificationUrl.origin !== "https://integritydrivetrain.com") {
+    throw new Error("Order notification destination is not an approved Integrity endpoint");
+  }
+  const response = await fetchImpl(notificationUrl, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: params,
+    signal: AbortSignal.timeout(10_000),
   });
   if (!response.ok) throw new Error(`Order notification returned HTTP ${response.status}`);
 };
 
 const processPaidCheckout = async (stripe, eventSession, fetchImpl = fetch) => {
-  const session = await stripe.checkout.sessions.retrieve(eventSession.id, { expand: ["customer"] });
-  if (session.metadata?.order_type !== "reman_transmission" || session.payment_status !== "paid") return false;
-  if (session.metadata?.notification_sent === "true") return false;
+  if (processingSessions.has(eventSession.id)) return false;
+  processingSessions.add(eventSession.id);
+  try {
+    const session = await stripe.checkout.sessions.retrieve(eventSession.id, { expand: ["customer"] });
+    if (session.metadata?.order_type !== "reman_transmission" || session.payment_status !== "paid") return false;
+    if (session.metadata?.notification_sent === "true") return false;
 
-  const customer = session.customer && typeof session.customer === "object" ? session.customer : null;
-  await postOrderNotification(session, customer, fetchImpl);
-  await stripe.checkout.sessions.update(session.id, {
-    metadata: {
-      ...session.metadata,
-      notification_sent: "true",
-      order_state: "paid_fitment_review",
-      paid_at: new Date().toISOString(),
-    },
-  });
-  return true;
+    const paidAt = session.metadata?.paid_at || new Date().toISOString();
+    await stripe.checkout.sessions.update(session.id, {
+      metadata: {
+        ...session.metadata,
+        notification_state: "pending",
+        order_state: "paid_risk_review",
+        paid_at: paidAt,
+      },
+    });
+
+    const customer = session.customer && typeof session.customer === "object" ? session.customer : null;
+    await postOrderNotification(session, customer, fetchImpl);
+    await stripe.checkout.sessions.update(session.id, {
+      metadata: {
+        ...session.metadata,
+        notification_sent: "true",
+        notification_state: "sent",
+        order_state: "paid_risk_review",
+        paid_at: paidAt,
+      },
+    });
+    return true;
+  } finally {
+    processingSessions.delete(eventSession.id);
+  }
 };
 
 const createWebhookHandler = ({ stripeFactory, fetchImpl = fetch } = {}) => async (event) => {

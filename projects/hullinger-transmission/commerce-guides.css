@@ -367,7 +367,7 @@
 .reman-stock-pill {
   padding: 0.34rem 0.55rem;
   border-radius: 999px;
-  font-size: 0.64rem;
+  font-size: 0.75rem;
   font-weight: 900;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -403,13 +403,13 @@
 .reman-upgrade-description {
   margin: 0.65rem 0 0;
   color: var(--text-soft);
-  font-size: 0.82rem;
+  font-size: 0.9rem;
 }
 
 .reman-availability-detail {
   margin: 0.3rem 0 0;
   color: var(--text-soft);
-  font-size: 0.82rem;
+  font-size: 0.9rem;
   line-height: 1.5;
 }
 
@@ -422,7 +422,7 @@
 .reman-included summary {
   cursor: pointer;
   color: var(--text);
-  font-size: 0.82rem;
+  font-size: 0.9rem;
   font-weight: 850;
 }
 
@@ -430,7 +430,7 @@
   margin: 0.65rem 0 0;
   padding-left: 1.1rem;
   color: var(--text-soft);
-  font-size: 0.78rem;
+  font-size: 0.875rem;
 }
 
 .reman-package-grid {
@@ -458,7 +458,7 @@
 .reman-package-card__warranty {
   min-height: 2.3em;
   color: var(--text-soft);
-  font-size: 0.76rem;
+  font-size: 0.875rem;
   font-weight: 800;
 }
 
@@ -472,7 +472,7 @@
 .reman-package-card__label {
   margin-top: 0.2rem;
   color: var(--text-soft);
-  font-size: 0.67rem;
+  font-size: 0.8rem;
   text-transform: uppercase;
 }
 
@@ -484,7 +484,7 @@
   padding-top: 0.7rem;
   border-top: 1px solid var(--border);
   color: var(--text-soft);
-  font-size: 0.74rem;
+  font-size: 0.875rem;
 }
 
 .reman-core-line strong {
@@ -495,15 +495,15 @@
   min-height: 3.2em;
   margin: 0.55rem 0 0.8rem;
   color: var(--text-soft);
-  font-size: 0.7rem;
+  font-size: 0.875rem;
 }
 
 .reman-package-card .btn {
   align-self: end;
   width: 100%;
-  min-height: 42px;
+  min-height: 46px;
   padding: 0.7rem 0.65rem;
-  font-size: 0.72rem;
+  font-size: 0.82rem;
 }
 
 .reman-alert {
@@ -513,7 +513,7 @@
   background: #fff0e8;
   border-left: 4px solid var(--accent);
   border-radius: 0 8px 8px 0;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
 }
 
 .selected-reman-summary {
@@ -985,6 +985,126 @@
   color: var(--text-soft);
 }
 
+.reman-family-browser {
+  background: #f4f1ec;
+}
+
+.reman-family-search {
+  display: grid;
+  grid-template-columns: minmax(220px, 520px) auto;
+  gap: 0.5rem 1rem;
+  align-items: end;
+  margin: 1.5rem 0;
+}
+
+.reman-family-search label {
+  grid-column: 1;
+  color: var(--text);
+  font-weight: 850;
+}
+
+.reman-family-search input {
+  grid-column: 1;
+  min-height: 50px;
+  padding: 0.75rem 1rem;
+  color: var(--text);
+  background: #ffffff;
+  border: 2px solid rgba(22, 22, 22, 0.24);
+  border-radius: 12px;
+  font: inherit;
+}
+
+.reman-family-search input:focus {
+  border-color: #8f3d06;
+  outline: 3px solid rgba(143, 61, 6, 0.28);
+  outline-offset: 2px;
+}
+
+.reman-family-search p {
+  grid-column: 2;
+  grid-row: 2;
+  margin: 0;
+  color: var(--text-soft);
+  font-weight: 750;
+}
+
+.reman-family-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.reman-family-card {
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: var(--shadow-sm);
+}
+
+.reman-family-card[hidden] {
+  display: none;
+}
+
+.reman-family-card img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.reman-family-card > div {
+  display: grid;
+  gap: 0.45rem;
+  padding: 1rem;
+}
+
+.reman-family-card p,
+.reman-family-card h3,
+.reman-family-card span {
+  margin: 0;
+}
+
+.reman-family-card p {
+  color: #8f3d06;
+  font-size: 0.8rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.reman-family-card h3 {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.reman-family-card span {
+  color: var(--text-soft);
+}
+
+.reman-family-card a {
+  margin-top: 0.35rem;
+  color: #8f3d06;
+  font-weight: 900;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.reman-family-image-note {
+  margin: 1rem 0 0;
+  color: var(--text-soft);
+  font-size: 0.875rem;
+}
+
+.reman-family-cta {
+  color: #ffffff;
+  background: linear-gradient(135deg, #121212, #2b2119);
+}
+
+.reman-family-cta .seo-final :is(h2, p) {
+  color: inherit;
+}
+
 @media (max-width: 980px) {
   .nationwide-band__grid,
   .evidence-grid {
@@ -1002,6 +1122,10 @@
   .upgrade-guide-copy,
   .reman-terms-nav {
     position: static;
+  }
+
+  .reman-family-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -1035,5 +1159,15 @@
 
   .reman-order-summary dd {
     text-align: left;
+  }
+
+  .reman-family-search,
+  .reman-family-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .reman-family-search p {
+    grid-column: 1;
+    grid-row: auto;
   }
 }

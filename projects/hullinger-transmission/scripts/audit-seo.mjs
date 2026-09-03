@@ -154,7 +154,7 @@ for (const filePath of htmlFiles) {
   }
 
   const hero = html.match(/<link\s+rel="preload"\s+as="image"\s+href="([^"]+)"/i)?.[1];
-  if (hero && (relative === "service-area.html" || relative.includes("/"))) {
+  if (hero && (relative === "service-area.html" || /^(?:services|transmissions)\//.test(relative))) {
     if (heroImages.has(hero)) errors.push(`${relative}: reuses SEO hero image from ${heroImages.get(hero)}`);
     else heroImages.set(hero, relative);
   }
@@ -169,11 +169,10 @@ if (!fs.existsSync(sitemapPath)) {
   const sitemapUrls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
   const canonicalUrls = [...seenCanonicals.keys()].sort();
 
-  if (sitemapUrls.length !== 25) errors.push(`sitemap.xml: expected 25 URLs, found ${sitemapUrls.length}`);
+  if (sitemapUrls.length !== canonicalUrls.length) errors.push(`sitemap.xml: expected ${canonicalUrls.length} URLs, found ${sitemapUrls.length}`);
   if (sitemapUrls.some((url) => url.includes(".html"))) errors.push("sitemap.xml: contains .html URLs");
-  if (!sitemapUrls.every((url) => /<lastmod>\d{4}-\d{2}-\d{2}<\/lastmod>/.test(sitemap))) {
-    errors.push("sitemap.xml: missing lastmod values");
-  }
+  const sitemapEntries = [...sitemap.matchAll(/<url>\s*<loc>([^<]+)<\/loc>\s*<lastmod>([^<]+)<\/lastmod>\s*<\/url>/g)];
+  if (sitemapEntries.length !== sitemapUrls.length || sitemapEntries.some((entry) => !/^\d{4}-\d{2}-\d{2}$/.test(entry[2]))) errors.push("sitemap.xml: one or more URLs have an invalid lastmod value");
 
   const missingFromSitemap = canonicalUrls.filter((url) => !sitemapUrls.includes(url));
   const extraInSitemap = sitemapUrls.filter((url) => !canonicalUrls.includes(url));

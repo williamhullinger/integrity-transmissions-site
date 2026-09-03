@@ -10,6 +10,7 @@ function initRemanOrderResult() {
   const summary = get("[data-order-summary]");
   const currency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
   const sessionId = new URLSearchParams(window.location.search).get("session_id") || "";
+  let attempts = 0;
 
   const showProblem = (copy) => {
     icon.textContent = "!";
@@ -23,7 +24,9 @@ function initRemanOrderResult() {
     return;
   }
 
-  fetch(`/api/reman-order-status?session_id=${encodeURIComponent(sessionId)}`, {
+  window.history.replaceState({}, "", window.location.pathname);
+
+  const loadStatus = () => fetch(`/api/reman-order-status?session_id=${encodeURIComponent(sessionId)}`, {
     headers: { Accept: "application/json" },
   })
     .then(async (response) => {
@@ -32,14 +35,22 @@ function initRemanOrderResult() {
       return data;
     })
     .then((data) => {
-      const paid = data.paymentStatus === "paid";
-      icon.textContent = paid ? "✓" : "…";
-      eyebrow.textContent = paid ? "Payment Received" : "Payment Processing";
-      title.textContent = paid ? "Your order is in." : "Payment is processing.";
+      const paid = data.paymentStatus === "paid" || data.paymentStatus === "no_payment_required";
+      const expired = data.checkoutStatus === "expired";
+      const incomplete = data.checkoutStatus === "complete" && !paid;
+      const processing = !paid && !expired && !incomplete;
+      icon.textContent = paid ? "✓" : processing ? "…" : "!";
+      eyebrow.textContent = paid ? "Payment Received" : processing ? "Payment Processing" : "Payment Not Completed";
+      title.textContent = paid ? "Payment received—fitment review is next." : processing ? "Payment is still processing." : "Your payment was not completed.";
       message.textContent = paid
-        ? "Your payment was received by Integrity. We are completing the final VIN and fitment review before placing the transmission order."
-        : "Stripe has not marked this payment as complete yet. We will begin final fitment review after payment is confirmed.";
+        ? "Integrity received your payment. We are verifying the VIN, fitment, availability and payment risk before we place the transmission order."
+        : processing
+          ? "Stripe has not marked this payment as complete. We will begin final review only after payment is confirmed."
+          : expired
+            ? "This checkout session expired without a completed payment. Return to the reman page to refresh the price and start again."
+            : "Stripe did not confirm a completed payment. Check your Stripe email or return to the reman page before trying again.";
       get("[data-order-package]").textContent = [data.application, data.upgrade, data.warranty].filter(Boolean).join(" • ");
+      get("[data-order-total-label]").textContent = paid ? "Amount paid" : "Checkout total";
       get("[data-order-total]").textContent = currency.format((data.amountTotal || 0) / 100);
       get("[data-order-tax]").textContent = currency.format((data.amountTax || 0) / 100);
       get("[data-order-email]").textContent = data.email || "Sent by Stripe";
@@ -50,8 +61,14 @@ function initRemanOrderResult() {
         invoice.href = data.invoiceUrl;
         invoice.hidden = false;
       }
+      if (processing && attempts < 4) {
+        attempts += 1;
+        window.setTimeout(loadStatus, 3_000);
+      }
     })
-    .catch((error) => showProblem(`${error.message} No additional payment is needed on this page. Check your Stripe email or call Integrity at (417) 815-3315.`));
+    .catch((error) => showProblem(`${error.message} Check your Stripe email or call Integrity at (417) 815-3315 before making another payment.`));
+
+  loadStatus();
 }
 
 document.addEventListener("DOMContentLoaded", initRemanOrderResult);

@@ -38,7 +38,7 @@ const renderSchema = (page) => {
       logo: `${baseUrl}/images/integrity-logo-ITD.png`,
       image: `${baseUrl}${page.hero}`,
       priceRange: "$$",
-      description: "Appointment-based transmission and drivetrain service for Springfield and Southwest Missouri, with remanufactured replacement, selective rebuilding and partner-coordinated installation options.",
+      description: "Appointment-based transmission and drivetrain service for Springfield and Southwest Missouri, with remanufactured replacement, selective rebuilding and installation coordinated through qualified local repair shops.",
       areaServed: areaNames.map((name) => name === "Southwest Missouri"
         ? { "@type": "AdministrativeArea", name }
         : { "@type": "City", name: `${name}, Missouri` }),
@@ -125,7 +125,6 @@ const renderPage = (page) => {
   <link rel="icon" type="image/png" href="/images/integrity-logo-ITD.png">
   <link rel="apple-touch-icon" href="/images/integrity-logo-ITD.png">
   <link rel="preload" as="image" href="${escapeHtml(page.hero)}" fetchpriority="high">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">

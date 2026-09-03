@@ -52,6 +52,11 @@ const sourceIp = (event) => {
 };
 
 const withinRateLimit = (key, now = Date.now()) => {
+  if (requestCounts.size > 2_000) {
+    for (const [entryKey, entry] of requestCounts) {
+      if (now - entry.startedAt >= LOOKUP_WINDOW_MS) requestCounts.delete(entryKey);
+    }
+  }
   const current = requestCounts.get(key);
   if (!current || now - current.startedAt >= LOOKUP_WINDOW_MS) {
     requestCounts.set(key, { startedAt: now, count: 1 });
@@ -92,6 +97,18 @@ const availabilityFor = (stock, nonReturnable) => {
       orderable: false,
       title: "This option is not currently available",
       detail: errorText || "This remanufactured transmission cannot be ordered at this time. Contact Integrity for another solution.",
+      location,
+      quantity: shownQuantity,
+      leadTime: null,
+    };
+  }
+
+  if (errorText) {
+    return {
+      code: "manual_review",
+      orderable: false,
+      title: "This option needs confirmation",
+      detail: "Current availability cannot be confirmed online. Send the request and Integrity will verify the option before payment.",
       location,
       quantity: shownQuantity,
       leadTime: null,
@@ -179,16 +196,34 @@ const toPublicCandidate = (vin, candidate) => {
     };
   }
 
+  const candidateError = scrubText([
+    candidate.error?.label,
+    candidate.error?.detail,
+  ].filter(Boolean).join(" "));
+  if (candidateError) {
+    return {
+      application: scrubText(candidate.family || candidate.transmission || "Transmission match"),
+      status: "manual_review",
+      message: "We found a possible match, but this option needs confirmation before it can be priced or ordered online. Send the request or call (417) 815-3315.",
+      upgrades: [],
+    };
+  }
+
   const upgrades = (candidate.upgrades || []).map((upgrade) => {
     const availability = availabilityFor(upgrade.stock || candidate.stock, upgrade.nonReturnable || upgrade.stock?.nonReturnable);
-    const packages = (upgrade.packages || []).map((packageData) => ({
-      selectionId: selectionId(vin, candidate, upgrade, packageData),
-      warranty: scrubText(packageData.warranty),
-      customerPrice: packageData.integrityRecommendedRetail,
-      coreDeposit: candidate.coreCharge,
-      subtotalBeforeFreightAndTax: Math.round((packageData.integrityRecommendedRetail + candidate.coreCharge) * 100) / 100,
-      orderable: availability.orderable,
-    }));
+    const packages = (upgrade.packages || [])
+      .filter((packageData) => Number.isFinite(packageData.integrityRecommendedRetail)
+        && packageData.integrityRecommendedRetail > 0
+        && Number.isFinite(candidate.coreCharge)
+        && candidate.coreCharge >= 0)
+      .map((packageData) => ({
+        selectionId: selectionId(vin, candidate, upgrade, packageData),
+        warranty: scrubText(packageData.warranty),
+        customerPrice: packageData.integrityRecommendedRetail,
+        coreDeposit: candidate.coreCharge,
+        subtotalBeforeFreightAndTax: Math.round((packageData.integrityRecommendedRetail + candidate.coreCharge) * 100) / 100,
+        orderable: availability.orderable,
+      }));
 
     return {
       name: scrubText(upgrade.name || "Base"),
@@ -284,6 +319,12 @@ const handler = async (event) => {
 
   const cached = catalogCache.get(vin);
   if (cached && cached.expiresAt > Date.now()) return jsonResponse(200, cached.value);
+  if (cached) catalogCache.delete(vin);
+  if (catalogCache.size > 500) {
+    for (const [cacheVin, entry] of catalogCache) {
+      if (entry.expiresAt <= Date.now()) catalogCache.delete(cacheVin);
+    }
+  }
 
   try {
     const catalog = await buildCatalog(vin);

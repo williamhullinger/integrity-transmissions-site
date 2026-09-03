@@ -25,15 +25,17 @@ function initSiteNavigation() {
 
     navToggle.setAttribute("aria-expanded", "true");
     navToggle.setAttribute("aria-label", "Close navigation");
+    requestAnimationFrame(() => siteNav.querySelector("a")?.focus());
   };
 
-  const closeNav = () => {
+  const closeNav = ({ returnFocus = false } = {}) => {
     siteNav.classList.remove("is-open");
     navToggle.classList.remove("is-active");
     document.body.classList.remove("nav-open");
 
     navToggle.setAttribute("aria-expanded", "false");
     navToggle.setAttribute("aria-label", "Open navigation");
+    if (returnFocus) navToggle.focus();
   };
 
   // Open / close mobile navigation
@@ -49,7 +51,7 @@ function initSiteNavigation() {
 
   // Close navigation after selecting a link
   siteNav.querySelectorAll("a").forEach((link) => {
-    link.addEventListener("click", closeNav);
+    link.addEventListener("click", () => closeNav());
   });
 
   // Close when clicking outside navigation
@@ -72,13 +74,27 @@ function initSiteNavigation() {
       event.key === "Escape" &&
       siteNav.classList.contains("is-open")
     ) {
-      closeNav();
+      closeNav({ returnFocus: true });
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Tab" || !siteNav.classList.contains("is-open")) return;
+    const focusable = [navToggle, ...siteNav.querySelectorAll("a[href]")];
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
     }
   });
 
   // Reset mobile navigation when returning to desktop width
   window.addEventListener("resize", () => {
-    if (window.innerWidth > 1120) {
+    if (window.innerWidth > 1440) {
       closeNav();
     }
   });
@@ -113,6 +129,8 @@ function initActiveNavLink() {
 
   if (currentPath.startsWith("/services/")) {
     currentPage = "services";
+  } else if (currentPath.startsWith("/reman-transmissions/")) {
+    currentPage = "reman-transmissions";
   } else if (currentPath.startsWith("/transmissions/")) {
     currentPage = "transmissions";
   } else if (currentPath === "/service-area") {
@@ -235,6 +253,7 @@ function initGalleryStage() {
   const prevButton = gallery.querySelector("[data-gallery-prev]");
   const nextButton = gallery.querySelector("[data-gallery-next]");
   const thumbsContainer = gallery.querySelector("[data-gallery-thumbs]");
+  const autoplayButton = gallery.querySelector("[data-gallery-autoplay]");
 
   if (
     slides.length === 0 ||
@@ -249,6 +268,7 @@ function initGalleryStage() {
 
   let currentIndex = 0;
   let autoplayTimer = null;
+  let autoplayPaused = false;
   let touchStartX = 0;
   let touchEndX = 0;
 
@@ -281,9 +301,11 @@ function initGalleryStage() {
     if (sourceImage) {
       const image = document.createElement("img");
 
-      image.src = sourceImage.src;
+      image.src = sourceImage.dataset.thumb || sourceImage.currentSrc || sourceImage.src;
       image.alt = "";
       image.setAttribute("aria-hidden", "true");
+      image.loading = "lazy";
+      image.decoding = "async";
 
       thumb.appendChild(image);
     }
@@ -314,6 +336,12 @@ function initGalleryStage() {
       currentIndex = 0;
     } else {
       currentIndex = index;
+    }
+
+    const currentImage = slides[currentIndex]?.querySelector("img[data-src]");
+    if (currentImage) {
+      currentImage.src = currentImage.dataset.src;
+      currentImage.removeAttribute("data-src");
     }
 
     slides.forEach((slide, slideIndex) => {
@@ -367,6 +395,7 @@ function initGalleryStage() {
 
   function startAutoplay() {
     if (prefersReducedMotion) return;
+    if (autoplayPaused) return;
     if (slides.length <= 1) return;
 
     stopAutoplay();
@@ -473,6 +502,19 @@ function initGalleryStage() {
 
   gallery.addEventListener("mouseleave", () => {
     startAutoplay();
+  });
+
+  gallery.addEventListener("focusin", stopAutoplay);
+  gallery.addEventListener("focusout", (event) => {
+    if (!gallery.contains(event.relatedTarget)) startAutoplay();
+  });
+
+  autoplayButton?.addEventListener("click", () => {
+    autoplayPaused = !autoplayPaused;
+    autoplayButton.setAttribute("aria-pressed", String(autoplayPaused));
+    autoplayButton.textContent = autoplayPaused ? "Play Gallery" : "Pause Gallery";
+    if (autoplayPaused) stopAutoplay();
+    else startAutoplay();
   });
 
 

@@ -790,6 +790,29 @@
   object-fit: cover;
 }
 
+.gallery-autoplay-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  margin-top: 0.85rem;
+  padding: 0.65rem 1rem;
+  color: #ffffff;
+  background: #1b1b1b;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 999px;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.gallery-autoplay-toggle:hover,
+.gallery-autoplay-toggle:focus-visible,
+.gallery-autoplay-toggle[aria-pressed="true"] {
+  color: #111111;
+  background: var(--accent);
+}
+
 
 /* =========================================================
   PROCESS

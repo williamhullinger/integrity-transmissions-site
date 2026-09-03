@@ -5,6 +5,8 @@ const { _internals: catalog } = require("./reman-catalog.js");
 const { _internals: shipping } = require("./reman-shipping.js");
 
 const SITE_URL = "https://integritydrivetrain.com";
+const TERMS_VERSION = "2026-09-03";
+const TERMS_SHA256 = "164638adeaa82c1287f590979560f2a966551afaa2b0bdda69dd1f66937e1ebf";
 const CHECKOUT_WINDOW_MS = 10 * 60 * 1000;
 const CHECKOUT_LIMIT = 6;
 const requestCounts = new Map();
@@ -26,6 +28,11 @@ const allowedOrigin = (origin) => {
 };
 
 const withinCheckoutLimit = (key, now = Date.now()) => {
+  if (requestCounts.size > 2_000) {
+    for (const [entryKey, entry] of requestCounts) {
+      if (now - entry.startedAt >= CHECKOUT_WINDOW_MS) requestCounts.delete(entryKey);
+    }
+  }
   const current = requestCounts.get(key);
   if (!current || now - current.startedAt >= CHECKOUT_WINDOW_MS) {
     requestCounts.set(key, { startedAt: now, count: 1 });
@@ -103,6 +110,12 @@ const customerInput = (payload) => {
   return { name, email, phone, address, deliveryLocation, coreReturnFreight };
 };
 
+const requiredChoice = (payload, camelName, formName, allowed, message) => {
+  const value = clean(payload[camelName] || payload[formName], 160);
+  if (!allowed.includes(value)) throw checkoutError(400, message);
+  return value;
+};
+
 const findChosenRate = (quote, suppliedRateId) => {
   if (!/^[A-Za-z0-9_-]{20,64}$/.test(String(suppliedRateId || ""))) {
     throw checkoutError(400, "Choose a current delivery option before checkout.");
@@ -130,7 +143,7 @@ const verifiedOrder = async (payload, quoteLoader = shipping.loadFreightQuote) =
   const expectedUnitPrice = cents(payload.expectedUnitPrice ?? payload["catalog-unit-price"]);
   const expectedCoreDeposit = cents(payload.expectedCoreDeposit ?? payload["catalog-core-deposit"]);
 
-  if (!Number.isSafeInteger(unitPrice) || unitPrice < 50) throw checkoutError(409, "Current online pricing is not available for this transmission.");
+  if (!Number.isSafeInteger(unitPrice) || unitPrice <= 50_000) throw checkoutError(409, "Current online pricing is not available for this transmission.");
   if (!Number.isSafeInteger(coreDeposit) || coreDeposit < 0) throw checkoutError(409, "The current core deposit could not be confirmed.");
   if (!Number.isSafeInteger(freight) || freight < 50) throw checkoutError(409, "The current delivery rate could not be confirmed.");
   if (expectedUnitPrice !== unitPrice || expectedCoreDeposit !== coreDeposit) {
@@ -138,6 +151,25 @@ const verifiedOrder = async (payload, quoteLoader = shipping.loadFreightQuote) =
       priceChanged: true,
     });
   }
+
+  const coreStatus = requiredChoice(payload, "coreStatus", "core-status", [
+    "Original transmission available",
+    "Original transmission damaged or incomplete",
+    "No core available",
+    "Unknown",
+  ], "Choose the condition of the original transmission.");
+  const installerStatus = requiredChoice(payload, "installerStatus", "installer-status", [
+    "Qualified installer selected",
+    "Installer still needed",
+    "Repair shop ordering",
+    "Local installation requested",
+  ], "Choose the installer status for this order.");
+  const programmingCapability = requiredChoice(payload, "programmingCapability", "programming-capability", [
+    "Installer can program and perform relearn",
+    "Dealership programming will be arranged",
+    "Need programming assistance",
+    "Unknown",
+  ], "Choose the programming plan for this order.");
 
   return {
     vin: quote.vin,
@@ -158,9 +190,9 @@ const verifiedOrder = async (payload, quoteLoader = shipping.loadFreightQuote) =
     engine: clean(payload.engine, 100),
     driveType: clean(payload.driveType || payload["drive-type"], 40),
     mileage: clean(payload.mileage, 40),
-    coreStatus: clean(payload.coreStatus || payload["core-status"], 120),
-    installerStatus: clean(payload.installerStatus || payload["installer-status"], 120),
-    programmingCapability: clean(payload.programmingCapability || payload["programming-capability"], 160),
+    coreStatus,
+    installerStatus,
+    programmingCapability,
     vehicleUse: clean(payload.vehicleUse || payload["vehicle-use-modifications"], 500),
     message: clean(payload.message, 500),
   };
@@ -188,6 +220,9 @@ const stripeMetadata = (order) => ({
   programming: order.programmingCapability,
   vehicle_use: order.vehicleUse,
   customer_note: order.message,
+  terms_version: TERMS_VERSION,
+  terms_sha256: TERMS_SHA256,
+  terms_accepted_at: order.termsAcceptedAt,
 });
 
 const stripeAddress = (address) => ({
@@ -330,6 +365,7 @@ const createCheckoutHandler = ({ stripeFactory = defaultStripeFactory, quoteLoad
     const attemptKey = checkoutAttemptKey(payload);
     const expiresAt = checkoutExpiry(payload);
     const order = await verifiedOrder(payload, quoteLoader);
+    order.termsAcceptedAt = new Date().toISOString();
     const stripe = stripeFactory();
     const session = await createStripeCheckout({ stripe, order, attemptKey, expiresAt });
     if (!session?.id || !/^https:\/\/checkout\.stripe\.com\//i.test(session.url || "")) {
@@ -360,6 +396,7 @@ exports._internals = {
   customerInput,
   findChosenRate,
   lineItem,
+  requiredChoice,
   stripeMetadata,
   verifiedOrder,
 };

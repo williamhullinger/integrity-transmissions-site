@@ -31,7 +31,9 @@ function initVinDecoder() {
   const freightButton = form.querySelector("[data-reman-freight]");
   const freightResults = form.querySelector("[data-reman-freight-results]");
   const checkoutButton = form.querySelector("[data-reman-checkout]");
+  const assistButton = form.querySelector("[data-reman-assist]");
   const checkoutStatus = form.querySelector("[data-reman-checkout-status]");
+  const assistanceReasonInput = form.querySelector("[name='assistance-reason']");
   const streetInput = form.querySelector("[name='shipping-street']");
   const street2Input = form.querySelector("[name='shipping-street-2']");
   const cityInput = form.querySelector("[name='shipping-city']");
@@ -43,6 +45,10 @@ function initVinDecoder() {
   const currency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
   let lookupData = null;
   let selectedOption = null;
+
+  const track = (eventName, details = {}) => {
+    if (typeof pushConversionEvent === "function") pushConversionEvent(eventName, details);
+  };
 
   const normalizeVin = (value) => value.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 17);
 
@@ -63,6 +69,11 @@ function initVinDecoder() {
     checkoutStatus.hidden = !message;
     checkoutStatus.dataset.state = state;
     checkoutStatus.textContent = message || "";
+  };
+
+  const offerAssistance = (reason, message = "Send your VIN and contact information, and our team will verify the right option with you.") => {
+    if (assistanceReasonInput) assistanceReasonInput.value = reason;
+    setCheckoutStatus("ready", message);
   };
 
   const updateCheckoutButton = () => {
@@ -161,6 +172,7 @@ function initVinDecoder() {
     if (checkedAtInput) checkedAtInput.value = lookupData.checkedAt;
     if (transmissionInput) transmissionInput.value = candidate.application;
     if (freightButton) freightButton.disabled = false;
+    track("package_select", { transmission_family: candidate.application, upgrade_level: upgrade.name, warranty: packageData.warranty });
 
     const summary = node("section", "selected-reman-summary");
     summary.dataset.selectedSummary = "";
@@ -207,6 +219,7 @@ function initVinDecoder() {
       button.addEventListener("click", () => {
         if (transmissionInput) transmissionInput.value = candidate.application;
         if (availabilityInput) availabilityInput.value = `${upgrade.availability.code}: ${upgrade.availability.title}`;
+        offerAssistance("Selected package requires personal confirmation");
         form.querySelector("#reman-name")?.focus();
       });
     }
@@ -255,6 +268,7 @@ function initVinDecoder() {
 
     if (!data.candidates?.length) {
       catalog.append(node("p", "reman-alert", "We could not match this VIN online. Complete the form or call (417) 815-3315 and we will help identify the correct transmission."));
+      offerAssistance("No online VIN match");
       return;
     }
 
@@ -309,7 +323,7 @@ function initVinDecoder() {
       card.type = "button";
       const transit = rate.transitDays ? `${rate.transitDays} ${rate.transitDays === 1 ? "day" : "days"} after shipment` : "Transit time to be confirmed";
       card.append(
-        node("span", "", index === 0 ? "Lowest available rate" : "Another delivery option"),
+        node("span", "", index === 0 ? "Lowest rate shown" : "Another delivery option"),
         node("strong", "", currency.format(rate.customerFreightTotal)),
         node("small", "", `${rate.carrier} • ${transit}`),
       );
@@ -368,9 +382,12 @@ function initVinDecoder() {
       const data = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(data.message || data.error || "Delivery rates could not be loaded.");
       renderFreight(data);
+      track("freight_quote_success", { rate_count: data.rates.length, round_trip: Boolean(data.roundTrip) });
     } catch (error) {
       freightResults.hidden = false;
       freightResults.replaceChildren(node("p", "reman-alert", `${error.message} Send the request and we will confirm the delivery cost for you.`));
+      offerAssistance("Automatic freight quote unavailable");
+      track("freight_quote_error");
     } finally {
       freightButton.disabled = false;
       freightButton.textContent = "Calculate Current Freight";
@@ -381,6 +398,22 @@ function initVinDecoder() {
     input?.addEventListener("change", () => {
       if (freightTotalInput?.value) clearFreight();
     });
+  });
+
+  deliveryInput?.addEventListener("change", () => {
+    const needsPersonalQuote = ["Local coordinated installation", "Not sure"].includes(deliveryInput.value);
+    if (needsPersonalQuote) {
+      clearFreight();
+      if (freightButton) freightButton.disabled = true;
+      offerAssistance(
+        deliveryInput.value === "Local coordinated installation"
+          ? "Springfield-area installation requested"
+          : "Delivery location needs confirmation",
+        "This delivery choice needs a personal quote. Complete your contact information and request help from our team.",
+      );
+    } else if (selectedOption && freightButton) {
+      freightButton.disabled = false;
+    }
   });
 
   stateInput?.addEventListener("input", () => {
@@ -424,6 +457,7 @@ function initVinDecoder() {
     lookupButton.textContent = "Checking Current Options…";
     catalog.hidden = true;
     setResult("loading", "Finding the right transmission", "Matching your vehicle and loading current packages, prices and availability.");
+    track("vin_lookup_start");
 
     try {
       const response = await fetch("/api/reman-catalog", {
@@ -442,16 +476,66 @@ function initVinDecoder() {
         `${[vehicle.engine, data.vehicle?.driveType].filter(Boolean).join(" • ") || "VIN match found"}. Choose from the available options below.`,
       );
       renderCatalog(data);
+      track("vin_lookup_success", { candidate_count: data.candidates?.length || 0 });
     } catch (error) {
       console.warn("Reman catalog lookup unavailable", error);
       setResult("error", "We could not load your options", `${error.message} Try again or call us at (417) 815-3315.`);
       catalog.hidden = false;
       catalog.replaceChildren(node("p", "reman-alert", "Complete the vehicle and contact information below and we will look it up for you."));
+      offerAssistance("Online catalog lookup unavailable");
+      track("vin_lookup_error");
     } finally {
       lookupButton.disabled = false;
       lookupButton.textContent = "Find Options & Prices";
     }
   });
+
+  const submitAssistedQuote = async () => {
+    const assistedFields = [
+      vinInput,
+      form.querySelector("#reman-name"),
+      form.querySelector("#reman-phone"),
+      form.querySelector("#reman-email"),
+      vehicleInput,
+    ];
+    const missing = assistedFields.find((field) => !field?.value.trim() || !field.checkValidity());
+    if (missing) {
+      missing.reportValidity();
+      missing.focus();
+      return;
+    }
+
+    const originalLabel = assistButton?.textContent || "Request Help From Our Team";
+    if (assistButton) {
+      assistButton.disabled = true;
+      assistButton.textContent = "Sending Request…";
+    }
+    setCheckoutStatus("loading", "Sending your information to the Integrity team…");
+
+    try {
+      const params = new URLSearchParams();
+      for (const [name, value] of new FormData(form).entries()) params.set(name, String(value));
+      params.set("form-name", "reman-transmission-quote");
+      params.set("request-type", "Assisted reman transmission quote");
+      params.set("order-workflow", "Personal quote requested; no payment taken");
+      const response = await fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: params,
+      });
+      if (!response.ok) throw new Error("Your request could not be sent online.");
+      track("assisted_quote_submit");
+      setCheckoutStatus("success", "Your request was sent. We will review the VIN and contact you.");
+      window.location.assign("/thank-you?request=reman");
+    } catch (error) {
+      setCheckoutStatus("error", `${error.message} Please call or text (417) 815-3315. No payment was taken.`);
+    } finally {
+      if (assistButton) {
+        assistButton.disabled = false;
+        assistButton.textContent = originalLabel;
+      }
+    }
+  };
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -462,6 +546,11 @@ function initVinDecoder() {
       vinInput.setCustomValidity("A valid 17-character VIN is required for a reman transmission request.");
       vinInput.reportValidity();
       vinInput.focus();
+      return;
+    }
+
+    if (event.submitter?.matches("[data-reman-assist]")) {
+      await submitAssistedQuote();
       return;
     }
 
@@ -488,6 +577,10 @@ function initVinDecoder() {
       checkoutButton.textContent = "Rechecking Order…";
     }
     setCheckoutStatus("loading", "Rechecking the VIN match, package price, availability and delivery rate before opening secure checkout…");
+    track("begin_checkout", {
+      transmission_family: selectedOption.candidate.application,
+      upgrade_level: selectedOption.upgrade.name,
+    });
 
     try {
       const response = await fetch("/api/reman-checkout", {
@@ -545,6 +638,10 @@ function initVinDecoder() {
         throw new Error("The secure payment page did not load correctly. Please try again.");
       }
       setCheckoutStatus("success", "Secure checkout is ready. Taking you to Stripe…");
+      track("checkout_redirect", {
+        transmission_family: selectedOption.candidate.application,
+        upgrade_level: selectedOption.upgrade.name,
+      });
       window.location.assign(data.checkoutUrl);
     } catch (error) {
       setCheckoutStatus("error", `${error.message} No payment was taken.`);
@@ -554,6 +651,26 @@ function initVinDecoder() {
         updateCheckoutButton();
       }
     }
+  });
+
+  const requestedFamily = new URLSearchParams(window.location.search).get("family")?.replace(/[^A-Za-z0-9-]/g, "").slice(0, 20);
+  if (requestedFamily && transmissionInput && !transmissionInput.value) {
+    transmissionInput.value = requestedFamily.toUpperCase();
+    setResult("idle", `${requestedFamily.toUpperCase()} search selected`, "Enter the 17-digit VIN to confirm the exact application, price and availability.");
+  }
+
+  const familySearch = document.querySelector("[data-reman-family-search]");
+  const familyCards = [...document.querySelectorAll("[data-reman-family]")];
+  const familyCount = document.querySelector("[data-reman-family-count]");
+  familySearch?.addEventListener("input", () => {
+    const query = familySearch.value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+    let visible = 0;
+    familyCards.forEach((card) => {
+      const matches = !query || card.dataset.remanFamily.includes(query);
+      card.hidden = !matches;
+      if (matches) visible += 1;
+    });
+    if (familyCount) familyCount.textContent = `${visible} transmission ${visible === 1 ? "family" : "families"} shown`;
   });
 
   updateCheckoutButton();

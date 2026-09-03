@@ -4,7 +4,7 @@ import { createRequire } from "node:module";
 
 const require = createRequire(import.meta.url);
 const { handler, _internals } = require("../../../netlify/functions/ace-lookup.js");
-const { handler: publicHandler } = require("../../../netlify/functions/reman-catalog.js");
+const { handler: publicHandler, _internals: publicCatalog } = require("../../../netlify/functions/reman-catalog.js");
 const { handler: shippingHandler } = require("../../../netlify/functions/reman-shipping.js");
 
 const customerSurface = [
@@ -217,6 +217,14 @@ assert.deepEqual(parsedCandidates[0], {
 
 assert.equal(_internals.applySuggestedCalculations(3090.2, [{ CalculationType: "Percent", Amount: 35 }]), 4171.77);
 assert.equal(_internals.retailPrice(3090.2, 4189.38, { flatMargin: 500 }), 3590.2);
+assert.equal(_internals.strictNumberValue("50O"), null);
+assert.equal(_internals.strictNumberValue("500.00"), 500);
+assert.equal(
+  require("../../../netlify/functions/reman-shipping.js")._internals.normalizeFreightRequest({
+    coreReturnFreight: "Outbound delivery only — I will arrange the core return",
+  }).roundTrip,
+  false,
+);
 
 process.env.ACE_CONNECTOR_MODE = "staff";
 process.env.ACE_USERNAME = "test-user";
@@ -225,6 +233,28 @@ process.env.ACE_LOOKUP_TOKEN = "test-token-that-is-more-than-24-characters";
 process.env.REMAN_MARKUP_FLAT = "500";
 process.env.REMAN_QUOTE_EXPIRY_DAYS = "7";
 process.env.ACE_PUBLIC_LOOKUP_ENABLED = "true";
+
+process.env.REMAN_MARKUP_FLAT = "50O";
+assert.throws(() => _internals.configuredPricing(), /REMAN_MARKUP_FLAT/);
+process.env.REMAN_MARKUP_FLAT = "500";
+
+const incompletePrice = structuredClone(partInfo);
+delete incompletePrice.TransmissionUpgradeViewModelList[0].DisplayPricingList[0].TransmissionPrice;
+const normalizedIncompletePrice = _internals.normalizePartInfo(parsedCandidates[0], incompletePrice, stockInfo, { flatMargin: 500 });
+assert.equal(normalizedIncompletePrice.upgrades[0].packages.length, 1, "A price row without an authoritative transmission price must be discarded");
+
+const missingCore = structuredClone(partInfo);
+delete missingCore.CoreCharge;
+assert.match(_internals.normalizePartInfo(parsedCandidates[0], missingCore, stockInfo, { flatMargin: 500 }).pricingError, /Core deposit/);
+
+const supplierErrorAvailability = publicCatalog.availabilityFor({
+  location: "Omaha Warehouse",
+  quantity: 2,
+  externalQuantity: 0,
+  error: { label: "Contact our help desk", detail: "Review required" },
+}, false);
+assert.equal(supplierErrorAvailability.code, "manual_review");
+assert.equal(supplierErrorAvailability.orderable, false);
 
 const originalFetch = globalThis.fetch;
 globalThis.fetch = mockFetch;
@@ -304,6 +334,7 @@ try {
   const shippingPayload = JSON.parse(shippingResponse.body);
   assert.equal(shippingPayload.rates[0].carrier, "Test Freight");
   assert.equal(shippingPayload.rates[0].customerFreightTotal, 450);
+  assert.equal(shippingPayload.rates[0].accessorial, 25);
   assert.equal(shippingPayload.rates[0].roundTrip, true);
   assert.match(shippingPayload.rates[0].rateId, /^[A-Za-z0-9_-]{32}$/);
 } finally {

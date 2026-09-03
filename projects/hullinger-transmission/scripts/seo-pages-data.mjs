@@ -54,7 +54,7 @@ export const seoPages = [
     ],
     localText: "Customers commonly contact Integrity from Springfield, Ozark, Rogersville, Nixa, Republic, Battlefield and Strafford. Availability, towing distance and partner scheduling vary, so the best first step is always to send the vehicle information before arranging transportation.",
     faqs: [
-      ["Where is Integrity located?", "Integrity serves the Springfield, Missouri area through an appointment-based operating model. The correct drop-off or partner location is confirmed after the vehicle, service and schedule are reviewed."],
+      ["Where is Integrity located?", "Integrity serves the Springfield, Missouri area by appointment. We confirm the correct service or drop-off location after reviewing the vehicle, requested work and schedule."],
       ["Do I need the VIN to get a quote?", "The VIN is strongly preferred because it helps identify the exact transmission and vehicle configuration. If it is unavailable, send the year, make, model, engine and whether the vehicle is two- or four-wheel drive."],
       ["Can Integrity arrange removal and installation?", "Removal and installation may be coordinated through an approved partner when included in the quote. The arrangement depends on the vehicle, service and current scheduling."],
       ["Do you serve customers outside Springfield?", "Yes. Integrity regularly works with customers from surrounding Southwest Missouri communities. Confirm the appointment and location before transporting a vehicle or transmission."],
@@ -106,7 +106,7 @@ export const seoPages = [
       ["Confirm Scope", "Available evidence is used to separate a targeted concern from likely internal failure."],
       ["Choose the Path", "Receive the realistic repair, rebuild or reman option with the applicable warranty and installation plan."],
     ],
-    localText: "Integrity provides transmission repair direction for Springfield and nearby Southwest Missouri customers. Because the business is appointment-based and some in-vehicle work is partner-coordinated, send the vehicle details before arranging a tow or drop-off.",
+    localText: "Integrity helps Springfield and nearby Southwest Missouri customers choose the right transmission repair path. Service is by appointment, and removal or installation may be coordinated through a qualified local repair shop. Send the vehicle details before arranging a tow or drop-off.",
     faqs: [
       ["Can a transmission code tell me exactly what failed?", "Usually not. Codes identify a monitored condition or circuit. Fluid condition, live data, symptoms, wiring and mechanical evidence are often needed before choosing a repair."],
       ["Does slipping mean I need a replacement?", "Not automatically, but continued slipping can quickly damage clutches and contaminate the unit. The vehicle should be evaluated before additional driving."],
@@ -322,7 +322,7 @@ export const seoPages = [
       ["Inspect the System", "Consider debris, cooler condition and likely internal transmission damage."],
       ["Match the Repair", "Choose converter-only work, rebuilding or reman replacement based on the complete condition."],
     ],
-    localText: "Springfield-area customers can send Integrity the VIN, symptoms and codes for torque-converter-related direction. Converter-only in-vehicle service is accepted selectively and may be partner-coordinated depending on the vehicle and schedule.",
+    localText: "Springfield-area customers can send Integrity the VIN, symptoms and codes for help with a torque-converter concern. Converter-only in-vehicle service is accepted selectively, and removal or installation may be coordinated through a qualified local repair shop based on the vehicle and schedule.",
     faqs: [
       ["What does torque converter shudder feel like?", "It is often described as a vibration or rumble-strip sensation during light-throttle lockup, but engine misfire, tires and driveline vibration can feel similar."],
       ["Can I replace only the torque converter?", "Sometimes, if the rest of the transmission and hydraulic controls are serviceable and contamination is controlled. Established internal damage usually requires a broader repair."],
@@ -484,7 +484,7 @@ export const seoPages = [
       ["Select Build", "Match clutches, shell, servo, hydraulic corrections, converter and cooling to the use."],
       ["Install Correctly", "Address cooler contamination, TV/shift calibration where applicable and adaptive setup."],
     ],
-    localText: "4L60E service is available for many Springfield-area GM vehicles, removed bench units and partner-coordinated jobs. Send the VIN and tag before drop-off because interchange details matter.",
+    localText: "4L60E service is available for many Springfield-area GM vehicles and removed bench units. When needed, we can coordinate removal and installation through a qualified local repair shop. Send the VIN and transmission tag before drop-off because interchange details matter.",
     faqs: [
       ["Why does my 4L60E have no reverse?", "Possible causes include reaction sun-shell failure, low/reverse clutch or apply problems, valve-body issues and other internal damage. The other gears available help narrow the pattern."],
       ["What causes a 2-3 flare in a 4L60E?", "3-4 clutch wear, leakage, input-housing damage, accumulator or servo release problems, pump pressure and valve-body wear are among the possibilities."],
@@ -538,7 +538,7 @@ export const seoPages = [
       ["Build the Package", "Confirm reman unit, converter, fluid, cooler requirement, seals and warranty."],
       ["Program & Relearn", "Complete required module setup, fluid-level procedure and adaptive learning."],
     ],
-    localText: "Integrity provides 6L80 and 6L90 replacement quotes for Chevrolet, GMC, Cadillac and other supported GM vehicles around Springfield and Southwest Missouri. Send the VIN for the correct unit, warranty and partner-coordinated installation plan.",
+    localText: "Integrity provides 6L80 and 6L90 replacement quotes for Chevrolet, GMC, Cadillac and other supported GM vehicles around Springfield and Southwest Missouri. Send the VIN so we can verify the correct unit, warranty and any locally coordinated installation.",
     faqs: [
       ["What is a common 6L80 failure?", "Torque converter clutch deterioration is common and can send material through the transmission. Pump, valve-body, clutch and hard-part damage may follow."],
       ["Can a 6L80 be rebuilt after converter failure?", "Sometimes, but the final scope depends on debris and hard-part condition. A quality reman replacement may be more predictable when contamination is extensive."],
@@ -592,7 +592,7 @@ export const seoPages = [
       ["Select Package", "Confirm the reman unit, included updates, electronics, converter and warranty."],
       ["Set Up Correctly", "Complete programming, fill, adaptive reset only when appropriate and the required drive cycle."],
     ],
-    localText: "10R80 replacement is available for supported Ford vehicles in Springfield and Southwest Missouri through Integrity's appointment and partner-coordinated model. VIN and production information are required before a final unit is quoted.",
+    localText: "10R80 replacement is available by appointment for supported Ford vehicles in Springfield and Southwest Missouri. We can coordinate removal and installation through a qualified local repair shop. VIN and production information are required before a final unit is quoted.",
     faqs: [
       ["Why does my 10R80 shift harshly?", "Possible causes include software and learned values, low or incorrect fluid, valve-body or solenoid control, clutch sealing and internal damage. The specific shift event and data matter."],
       ["What is the 10R80 CDF drum problem?", "The sleeve in the CDF drum can move from its intended position and compromise clutch sealing. Confirmation requires evidence and often internal inspection."],
