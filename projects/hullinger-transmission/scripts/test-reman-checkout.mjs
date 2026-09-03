@@ -121,6 +121,7 @@ const sessionParams = calls.sessions[0].params;
 assert.equal(customerParams.shipping.address.postal_code, "65807");
 assert.equal(sessionParams.customer, "cus_test_checkout");
 assert.equal(sessionParams.automatic_tax.enabled, true);
+assert.equal("shipping" in sessionParams.payment_intent_data, false);
 assert.equal(sessionParams.invoice_creation.enabled, true);
 assert.equal(sessionParams.origin_context, "web");
 assert.match(sessionParams.integration_identifier, /[a-z]{8}$/);

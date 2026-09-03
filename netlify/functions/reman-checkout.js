@@ -257,7 +257,6 @@ const createStripeCheckout = async ({ stripe, order, attemptKey, expiresAt }) =>
     payment_intent_data: {
       description: `Reman transmission order — ${order.application}`,
       receipt_email: order.customer.email,
-      shipping: { name: order.customer.name, phone: order.customer.phone, address },
       metadata,
     },
     custom_text: {
