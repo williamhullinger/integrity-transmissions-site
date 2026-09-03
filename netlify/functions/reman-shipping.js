@@ -181,7 +181,10 @@ const loadFreightQuote = async (payload) => {
 
   const freight = await selected.client.getFreightRates({
     ...freightRequest.address,
-    roundTrip: freightRequest.roundTrip,
+    // ACE currently requires roundTrip=True to return its baseline per-leg LTL
+    // rates. The customer choice is applied below by normalizeRates: one leg
+    // for outbound-only, or two legs when prepaid core return is selected.
+    roundTrip: true,
     liftgate: freightRequest.liftgate,
     insideDelivery: freightRequest.insideDelivery,
     residentialDelivery: freightRequest.residentialDelivery,

@@ -337,8 +337,29 @@ try {
   assert.equal(shippingPayload.rates[0].accessorial, 25);
   assert.equal(shippingPayload.rates[0].roundTrip, true);
   assert.match(shippingPayload.rates[0].rateId, /^[A-Za-z0-9_-]{32}$/);
+
+  const outboundOnlyResponse = await shippingHandler({
+    httpMethod: "POST",
+    headers: { origin: "https://integritydrivetrain.com" },
+    body: JSON.stringify({
+      vin: "1FTFW1E50JFA00000",
+      selectionId: publicPayload.candidates[0].upgrades[0].packages[0].selectionId,
+      addressLine1: "123 Main Street",
+      city: "Springfield",
+      state: "MO",
+      postalCode: "65807",
+      deliveryLocation: "Repair shop or commercial dock",
+      coreReturnFreight: "Outbound delivery only — I will arrange the core return",
+    }),
+  });
+  assert.equal(outboundOnlyResponse.statusCode, 200, outboundOnlyResponse.body);
+  const outboundOnlyPayload = JSON.parse(outboundOnlyResponse.body);
+  assert.equal(outboundOnlyPayload.roundTrip, false);
+  assert.equal(outboundOnlyPayload.rates[0].roundTrip, false);
+  assert.equal(outboundOnlyPayload.rates[0].customerFreightTotal, 225);
+  assert.match(outboundOnlyPayload.notice, /outbound only/i);
 } finally {
   globalThis.fetch = originalFetch;
 }
 
-console.log("ACE integration test passed: staff authentication, public VIN catalog, per-upgrade stock, $500 pricing, redaction and round-trip freight.");
+console.log("ACE integration test passed: staff authentication, public VIN catalog, per-upgrade stock, $500 pricing, redaction, and one-way/round-trip freight.");
