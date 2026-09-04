@@ -97,7 +97,7 @@ BEGIN
   IF NOT FOUND THEN RAISE EXCEPTION 'Promotion order and customer do not match'; END IF;
   expected_discount_cents := CASE
     WHEN promotion.amount_off_cents IS NOT NULL THEN promotion.amount_off_cents
-    ELSE round(merchandise_cents * promotion.percent_off / 100)
+    ELSE (merchandise_cents * (promotion.percent_off * 100)::bigint + 5000) / 10000
   END;
   IF NEW.amount_cents <> least(expected_discount_cents, merchandise_cents) THEN
     RAISE EXCEPTION 'Promotion discount amount does not match its rule';

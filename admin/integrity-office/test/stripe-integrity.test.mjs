@@ -7,6 +7,7 @@ import { createInternalPromotionHandler } from "../server/internal-promotion.mjs
 import { conflict } from "../server/errors.mjs";
 import { reconcileStripe } from "../server/reconciliation.mjs";
 import { createStripeWebhookHandler } from "../server/stripe-webhook.mjs";
+import { claimStripeEvents, _internals as eventInternals } from "../server/stripe-events.mjs";
 
 test("durable webhook intake rejects invalid signatures and acknowledges duplicates", async () => {
   let ingested = 0;
@@ -32,6 +33,7 @@ test("storefront checkout ingestion requires a fresh HMAC and preserves the veri
   const snapshot = {
     requestId: "request-12345678",
     stripeSessionId: "cs_test_1234567890",
+    stripeSessionCreatedAt: Math.floor(Date.now() / 1_000),
     stripeCustomerId: "cus_1234567890",
     stripePaymentIntentId: null,
     checkoutAttemptKey: "attempt-1234567890abcdef",
@@ -69,7 +71,13 @@ test("storefront checkout ingestion requires a fresh HMAC and preserves the veri
   assert.equal(accepted.statusCode, 201, accepted.body);
   assert.equal(received.supplierUnitCostCents, 360000);
   assert.equal(received.customer.email, "customer@example.com");
+  assert.match(received.stripeSessionCreatedAt, /^\d{4}-\d{2}-\d{2}T/);
   assert.equal(ingestInternals.verifySignature({ raw, timestamp: String(Number(timestamp) - 301), signature, secret }), false);
+
+  const unsupportedRaw = JSON.stringify({ ...snapshot, currency: "cad" });
+  const unsupportedSignature = `sha256=${crypto.createHmac("sha256", secret).update(`${timestamp}.${unsupportedRaw}`).digest("hex")}`;
+  const unsupported = await handler({ httpMethod: "POST", headers: { "x-office-timestamp": timestamp, "x-office-signature": unsupportedSignature }, body: unsupportedRaw });
+  assert.equal(unsupported.statusCode, 400);
 });
 
 test("freight recovery ingestion validates contact data and deduplicates by public reference", async () => {
@@ -187,4 +195,192 @@ test("Stripe reconciliation reports missing and mismatched sessions", async () =
   assert.deepEqual(result.unmatchedStripe, ["cs_missing"]);
   assert.deepEqual(result.unmatchedOffice, ["cs_local_only"]);
   assert.deepEqual(result.amountMismatches, [{ stripeSessionId: "cs_paid", stripeCents: 10000, officeCents: 9999 }]);
+});
+
+test("retrieves the authoritative Stripe balance transaction before posting fees", async () => {
+  const row = {
+    event_type: "charge.succeeded",
+    payload: { data: { object: { paid: true, balance_transaction: "txn_fee_source" } } },
+  };
+  let retrieved;
+  const context = await eventInternals.prepareEvent(row, { balanceTransactions: { retrieve: async (id) => {
+    retrieved = id;
+    return { id, fee: 1234, currency: "usd", created: 1_788_480_000 };
+  } } });
+  assert.equal(retrieved, "txn_fee_source");
+  assert.equal(context.balanceTransaction.fee, 1234);
+  await assert.rejects(() => eventInternals.prepareEvent({
+    event_type: "charge.updated",
+    payload: { data: { object: { id: "ch_waiting", paid: true, balance_transaction: null } } },
+  }, { charges: { retrieve: async () => ({ id: "ch_waiting", paid: true, balance_transaction: null }) } }), /waiting for its balance transaction/);
+  const refreshed = await eventInternals.prepareEvent({
+    event_type: "charge.updated",
+    payload: { data: { object: { id: "ch_refresh", paid: true, balance_transaction: null } } },
+  }, { charges: { retrieve: async (_id, options) => ({ id: "ch_refresh", paid: true, payment_intent: "pi_refresh", balance_transaction: { id: "txn_refresh", fee: 321, currency: "usd" }, options }) } });
+  assert.equal(refreshed.charge.payment_intent, "pi_refresh");
+  assert.equal(refreshed.balanceTransaction.fee, 321);
+});
+
+test("refreshes disputes and materializes their authoritative balance movements", async () => {
+  const eventDispute = { id: "du_current", charge: "ch_current", status: "needs_response", balance_transactions: [] };
+  const retrieved = [];
+  const context = await eventInternals.prepareEvent({
+    event_type: "charge.dispute.funds_withdrawn",
+    payload: { data: { object: eventDispute } },
+  }, {
+    disputes: { retrieve: async (id, options) => {
+      assert.equal(id, "du_current");
+      assert.deepEqual(options, { expand: ["charge"] });
+      return {
+        ...eventDispute,
+        status: "under_review",
+        charge: { id: "ch_current", payment_intent: "pi_current" },
+        balance_transactions: ["txn_dispute_withdrawal"],
+      };
+    } },
+    balanceTransactions: { retrieve: async (id) => {
+      retrieved.push(id);
+      return { id, object: "balance_transaction", type: "adjustment", source: "du_current", net: -2500, currency: "usd", created: 1_788_480_000 };
+    } },
+  });
+  assert.equal(context.dispute.status, "under_review");
+  assert.equal(context.charge.payment_intent, "pi_current");
+  assert.deepEqual(retrieved, ["txn_dispute_withdrawal"]);
+  assert.equal(context.balanceTransactions[0].net, -2500);
+});
+
+test("posts dispute withdrawals and reinstatements without allowing unrelated balance transactions", async () => {
+  const run = async ({ status, paymentStatus, net, transactionId }) => {
+    const queries = [];
+    const client = { query: async (sql, values = []) => {
+      const statement = String(sql);
+      queries.push({ statement, values });
+      if (statement.includes("FROM checkout_sessions cs")) {
+        return { rows: [{ id: "order-dispute", payment_status: paymentStatus, currency: "usd", captured_cents: "10000", refunded_cents: "0" }], rowCount: 1 };
+      }
+      if (statement.includes("INSERT INTO journal_entries")) return { rows: [{ id: `journal-${transactionId}` }], rowCount: 1 };
+      return { rows: [], rowCount: 1 };
+    } };
+    const dispute = {
+      id: "du_ledger",
+      amount: 10000,
+      currency: "usd",
+      charge: "ch_ledger",
+      created: 1_788_470_000,
+      reason: "general",
+      status,
+      evidence_details: {},
+    };
+    await eventInternals.processDispute(client, {
+      stripe_event_id: `evt_${status}`,
+      payload: { created: 1_788_480_000, data: { object: dispute } },
+    }, {
+      dispute,
+      charge: { id: "ch_ledger", payment_intent: "pi_ledger" },
+      balanceTransactions: [{ id: transactionId, type: "adjustment", source: "du_ledger", net, currency: "usd", created: 1_788_480_000 }],
+    });
+    return queries;
+  };
+
+  const withdrawn = await run({ status: "under_review", paymentStatus: "paid", net: -10000, transactionId: "txn_withdrawn" });
+  assert.deepEqual(withdrawn.find(({ statement }) => statement.includes("UPDATE orders SET payment_status"))?.values, ["order-dispute", "disputed"]);
+  assert.deepEqual(withdrawn.filter(({ statement }) => statement.includes("INSERT INTO journal_lines")).map(({ values }) => values.slice(1)), [["6300", 10000, 0], ["1000", 0, 10000]]);
+
+  const reinstated = await run({ status: "won", paymentStatus: "disputed", net: 10000, transactionId: "txn_reinstated" });
+  assert.deepEqual(reinstated.find(({ statement }) => statement.includes("UPDATE orders SET payment_status"))?.values, ["order-dispute", "paid"]);
+  assert.deepEqual(reinstated.filter(({ statement }) => statement.includes("INSERT INTO journal_lines")).map(({ values }) => values.slice(1)), [["1000", 10000, 0], ["6300", 0, 10000]]);
+
+  await assert.rejects(() => eventInternals.processDispute({ query: async (sql) => {
+    if (String(sql).includes("FROM checkout_sessions cs")) return { rows: [{ id: "order-dispute", payment_status: "paid", currency: "usd", captured_cents: "10000", refunded_cents: "0" }] };
+    return { rows: [], rowCount: 1 };
+  } }, {
+    stripe_event_id: "evt_wrong_source",
+    payload: { created: 1_788_480_000, data: { object: { id: "du_ledger", amount: 10000, currency: "usd", charge: "ch_ledger", created: 1_788_470_000, status: "under_review", evidence_details: {} } } },
+  }, {
+    dispute: { id: "du_ledger", amount: 10000, currency: "usd", charge: "ch_ledger", created: 1_788_470_000, status: "under_review", evidence_details: {} },
+    charge: { id: "ch_ledger", payment_intent: "pi_ledger" },
+    balanceTransactions: [{ id: "txn_unrelated", type: "charge", source: "ch_other", net: -10000, currency: "usd" }],
+  }), /not an adjustment for this dispute/);
+});
+
+test("refund events preserve an active dispute until Stripe resolves it", async () => {
+  const updates = [];
+  const client = { query: async (sql, values = []) => {
+    const statement = String(sql);
+    if (statement.includes("FROM checkout_sessions cs")) return { rows: [{ id: "order-disputed", payment_status: "disputed", captured_cents: "10000", currency: "usd" }] };
+    if (statement.includes("SELECT COALESCE(sum(amount_cents)")) return { rows: [{ refunded_cents: "2500" }] };
+    if (statement.includes("UPDATE orders SET payment_status")) updates.push(values);
+    return { rows: [], rowCount: 1 };
+  } };
+  await eventInternals.applyEvent(client, {
+    event_type: "refund.updated",
+    stripe_event_id: "evt_refund_during_dispute",
+    payload: { created: 1_788_480_000, data: { object: { id: "re_disputed", status: "succeeded", amount: 2500, currency: "usd", payment_intent: "pi_disputed" } } },
+  });
+  assert.deepEqual(updates, []);
+});
+
+test("rejects payment-link and currency mismatches before ledger posting", async () => {
+  const order = {
+    id: "order-1",
+    list_unit_price_cents: 10000,
+    freight_charged_cents: 0,
+    core_deposit_cents: 0,
+    discount_cents: 0,
+    currency: "usd",
+  };
+  const session = { id: "cs_live_control", payment_intent: "pi_control", payment_status: "paid", amount_total: 10000, currency: "cad", total_details: { amount_tax: 0 }, automatic_tax: { status: "complete" } };
+  await assert.rejects(() => eventInternals.ensurePaidJournal({ query: async () => { throw new Error("query should not run"); } }, { created: 1_788_480_000 }, session, order), /currency does not match/);
+
+  const statements = [];
+  await assert.rejects(() => eventInternals.ensurePaidJournal({ query: async (sql) => {
+    statements.push(String(sql));
+    return { rowCount: 0, rows: [] };
+  } }, { created: 1_788_480_000 }, { ...session, currency: "usd" }, order), /PaymentIntent does not match/);
+  assert.equal(statements.length, 1);
+  assert.match(statements[0], /stripe_payment_intent_id IS NULL OR stripe_payment_intent_id = \$2/);
+
+  await assert.rejects(() => eventInternals.ensurePaidJournal({ query: async () => { throw new Error("query should not run"); } }, { created: 1_788_480_000 }, {
+    ...session,
+    currency: "usd",
+    total_details: { amount_tax: 1 },
+  }, order), /Stripe tax does not reconcile/);
+});
+
+test("reclaims expired processing leases without allowing stale workers to overwrite them", async () => {
+  const statements = [];
+  const client = {
+    query: async (sql) => {
+      statements.push(String(sql));
+      return String(sql).includes("RETURNING we.*") ? { rows: [] } : { rows: [], rowCount: 0 };
+    },
+    release() {},
+  };
+  await claimStripeEvents({ connect: async () => client }, "worker-current", 20);
+  assert.match(statements.join("\n"), /processing_status = 'processing' AND locked_until < now\(\)/);
+  let retryQuery;
+  await eventInternals.retryEvent({ query: async (sql, values) => { retryQuery = { sql, values }; return { rowCount: 1 }; } }, {
+    stripe_event_id: "evt_lease",
+    attempts: 2,
+    locked_by: "worker-original",
+  }, new Error("transient"));
+  assert.match(retryQuery.sql, /locked_by = \$5/);
+  assert.equal(retryQuery.values[4], "worker-original");
+});
+
+test("retries refunds that arrive before their captured payment event", async () => {
+  const statements = [];
+  const client = { query: async (sql) => {
+    statements.push(String(sql));
+    if (String(sql).includes("FROM checkout_sessions cs")) {
+      return { rows: [{ id: "order-1", payment_status: "checkout_open", captured_cents: "0", currency: "usd" }] };
+    }
+    throw new Error("Refund processing advanced before a captured payment existed");
+  } };
+  await assert.rejects(() => eventInternals.applyEvent(client, {
+    event_type: "refund.updated",
+    stripe_event_id: "evt_refund_early",
+    payload: { created: 1_788_480_000, data: { object: { id: "re_early", status: "succeeded", amount: 1000, currency: "usd", payment_intent: "pi_early" } } },
+  }), /waiting for its captured payment event/);
+  assert.equal(statements.length, 1);
 });

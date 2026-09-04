@@ -39,6 +39,15 @@ test("rejects missing bearer tokens and sessions without MFA", async () => {
   await assert.rejects(() => authenticate({ headers: { authorization: "Bearer header.payload.signature" } }), (error) => error.statusCode === 403 && /Multi-factor/.test(error.message));
 });
 
+test("does not treat a lone OTP or WebAuthn method as proof of MFA", () => {
+  const claim = "https://office.integritydrivetrain.com/mfa";
+  assert.equal(_internals.mfaSatisfied({ amr: ["otp"] }, claim), false);
+  assert.equal(_internals.mfaSatisfied({ amr: ["webauthn"] }, claim), false);
+  assert.equal(_internals.mfaSatisfied({ amr: ["pwd", "mfa"] }, claim), true);
+  assert.equal(_internals.mfaSatisfied({ [claim]: true }, claim), true);
+  assert.equal(_internals.mfaSatisfied({ acr: "http://schemas.openid.net/pape/policies/2007/06/multi-factor" }, claim), true);
+});
+
 test("does not accept non-HTTPS Auth0 issuers", () => {
   assert.throws(() => createAuthenticator({
     env: { OFFICE_AUTH0_ISSUER: "http://tenant.example.com", OFFICE_AUTH0_AUDIENCE: "office" },

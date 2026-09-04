@@ -38,6 +38,7 @@ const parseSnapshot = (raw) => {
   if (!/^[A-HJ-NPR-Z0-9]{17}$/.test(vin)) throw new TypeError("Invalid VIN");
   const currency = boundedText(body.currency || "usd", "currency", 3).toLowerCase();
   if (!/^[a-z]{3}$/.test(currency)) throw new TypeError("Invalid currency");
+  if (currency !== "usd") throw new TypeError("Integrity Office accepts USD order snapshots only");
   const supplierUnitCostCents = positiveInteger(body.supplierUnitCostCents, "supplierUnitCostCents", { minimum: 1 });
   const customerUnitPriceCents = positiveInteger(body.customerUnitPriceCents, "customerUnitPriceCents", { minimum: 1 });
   const listUnitPriceCents = positiveInteger(body.listUnitPriceCents ?? customerUnitPriceCents, "listUnitPriceCents", { minimum: 1 });
@@ -55,6 +56,7 @@ const parseSnapshot = (raw) => {
   return {
     requestId: boundedText(body.requestId, "requestId", 128),
     stripeSessionId: sessionId,
+    stripeSessionCreatedAt: new Date(positiveInteger(body.stripeSessionCreatedAt, "stripeSessionCreatedAt", { minimum: 1 }) * 1_000).toISOString(),
     stripeCustomerId: customerId,
     stripePaymentIntentId: paymentIntentId,
     checkoutAttemptKey: boundedText(body.checkoutAttemptKey, "checkoutAttemptKey", 128),

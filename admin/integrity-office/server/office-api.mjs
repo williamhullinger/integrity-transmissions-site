@@ -1,4 +1,4 @@
-import { badRequest, notFound } from "./errors.mjs";
+import { badRequest, conflict, notFound } from "./errors.mjs";
 import {
   assertOfficeOrigin,
   errorResponse,
@@ -13,18 +13,24 @@ import {
 import { mayViewFinancials, requireRole } from "./permissions.mjs";
 import {
   boundedText,
+  fitmentReviewInput,
   freightStatusInput,
   instant,
   pageOptions,
   positiveInteger,
   promotionInput,
+  refundClassificationInput,
+  shipmentInput,
+  staffAccessInput,
+  staffInput,
+  supplierOrderInput,
   uuid,
 } from "./validation.mjs";
 import { reconcileStripe as reconcileStripePayments } from "./reconciliation.mjs";
 import { createStripeClient } from "./stripe-client.mjs";
 
-const mutation = async ({ event, repository, principal, id, scope, action }) => {
-  assertOfficeOrigin(event);
+const mutation = async ({ event, env, repository, principal, id, scope, action }) => {
+  assertOfficeOrigin(event, env);
   const body = parseJson(event);
   const key = idempotencyKey(event);
   const result = await repository.executeIdempotent({
@@ -78,6 +84,32 @@ export const createOfficeApi = ({
       requireRole(principal, "viewer");
       return response(200, { data: await repository.dashboard(), meta: { requestId: id, generatedAt: new Date().toISOString() } }, id);
     }
+    if (method === "GET" && path === "/staff") {
+      requireRole(principal, "administrator");
+      return response(200, { data: await repository.listStaff(), meta: { requestId: id } }, id);
+    }
+    if (method === "GET" && path === "/staff/assignees") {
+      requireRole(principal, "operations");
+      return response(200, { data: await repository.listAssignableStaff(), meta: { requestId: id } }, id);
+    }
+    if (method === "POST" && path === "/staff") {
+      requireRole(principal, "administrator");
+      return await mutation({ event, env, repository, principal, id, scope: "staff:create", action: async (client, body) => {
+        const input = staffInput(body);
+        const created = await repository.createStaff(client, input, principal);
+        return { statusCode: 201, body: created, audit: { action: "staff.created", entityType: "staff_user", entityId: created.id, reason: input.reason, afterValue: created } };
+      } });
+    }
+    const staffAccessMatch = /^\/staff\/([0-9a-f-]+)\/access$/.exec(path);
+    if (method === "POST" && staffAccessMatch) {
+      requireRole(principal, "administrator");
+      const staffId = uuid(staffAccessMatch[1], "staff id");
+      return await mutation({ event, env, repository, principal, id, scope: `staff:access:${staffId}`, action: async (client, body) => {
+        const input = staffAccessInput(body);
+        const updated = await repository.updateStaffAccess(client, staffId, input, principal);
+        return { statusCode: 200, body: updated, audit: { action: "staff.access_changed", entityType: "staff_user", entityId: staffId, reason: input.reason, afterValue: updated } };
+      } });
+    }
     if (method === "GET" && path === "/orders") {
       requireRole(principal, "viewer");
       const paging = pageOptions(params);
@@ -95,13 +127,54 @@ export const createOfficeApi = ({
       const data = await repository.getOrder(uuid(orderMatch[1]), { includeFinancials: mayViewFinancials(principal) });
       return response(200, { data, meta: { requestId: id } }, id);
     }
+    const fitmentMatch = /^\/orders\/([0-9a-f-]+)\/fitment-review$/.exec(path);
+    if (method === "POST" && fitmentMatch) {
+      requireRole(principal, "operations");
+      const orderId = uuid(fitmentMatch[1], "order id");
+      return await mutation({ event, env, repository, principal, id, scope: `order:fitment:${orderId}`, action: async (client, body) => {
+        const input = { id: orderId, ...fitmentReviewInput(body) };
+        const recorded = await repository.recordFitmentReview(client, input, principal);
+        return { statusCode: 201, body: recorded, audit: { action: "order.fitment_reviewed", entityType: "order", entityId: orderId, reason: input.reason, afterValue: recorded } };
+      } });
+    }
+    const supplierOrderMatch = /^\/orders\/([0-9a-f-]+)\/supplier-order$/.exec(path);
+    if (method === "POST" && supplierOrderMatch) {
+      requireRole(principal, "operations");
+      const orderId = uuid(supplierOrderMatch[1], "order id");
+      return await mutation({ event, env, repository, principal, id, scope: `order:supplier-order:${orderId}`, action: async (client, body) => {
+        const input = { id: orderId, ...supplierOrderInput(body) };
+        const recorded = await repository.recordSupplierOrder(client, input, principal);
+        return { statusCode: 201, body: recorded, audit: { action: "order.supplier_ordered", entityType: "order", entityId: orderId, reason: input.reason, afterValue: recorded } };
+      } });
+    }
+    const shipmentMatch = /^\/orders\/([0-9a-f-]+)\/shipment$/.exec(path);
+    if (method === "POST" && shipmentMatch) {
+      requireRole(principal, "operations");
+      const orderId = uuid(shipmentMatch[1], "order id");
+      return await mutation({ event, env, repository, principal, id, scope: `order:shipment:${orderId}`, action: async (client, body) => {
+        const input = { id: orderId, ...shipmentInput(body) };
+        const recorded = await repository.recordShipment(client, input, principal);
+        return { statusCode: 201, body: recorded, audit: { action: "order.shipment_recorded", entityType: "order", entityId: orderId, reason: input.reason, afterValue: recorded } };
+      } });
+    }
+    const refundClassificationMatch = /^\/orders\/([0-9a-f-]+)\/refunds\/(re_[A-Za-z0-9_]+)\/classification$/.exec(path);
+    if (method === "POST" && refundClassificationMatch) {
+      requireRole(principal, "finance");
+      const orderId = uuid(refundClassificationMatch[1], "order id");
+      const stripeRefundId = boundedText(refundClassificationMatch[2], "Stripe refund id", 255);
+      return await mutation({ event, env, repository, principal, id, scope: `refund:classify:${stripeRefundId}`, action: async (client, body) => {
+        const input = { id: orderId, stripeRefundId, ...refundClassificationInput(body) };
+        const classified = await repository.classifyRefund(client, input, principal);
+        return { statusCode: 200, body: classified, audit: { action: "refund.classified", entityType: "order", entityId: orderId, reason: input.reason, afterValue: classified } };
+      } });
+    }
     if (method === "GET" && path === "/promotions") {
       requireRole(principal, "finance");
       return response(200, { data: await repository.listPromotions(), meta: { requestId: id } }, id);
     }
     if (method === "POST" && path === "/promotions") {
       requireRole(principal, "administrator");
-      return await mutation({ event, repository, principal, id, scope: "promotion:create", action: async (client, body) => {
+      return await mutation({ event, env, repository, principal, id, scope: "promotion:create", action: async (client, body) => {
         const input = promotionInput(body);
         const created = await repository.createPromotion(client, input, principal);
         return { statusCode: 201, body: created, audit: { action: "promotion.created", entityType: "promotion", entityId: created.id, reason: input.reason, afterValue: created } };
@@ -112,7 +185,7 @@ export const createOfficeApi = ({
       requireRole(principal, "administrator");
       const promotionId = uuid(promotionAction[1], "promotion id");
       const verb = promotionAction[2];
-      return await mutation({ event, repository, principal, id, scope: `promotion:${verb}:${promotionId}`, action: async (client, body) => {
+      return await mutation({ event, env, repository, principal, id, scope: `promotion:${verb}:${promotionId}`, action: async (client, body) => {
         const reason = boundedText(body.reason, "reason", 500);
         const updated = verb === "approve"
           ? await repository.approvePromotion(client, promotionId, principal)
@@ -133,7 +206,7 @@ export const createOfficeApi = ({
     if (method === "POST" && freightMatch) {
       requireRole(principal, "operations");
       const freightId = uuid(freightMatch[1], "freight request id");
-      return await mutation({ event, repository, principal, id, scope: `freight:update:${freightId}`, action: async (client, body) => {
+      return await mutation({ event, env, repository, principal, id, scope: `freight:update:${freightId}`, action: async (client, body) => {
         const input = freightStatusInput(body);
         const updated = await repository.updateFreightException(client, freightId, input);
         return { statusCode: 200, body: updated, audit: { action: "freight_request.updated", entityType: "freight_request", entityId: freightId, reason: input.reason, afterValue: updated } };
@@ -141,10 +214,10 @@ export const createOfficeApi = ({
     }
     const transitionMatch = /^\/orders\/([0-9a-f-]+)\/(fulfillment|core)-transition$/.exec(path);
     if (method === "POST" && transitionMatch) {
-      requireRole(principal, "operations");
       const orderId = uuid(transitionMatch[1], "order id");
       const workflow = transitionMatch[2];
-      return await mutation({ event, repository, principal, id, scope: `order:${workflow}:${orderId}`, action: async (client, body) => {
+      requireRole(principal, workflow === "fulfillment" ? "operations" : "viewer");
+      return await mutation({ event, env, repository, principal, id, scope: `order:${workflow}:${orderId}`, action: async (client, body) => {
         const input = {
           id: orderId,
           workflow,
@@ -152,7 +225,9 @@ export const createOfficeApi = ({
           version: positiveInteger(body.version, "version", { minimum: 1, maximum: 1_000_000 }),
           reason: boundedText(body.reason, "reason", 1_000),
         };
-        if (workflow === "core" && input.target === "refunded") requireRole(principal, "finance");
+        if (workflow === "core") {
+          requireRole(principal, ["refunded", "forfeited"].includes(input.target) ? "finance" : "operations");
+        }
         const updated = await repository.transitionOrder(client, input, principal);
         return { statusCode: 200, body: updated, audit: { action: `order.${workflow}_transition`, entityType: "order", entityId: orderId, reason: input.reason, afterValue: updated } };
       } });
@@ -161,7 +236,7 @@ export const createOfficeApi = ({
     if (method === "POST" && noteMatch) {
       requireRole(principal, "operations");
       const orderId = uuid(noteMatch[1], "order id");
-      return await mutation({ event, repository, principal, id, scope: `order:note:${orderId}`, action: async (client, body) => {
+      return await mutation({ event, env, repository, principal, id, scope: `order:note:${orderId}`, action: async (client, body) => {
         const note = boundedText(body.note, "note", 5_000);
         const created = await repository.addOrderNote(client, { id: orderId, note }, principal);
         return { statusCode: 201, body: created, audit: { action: "order.note_added", entityType: "order", entityId: orderId, reason: "Operational note added" } };
@@ -174,17 +249,45 @@ export const createOfficeApi = ({
       if (new Date(endAt) <= new Date(startAt)) throw badRequest("endAt must be later than startAt.");
       return response(200, { data: await repository.financeReport({ startAt, endAt }), meta: { requestId: id } }, id);
     }
-    if (method === "GET" && path === "/reconciliation") {
+    if (method === "POST" && path === "/reconciliation") {
       requireRole(principal, "finance");
-      const days = positiveInteger(params.days || 7, "days", { minimum: 1, maximum: 30 });
+      assertOfficeOrigin(event, env);
+      const body = parseJson(event);
+      const key = idempotencyKey(event);
+      const requestHash = stableJsonHash(body);
+      const existing = await repository.getReconciliationByKey(key);
+      if (existing) {
+        if (existing.requestHash !== requestHash) throw conflict("That idempotency key was already used for a different request.");
+        return response(200, { data: existing.data, meta: { requestId: id, repeated: true } }, id);
+      }
+      const days = positiveInteger(body.days || 7, "days", { minimum: 1, maximum: 30 });
       const endAt = new Date().toISOString();
       const startAt = new Date(Date.now() - days * 86_400_000).toISOString();
       const data = await reconcileStripe({ stripe: stripeFactory(env), repository, startAt, endAt });
-      return response(200, { data, meta: { requestId: id, generatedAt: endAt } }, id);
+      const stored = await repository.recordReconciliation(data, { key, requestHash, principal, requestId: id });
+      return response(stored.repeated ? 200 : 201, { data: stored.data, meta: { requestId: id, repeated: stored.repeated, generatedAt: endAt } }, id);
     }
     if (method === "GET" && path === "/audit") {
       requireRole(principal, "administrator");
       return response(200, { data: await repository.recentAudit(pageOptions(params)), meta: { requestId: id } }, id);
+    }
+    if (method === "GET" && path === "/system-exceptions") {
+      requireRole(principal, "administrator");
+      return response(200, { data: await repository.listSystemExceptions(pageOptions(params)), meta: { requestId: id } }, id);
+    }
+    if (method === "POST" && path === "/system-exceptions/requeue") {
+      requireRole(principal, "administrator");
+      return await mutation({ event, env, repository, principal, id, scope: "system-exception:requeue", action: async (client, body) => {
+        const kind = boundedText(body.kind, "kind", 32);
+        if (!["stripe_event", "notification"].includes(kind)) throw badRequest("kind must be stripe_event or notification.");
+        const exceptionId = kind === "notification"
+          ? uuid(body.id, "notification id")
+          : boundedText(body.id, "Stripe event id", 255);
+        if (kind === "stripe_event" && !/^evt_[A-Za-z0-9_]+$/.test(exceptionId)) throw badRequest("Stripe event id is invalid.");
+        const reason = boundedText(body.reason, "reason", 500);
+        const recovery = await repository.requeueSystemException(client, { kind, id: exceptionId });
+        return { statusCode: 200, body: recovery.data, audit: { action: "system_exception.requeued", entityType: kind, entityId: exceptionId, reason, beforeValue: recovery.beforeValue, afterValue: recovery.data } };
+      } });
     }
     throw notFound("Office API route not found.");
   } catch (error) {

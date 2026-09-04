@@ -7,18 +7,22 @@ Integrity Office is the private operations application for Integrity Transmissio
 The implemented staff application includes:
 
 - Auth0 access-token validation with an exact issuer and audience, RS256-only signatures, short token age, required MFA evidence, and a database allowlist
-- PostgreSQL-backed staff roles for viewer, operations, finance, and administrator access
+- PostgreSQL-backed staff provisioning, disable controls, revocable role history, last-administrator protection, and viewer, operations, finance, and administrator access
 - Current operating metrics and workload totals
 - Searchable and paginated orders with customer, vehicle, payment, fulfillment, and core-return status
-- Validated fulfillment and core state transitions with optimistic version checks
+- Structured fitment decisions, supplier-order references and shipment evidence with atomic state changes and optimistic version checks
+- Core-return deadlines, inspection outcomes, verified-refund gates and forfeiture accounting
 - Append-only operational notes and audit events
 - HMAC-authenticated freight-recovery intake with idempotent queueing, assignment, follow-up, resolution, and conversion tracking
-- Promotion creation, separate approval, disable controls, signed checkout reservations, redemption limits, and minimum-margin enforcement
-- Quote-level supplier cost and margin visibility plus double-entry reporting for revenue, tax liability, refundable core liability, discounts, and refunds
+- Promotion creation, enforced second-administrator approval, disable controls, signed checkout reservations, redemption limits, and minimum-margin enforcement
+- Quote-level supplier cost and margin visibility plus double-entry reporting for revenue, tax liability, refundable core liability, discounts, classified refunds, Stripe processing fees and dispute balance movements
 - Read-only Stripe-to-Office payment reconciliation
+- Period revenue/expense activity, cumulative tax/core liabilities, Stripe fees and immutable projected order margin, with supplier invoices and bank settlement explicitly outside the Office subledger boundary
 - HMAC-authenticated storefront checkout ingestion
 - Signature-verified, database-deduplicated Stripe webhooks
+- Stripe-authoritative dispute status, evidence deadlines and idempotent withdrawal/reinstatement accounting without storing evidence contents
 - Leased background event processing with bounded retries and a dead-letter state
+- HMAC-signed notification delivery with leases, bounded retries, redacted dead-letter visibility and audited manual recovery
 - A responsive, keyboard-accessible staff interface with no synthetic production records
 
 ## Deployment boundary
@@ -36,9 +40,10 @@ The public Netlify build uses the repository-root `netlify.toml` and never inclu
 
 - `db/001_initial.sql` — orders, immutable quotes, customers, vehicles, staff roles, promotions, payment records, double-entry journals, durable webhooks, outbox and audit controls
 - `db/002_office_runtime.sql` — promotion reservations, immutable retail discount snapshots, freight-recovery queue, reconciliation history and runtime indexes
+- `db/003_operational_controls.sql` — separation of duties, supplier-record integrity, Stripe session timestamps, refund allocations, payment-dispute tracking, access-revocation history, retry recovery counters and accounting controls
 - `domain/order-state.mjs` — enforceable payment, fulfillment, core, promotion, margin and journal rules
 - `server/` — authentication, authorization, HTTP validation, database repositories, Office APIs, checkout ingestion, Stripe reconciliation and event processing
-- `functions/` — isolated Netlify entry points for the staff API, internal checkout intake, Stripe webhooks and scheduled event worker
+- `functions/` — isolated Netlify entry points for the staff API, signed internal intake, Stripe webhooks, scheduled event processing and signed notification delivery
 - `web/` — private staff interface source and restrictive response policies
 - `scripts/build-office.mjs` — deterministic private bundle build
 - `test/` — security, role, idempotency, accounting, schema, integration and build-boundary tests
@@ -55,6 +60,8 @@ The public Netlify build uses the repository-root `netlify.toml` and never inclu
 8. Wholesale cost and margin fields never appear in customer-facing responses.
 9. Supplier ordering still requires staff fitment approval; a public checkout never places an ACE order automatically.
 10. Production and staging use different databases, Auth0 applications, Stripe keys and webhook secrets.
+11. Refunds are initiated in Stripe; Office records only confirmed Stripe events and posts their finance-approved allocation.
+12. Dispute evidence and responses remain in Stripe; Office refreshes current dispute state and records only status, deadlines and authoritative balance movements.
 
 ## Build and validation
 

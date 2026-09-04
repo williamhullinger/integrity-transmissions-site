@@ -29,10 +29,13 @@ const bearerToken = (headers = {}) => {
 const mfaSatisfied = (payload, claimName) => {
   const methods = Array.isArray(payload.amr) ? payload.amr.map(String) : [];
   const assurance = String(payload.acr || "").toLowerCase();
+  const acceptedAssurance = new Set([
+    "mfa",
+    "http://schemas.openid.net/pape/policies/2007/06/multi-factor",
+  ]);
   return payload[claimName] === true
-    || methods.some((method) => ["mfa", "otp", "webauthn", "phrh", "phr"].includes(method.toLowerCase()))
-    || assurance.includes("multi-factor")
-    || assurance.includes("mfa");
+    || methods.some((method) => method.toLowerCase() === "mfa")
+    || acceptedAssurance.has(assurance);
 };
 
 export const createAuthenticator = ({ env = process.env, verify = jwtVerify, jwksFactory = createRemoteJWKSet } = {}) => {

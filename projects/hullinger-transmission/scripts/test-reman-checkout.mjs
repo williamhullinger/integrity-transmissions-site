@@ -99,6 +99,7 @@ const fakeStripe = {
         calls.sessions.push({ params, options });
         return {
           id: "cs_test_123456789012345678901234",
+          created: Math.floor(Date.now() / 1_000),
           url: "https://checkout.stripe.com/c/pay/test-session",
           expires_at: params.expires_at,
         };
@@ -235,9 +236,11 @@ await checkout.syncOfficeOrder({
 delete process.env.OFFICE_ORDER_INGEST_URL;
 delete process.env.OFFICE_INTERNAL_INGEST_SECRET;
 assert.equal(officeSyncRequest.url, "https://office.integritydrivetrain.com/.netlify/functions/internal-ingest");
+assert.equal(officeSyncRequest.options.redirect, "error");
 assert.match(officeSyncRequest.options.headers["X-Office-Signature"], /^sha256=[a-f0-9]{64}$/);
 const officePayload = JSON.parse(officeSyncRequest.options.body);
 assert.equal(officePayload.supplierUnitCostCents, 360000);
+assert.equal(officePayload.stripeSessionCreatedAt, officeSession.created);
 assert.equal(officePayload.customerUnitPriceCents - officePayload.supplierUnitCostCents, 50000);
 assert.equal(officePayload.supplierSnapshot.partUid, "ace-part-test-123");
 
@@ -268,6 +271,7 @@ delete process.env.OFFICE_FREIGHT_INGEST_URL;
 delete process.env.OFFICE_INTERNAL_INGEST_SECRET;
 assert.equal(forwardedAssistance.queued, true);
 assert.equal(freightOfficeRequest.url, "https://office.integritydrivetrain.com/.netlify/functions/internal-freight");
+assert.equal(freightOfficeRequest.options.redirect, "error");
 assert.match(freightOfficeRequest.options.headers["X-Office-Signature"], /^sha256=[a-f0-9]{64}$/);
 assert.equal(JSON.parse(freightOfficeRequest.options.body).phone, payload.phone);
 
@@ -294,6 +298,7 @@ await checkout.reserveOfficePromotion({
 delete process.env.OFFICE_PROMOTION_RESERVE_URL;
 delete process.env.OFFICE_INTERNAL_INGEST_SECRET;
 assert.equal(promotionOfficeRequest.url, "https://office.integritydrivetrain.com/.netlify/functions/internal-promotion");
+assert.equal(promotionOfficeRequest.options.redirect, "error");
 assert.match(promotionOfficeRequest.options.headers["X-Office-Signature"], /^sha256=[a-f0-9]{64}$/);
 assert.equal(promotedOrder.listUnitPrice, 410000);
 assert.equal(promotedOrder.unitPrice, 405000);

@@ -13,7 +13,10 @@
   included_files = ["/admin/integrity-office/db/**"]
 
 [functions."event-worker"]
-  schedule = "*/5 * * * *"
+  schedule = "* * * * *"
+
+[functions."notification-worker"]
+  schedule = "* * * * *"
 
 [build.processing.html]
   pretty_urls = true

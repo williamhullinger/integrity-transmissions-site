@@ -73,6 +73,7 @@ const forwardToOffice = async (request, { fetchImpl = fetch } = {}) => {
     },
     body,
     signal: AbortSignal.timeout(8_000),
+    redirect: "error",
   });
   if (!upstream.ok) throw new Error(`Office freight ingestion returned HTTP ${upstream.status}`);
   return { configured: true, queued: true };

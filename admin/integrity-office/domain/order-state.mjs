@@ -162,7 +162,9 @@ export function calculatePromotionDiscount({
     discountCents = amountOffCents;
   } else {
     if (!Number.isFinite(percentOff) || percentOff <= 0 || percentOff > 100) throw new TypeError("percentOff must be greater than 0 and no more than 100");
-    discountCents = Math.round(merchandiseCents * percentOff / 100);
+    const basisPoints = Math.round(percentOff * 100);
+    if (Math.abs(percentOff - basisPoints / 100) > 1e-9) throw new TypeError("percentOff may contain no more than two decimal places");
+    discountCents = Number((BigInt(merchandiseCents) * BigInt(basisPoints) + 5_000n) / 10_000n);
   }
 
   discountCents = Math.min(discountCents, merchandiseCents);

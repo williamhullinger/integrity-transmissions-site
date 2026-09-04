@@ -388,7 +388,7 @@ BEGIN
     FROM promotion_redemptions
     WHERE promotion_id = NEW.promotion_id
       AND order_id <> NEW.order_id
-      AND (status = 'applied' OR (status = 'reserved' AND reserved_until > now()));
+      AND status IN ('reserved', 'applied');
   IF promotion.max_redemptions IS NOT NULL AND total_uses >= promotion.max_redemptions THEN
     RAISE EXCEPTION 'Promotion redemption limit has been reached';
   END IF;
@@ -398,7 +398,7 @@ BEGIN
     WHERE promotion_id = NEW.promotion_id
       AND customer_id = NEW.customer_id
       AND order_id <> NEW.order_id
-      AND (status = 'applied' OR (status = 'reserved' AND reserved_until > now()));
+      AND status IN ('reserved', 'applied');
   IF customer_uses >= promotion.max_redemptions_per_customer THEN
     RAISE EXCEPTION 'Customer promotion redemption limit has been reached';
   END IF;
@@ -415,7 +415,7 @@ BEGIN
 
   expected_discount_cents := CASE
     WHEN promotion.amount_off_cents IS NOT NULL THEN promotion.amount_off_cents
-    ELSE round(merchandise_cents * promotion.percent_off / 100)
+    ELSE (merchandise_cents * (promotion.percent_off * 100)::bigint + 5000) / 10000
   END;
   IF NEW.amount_cents <> least(expected_discount_cents, merchandise_cents) THEN
     RAISE EXCEPTION 'Promotion discount amount does not match its rule';

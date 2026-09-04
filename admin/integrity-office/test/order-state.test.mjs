@@ -63,6 +63,30 @@ const promotion = calculatePromotionDiscount({
   minimumMarginCents: 50_000,
 });
 assert.deepEqual(promotion, { code: "FALL-500", discountCents: 10_000, remainingMarginCents: 50_000 });
+
+const fractionalPromotion = calculatePromotionDiscount({
+  code: "BASIS-POINTS",
+  active: true,
+  approved: true,
+  startsAt: "2026-01-01T00:00:00Z",
+  now: new Date("2026-09-04T00:00:00Z"),
+  percentOff: 1.13,
+  merchandiseCents: 105_000,
+  supplierCostCents: 50_000,
+  minimumMarginCents: 0,
+});
+assert.equal(fractionalPromotion.discountCents, 1_187, "basis-point promotion rounding must match PostgreSQL exactly");
+assert.throws(() => calculatePromotionDiscount({
+  code: "TOO-PRECISE",
+  active: true,
+  approved: true,
+  startsAt: "2026-01-01T00:00:00Z",
+  now: new Date("2026-09-04T00:00:00Z"),
+  percentOff: 1.125,
+  merchandiseCents: 105_000,
+  supplierCostCents: 50_000,
+  minimumMarginCents: 0,
+}), /two decimal places/);
 assert.throws(() => calculatePromotionDiscount({
   code: "too-much",
   active: true,

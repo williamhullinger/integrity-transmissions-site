@@ -369,6 +369,7 @@ const parseVehicle = (order) => {
 const officeSnapshot = ({ order, session, attemptKey, expiresAt, requestId }) => ({
   requestId,
   stripeSessionId: session.id,
+  stripeSessionCreatedAt: session.created,
   stripeCustomerId: typeof session.customer === "string" ? session.customer : session.customer?.id,
   stripePaymentIntentId: typeof session.payment_intent === "string" ? session.payment_intent : session.payment_intent?.id || null,
   checkoutAttemptKey: attemptKey,
@@ -438,6 +439,7 @@ const syncOfficeOrder = async ({ order, session, attemptKey, expiresAt, requestI
     headers: { "Content-Type": "application/json", "X-Office-Timestamp": timestamp, "X-Office-Signature": signature },
     body,
     signal: AbortSignal.timeout(8_000),
+    redirect: "error",
   });
   if (!response.ok) throw checkoutError(502, "Secure checkout could not be recorded. Please try again.");
   return { enabled: true };
@@ -477,6 +479,7 @@ const reserveOfficePromotion = async ({ order, payload, attemptKey, expiresAt, r
       headers: { "Content-Type": "application/json", "X-Office-Timestamp": timestamp, "X-Office-Signature": signature },
       body,
       signal: AbortSignal.timeout(8_000),
+      redirect: "error",
     });
   } catch {
     throw checkoutError(503, "Promotion verification is temporarily unavailable.");
