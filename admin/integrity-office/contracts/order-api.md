@@ -25,7 +25,14 @@ This contract describes the first private API surface. All routes require a vali
 | `POST /api/orders/:id/documents` | Create a private upload intent | operations |
 | `GET /api/reports/order-margin` | Revenue, liability, cost, fee, refund, and margin report | finance |
 | `GET /api/reports/tax` | Stripe tax reconciliation by jurisdiction/period | finance |
+| `GET /api/reconciliation` | Compare paid reman Checkout Sessions with Office payment records | finance |
+| `GET /api/freight-exceptions` | Customer recovery queue for unavailable freight rates | operations |
+| `POST /api/freight-exceptions/:id` | Assign, schedule, resolve or convert a freight request | operations |
+| `GET /api/promotions` | Promotion rules, status, limits and redemption totals | finance |
 | `POST /api/promotions` | Create constrained promotion | administrator |
+| `POST /api/promotions/:id/approve` | Approve a promotion for customer use | administrator |
+| `POST /api/promotions/:id/disable` | Disable a promotion with a permanent reason | administrator |
+| `GET /api/audit` | Immutable security and business-change history | administrator |
 | `POST /api/staff/:id/roles` | Change staff access | administrator |
 
 ## Command requirements
@@ -33,11 +40,19 @@ This contract describes the first private API surface. All routes require a vali
 Every modifying command must include:
 
 - `Idempotency-Key`
-- the order's current `version`
+- the order's current `version` when the command changes an order
 - a permitted state transition
 - a reason for refunds, cancellations, rejected cores, manual price changes, or role changes
 
 The server writes the business change, status history, audit event, and outbox event in one PostgreSQL transaction. External Stripe/notification calls happen from the outbox worker and must be safe to retry.
+
+## Internal storefront ingestion
+
+`POST /.netlify/functions/internal-ingest` accepts the server-verified checkout snapshot from the public storefront. It is not a browser API. The storefront signs the exact request body and a five-minute timestamp with `OFFICE_INTERNAL_INGEST_SECRET`. Integrity Office validates that HMAC before creating the customer, vehicle, immutable quote, order, Checkout Session link, initial workflow history, and audit record in one transaction.
+
+`POST /.netlify/functions/internal-freight` accepts a separately signed callback request after automatic freight retries are exhausted. It idempotently creates one `freight_quote_requests` queue record keyed by the customer-visible lead reference. The browser cannot call or sign this endpoint directly; the public `reman-freight-assistance` function validates and forwards the request while the existing Netlify form submission remains a redundant notification channel.
+
+Stripe webhooks are received at `POST /.netlify/functions/stripe-webhook`. A valid Stripe signature is required. Each event ID is persisted exactly once before the endpoint acknowledges it; a scheduled worker claims events with leases, applies payment state and journal entries transactionally, retries transient failures, and dead-letters repeated failures for staff review.
 
 ## Customer-data rule
 

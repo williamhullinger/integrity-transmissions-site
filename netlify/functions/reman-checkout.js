@@ -140,12 +140,17 @@ const verifiedOrder = async (payload, quoteLoader = shipping.loadFreightQuote) =
   const rate = findChosenRate(quote, payload.freightRateId);
   const { candidate, upgrade, packageData } = quote.selected;
   const unitPrice = cents(packageData.integrityRecommendedRetail);
+  const supplierUnitCost = cents(packageData.wholesale);
   const coreDeposit = cents(candidate.coreCharge);
   const freight = cents(rate.customerFreightTotal);
+  const supplierFreightCost = freight;
   const expectedUnitPrice = cents(payload.expectedUnitPrice ?? payload["catalog-unit-price"]);
   const expectedCoreDeposit = cents(payload.expectedCoreDeposit ?? payload["catalog-core-deposit"]);
 
   if (!Number.isSafeInteger(unitPrice) || unitPrice <= 50_000) throw checkoutError(409, "Current online pricing is not available for this transmission.");
+  if (!Number.isSafeInteger(supplierUnitCost) || supplierUnitCost <= 0 || unitPrice - supplierUnitCost !== 50_000) {
+    throw checkoutError(409, "Current online pricing is not available for this transmission.");
+  }
   if (!Number.isSafeInteger(coreDeposit) || coreDeposit < 0) throw checkoutError(409, "The current core deposit could not be confirmed.");
   if (!Number.isSafeInteger(freight) || freight < 50) throw checkoutError(409, "The current delivery rate could not be confirmed.");
   if (expectedUnitPrice !== unitPrice || expectedCoreDeposit !== coreDeposit) {
@@ -180,12 +185,16 @@ const verifiedOrder = async (payload, quoteLoader = shipping.loadFreightQuote) =
     availability: quote.availability,
     application: catalog.scrubText(candidate.family || candidate.transmission || candidate.description || "Remanufactured transmission"),
     description: catalog.scrubText(candidate.description || candidate.transmission),
+    supplierPartUid: clean(candidate.partUid, 160),
+    supplierVendor: clean(upgrade.stock?.vendor || upgrade.vendor || candidate.stock?.vendor, 160),
     upgrade: catalog.scrubText(upgrade.name || "Base"),
     warranty: catalog.scrubText(packageData.warranty || "Warranty shown with selected package"),
     selectionId: quote.selectionId,
     unitPrice,
+    supplierUnitCost,
     coreDeposit,
     freight,
+    supplierFreightCost,
     rate,
     roundTrip: quote.freightRequest.roundTrip,
     vehicle: clean(payload.vehicle, 160),
@@ -333,7 +342,93 @@ const createStripeCheckout = async ({ stripe, order, attemptKey, expiresAt }) =>
     ],
   }, { idempotencyKey: `reman_session_${attemptKey}` });
 
-  return session;
+  return { ...session, customer: session.customer || customer.id };
+};
+
+const parseVehicle = (order) => {
+  const description = clean(order.vehicle, 160);
+  const match = /^(19\d{2}|20\d{2}|21\d{2})\s+([^\s]+)(?:\s+(.+))?$/.exec(description);
+  return {
+    year: match ? Number(match[1]) : null,
+    make: match?.[2] || null,
+    model: match?.[3] || description || null,
+    engine: order.engine || null,
+    driveType: order.driveType || null,
+    mileage: Number.parseInt(String(order.mileage || "").replace(/\D/g, ""), 10) || null,
+  };
+};
+
+const officeSnapshot = ({ order, session, attemptKey, expiresAt, requestId }) => ({
+  requestId,
+  stripeSessionId: session.id,
+  stripeCustomerId: typeof session.customer === "string" ? session.customer : session.customer?.id,
+  stripePaymentIntentId: typeof session.payment_intent === "string" ? session.payment_intent : session.payment_intent?.id || null,
+  checkoutAttemptKey: attemptKey,
+  expiresAt,
+  vin: order.vin,
+  customer: order.customer,
+  vehicle: parseVehicle(order),
+  address: {
+    line1: order.address.addressLine1,
+    line2: order.address.addressLine2 || null,
+    city: order.address.city,
+    region: order.address.state,
+    postalCode: order.address.postalCode,
+    locationType: order.customer.deliveryLocation,
+  },
+  selectionId: order.selectionId,
+  application: order.application,
+  packageName: order.upgrade,
+  warranty: order.warranty,
+  availability: {
+    code: order.availability.code,
+    text: [order.availability.title, order.availability.detail].filter(Boolean).join(" — "),
+  },
+  supplierUnitCostCents: order.supplierUnitCost,
+  customerUnitPriceCents: order.unitPrice,
+  coreDepositCents: order.coreDeposit,
+  freightChargedCents: order.freight,
+  supplierFreightCostCents: order.supplierFreightCost,
+  currency: "usd",
+  supplierSnapshot: {
+    partUid: order.supplierPartUid,
+    vendor: order.supplierVendor,
+    application: order.application,
+    packageName: order.upgrade,
+    availability: order.availability,
+  },
+  freightSnapshot: {
+    carrier: order.rate.carrier,
+    transitDays: order.rate.transitDays,
+    oneWayCents: cents(order.rate.oneWay),
+    roundTrip: order.roundTrip,
+    rateId: order.rate.rateId,
+  },
+  termsVersion: TERMS_VERSION,
+  termsSha256: TERMS_SHA256,
+});
+
+const syncOfficeOrder = async ({ order, session, attemptKey, expiresAt, requestId, fetchImpl = fetch }) => {
+  const endpoint = String(process.env.OFFICE_ORDER_INGEST_URL || "").trim();
+  const secret = String(process.env.OFFICE_INTERNAL_INGEST_SECRET || "");
+  if (!endpoint && !secret) return { enabled: false };
+  if (!endpoint || secret.length < 32) throw checkoutError(503, "Secure checkout is temporarily unavailable.");
+  const url = new URL(endpoint);
+  const allowedOfficeHosts = new Set(["office.integritydrivetrain.com", "office-staging.integritydrivetrain.com"]);
+  if (url.protocol !== "https:" || !allowedOfficeHosts.has(url.hostname) || url.pathname !== "/.netlify/functions/internal-ingest") {
+    throw checkoutError(503, "Secure checkout is temporarily unavailable.");
+  }
+  const body = JSON.stringify(officeSnapshot({ order, session, attemptKey, expiresAt, requestId }));
+  const timestamp = String(Math.floor(Date.now() / 1_000));
+  const signature = `sha256=${crypto.createHmac("sha256", secret).update(`${timestamp}.${body}`).digest("hex")}`;
+  const response = await fetchImpl(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-Office-Timestamp": timestamp, "X-Office-Signature": signature },
+    body,
+    signal: AbortSignal.timeout(8_000),
+  });
+  if (!response.ok) throw checkoutError(502, "Secure checkout could not be recorded. Please try again.");
+  return { enabled: true };
 };
 
 const defaultStripeFactory = () => {
@@ -342,7 +437,7 @@ const defaultStripeFactory = () => {
   return new Stripe(key, { apiVersion: "2026-07-29.dahlia", maxNetworkRetries: 2, timeout: 20000 });
 };
 
-const createCheckoutHandler = ({ stripeFactory = defaultStripeFactory, quoteLoader = shipping.loadFreightQuote } = {}) => async (event) => {
+const createCheckoutHandler = ({ stripeFactory = defaultStripeFactory, quoteLoader = shipping.loadFreightQuote, fetchImpl = fetch } = {}) => async (event) => {
   if (event.httpMethod === "OPTIONS") return { statusCode: 204, headers, body: "" };
   if (event.httpMethod !== "POST") return jsonResponse(405, { error: "POST required" });
 
@@ -373,6 +468,14 @@ const createCheckoutHandler = ({ stripeFactory = defaultStripeFactory, quoteLoad
     if (!session?.id || !/^https:\/\/checkout\.stripe\.com\//i.test(session.url || "")) {
       throw new Error("Stripe did not return a secure checkout URL");
     }
+    await syncOfficeOrder({
+      order,
+      session,
+      attemptKey,
+      expiresAt,
+      requestId: event.headers?.["x-nf-request-id"] || crypto.randomUUID(),
+      fetchImpl,
+    });
     return jsonResponse(200, {
       checkoutUrl: session.url,
       sessionId: session.id,
@@ -405,5 +508,8 @@ exports._internals = {
   lineItem,
   requiredChoice,
   stripeMetadata,
+  officeSnapshot,
+  parseVehicle,
+  syncOfficeOrder,
   verifiedOrder,
 };

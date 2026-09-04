@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="referrer" content="no-referrer">
+  <meta name="color-scheme" content="dark">
+  <title>Integrity Office</title>
+  <meta name="description" content="Private order and financial operations for Integrity Transmission & Drivetrain.">
+  <link rel="stylesheet" href="/assets/office.css">
+</head>
+<body>
+  <a class="skip-link" href="#workspace">Skip to workspace</a>
+
+  <section class="access-gate" id="access-gate" aria-labelledby="access-title">
+    <div class="access-mark" aria-hidden="true">ITD</div>
+    <p class="eyebrow">Private staff system</p>
+    <h1 id="access-title">Integrity Office</h1>
+    <p id="access-message">Checking the secure staff connection…</p>
+    <button class="button button-primary" id="login-button" type="button" hidden>Sign in securely</button>
+    <p class="access-help">Authorized staff only. Multi-factor authentication is required.</p>
+  </section>
+
+  <div class="office-shell" id="office-shell" hidden>
+    <aside class="sidebar" id="sidebar" aria-label="Office navigation">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">ITD</span>
+        <span><strong>Integrity Office</strong><small>Operations</small></span>
+      </div>
+      <nav class="primary-nav" id="primary-nav">
+        <a href="#dashboard" data-route="dashboard" aria-current="page"><span aria-hidden="true">01</span>Overview</a>
+        <a href="#orders" data-route="orders"><span aria-hidden="true">02</span>Orders</a>
+        <a href="#freight" data-route="freight" data-role="operations"><span aria-hidden="true">03</span>Freight queue</a>
+        <a href="#promotions" data-route="promotions" data-role="finance"><span aria-hidden="true">04</span>Promotions</a>
+        <a href="#finance" data-route="finance" data-role="finance"><span aria-hidden="true">05</span>Financials</a>
+        <a href="#audit" data-route="audit" data-role="administrator"><span aria-hidden="true">06</span>Audit log</a>
+      </nav>
+      <div class="sidebar-footer">
+        <p><span class="status-dot" aria-hidden="true"></span>Protected workspace</p>
+        <button class="text-button" id="logout-button" type="button">Sign out</button>
+      </div>
+    </aside>
+
+    <main class="workspace" id="workspace" tabindex="-1">
+      <header class="workspace-header">
+        <button class="menu-button" id="menu-button" type="button" aria-controls="sidebar" aria-expanded="false">
+          <span aria-hidden="true">☰</span><span class="sr-only">Open navigation</span>
+        </button>
+        <div>
+          <p class="eyebrow" id="page-kicker">Operations</p>
+          <h1 id="page-title">Overview</h1>
+        </div>
+        <div class="user-menu">
+          <span class="user-avatar" id="user-avatar" aria-hidden="true">I</span>
+          <span><strong id="user-name">Staff member</strong><small id="user-role">Authorized</small></span>
+        </div>
+      </header>
+
+      <div class="notice" id="notice" role="status" aria-live="polite" hidden></div>
+      <div class="content" id="content" aria-live="polite" aria-busy="true"></div>
+    </main>
+  </div>
+
+  <dialog class="record-dialog" id="record-dialog" aria-labelledby="dialog-title">
+    <div class="dialog-header">
+      <div><p class="eyebrow" id="dialog-kicker">Record</p><h2 id="dialog-title">Details</h2></div>
+      <button class="icon-button" id="dialog-close" type="button" aria-label="Close details">×</button>
+    </div>
+    <div id="dialog-content"></div>
+  </dialog>
+
+  <script src="/assets/office.js" defer></script>
+</body>
+</html>

@@ -16,13 +16,37 @@ export const PAYMENT_TRANSITIONS = freezeTransitions({
 export const FULFILLMENT_TRANSITIONS = freezeTransitions({
   fitment_review: ["ready_for_supplier", "canceled"],
   ready_for_supplier: ["supplier_ordered", "canceled"],
-  supplier_ordered: ["building", "shipped", "canceled"],
-  building: ["shipped", "canceled"],
+  supplier_ordered: ["building", "shipped"],
+  building: ["shipped"],
   shipped: ["delivered"],
   delivered: ["closed"],
   canceled: ["closed"],
   closed: [],
 });
+
+export function assertOperationalTransition({ workflow, from, to, paymentStatus, coreStatus }) {
+  if (workflow === "fulfillment") {
+    assertTransition(FULFILLMENT_TRANSITIONS, from, to);
+    if (from === "canceled" && to === "closed" && !["failed", "expired", "refunded"].includes(paymentStatus)) {
+      throw new Error("A canceled order cannot close until payment is failed, expired, or fully refunded");
+    }
+    if (from !== "canceled" && to !== "canceled" && !["paid", "partially_refunded"].includes(paymentStatus)) {
+      throw new Error("Fulfillment cannot advance until Stripe payment is confirmed");
+    }
+    if (to === "closed" && !["not_required", "refunded", "forfeited"].includes(coreStatus)) {
+      throw new Error("Fulfillment cannot close while the core obligation is unresolved");
+    }
+    return to;
+  }
+  if (workflow === "core") {
+    assertTransition(CORE_TRANSITIONS, from, to);
+    if (!["paid", "partially_refunded", "refunded"].includes(paymentStatus)) {
+      throw new Error("Core processing cannot advance until Stripe payment is confirmed");
+    }
+    return to;
+  }
+  throw new Error(`Unsupported operational workflow: ${workflow}`);
+}
 
 export const CORE_TRANSITIONS = freezeTransitions({
   not_required: [],

@@ -4,7 +4,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const testRoot = path.dirname(fileURLToPath(import.meta.url));
-const sql = await readFile(path.resolve(testRoot, "../db/001_initial.sql"), "utf8");
+const sql = `${await readFile(path.resolve(testRoot, "../db/001_initial.sql"), "utf8")}\n${await readFile(path.resolve(testRoot, "../db/002_office_runtime.sql"), "utf8")}`;
 
 for (const requiredControl of [
   "CREATE EXTENSION IF NOT EXISTS citext",
@@ -21,6 +21,9 @@ for (const requiredControl of [
   "minimum_margin_cents",
   "fitment_reviews",
   "order_documents",
+  "freight_quote_requests",
+  "stripe_reconciliation_runs",
+  "vehicles_customer_vin_idx",
   "reject_record_change",
   "REVOKE ALL ON ALL TABLES IN SCHEMA public FROM PUBLIC",
 ]) {
@@ -31,5 +34,7 @@ assert(!sql.includes("CREATE TABLE financial_entries"), "Single-entry financial 
 assert.match(sql, /CREATE UNIQUE INDEX user_roles_active_idx[\s\S]+WHERE revoked_at IS NULL/);
 assert.match(sql, /code citext NOT NULL UNIQUE/);
 assert.match(sql, /locked_by text,[\s\S]+locked_until timestamptz/);
+assert.match(sql, /freight_quote_requests_no_delete[\s\S]+reject_record_delete/);
+assert.match(sql, /stripe_reconciliation_runs_append_only[\s\S]+reject_record_change/);
 
 console.log("Integrity Office schema control test passed: durable events, RBAC history, promotion limits, and double-entry accounting are present.");

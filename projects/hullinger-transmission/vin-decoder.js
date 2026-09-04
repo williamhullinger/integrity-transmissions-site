@@ -713,12 +713,39 @@ function initVinDecoder() {
       params.set("assistance-source", source);
       if (leadReferenceInput && !leadReferenceInput.value) leadReferenceInput.value = newReference();
       params.set("lead-reference", leadReferenceInput?.value || newReference());
+      let officeQueued = false;
+      if (source === "freight-recovery") {
+        try {
+          const officeResponse = await fetch("/api/reman-freight-assistance", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              publicReference: params.get("lead-reference"),
+              vin: vinInput.value,
+              name: nameInput.value,
+              email: params.get("email"),
+              phone: phoneInput.value,
+              postalCode: postalInput.value,
+              region: stateInput.value,
+              locationType: deliveryInput.value,
+              requestedSelectionId: selectedIdInput?.value || null,
+              requestedPackage: selectedPackageInput?.value || null,
+              failureCode: "supplier_freight_rate_unavailable",
+              failureRequestId: freightRequestReferenceInput?.value || null,
+            }),
+          });
+          const officeResult = await officeResponse.json().catch(() => ({}));
+          officeQueued = officeResponse.ok && officeResult.queued === true;
+        } catch {
+          officeQueued = false;
+        }
+      }
       const response = await fetch("/", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: params,
       });
-      if (!response.ok) throw new Error("Your request could not be sent online.");
+      if (!response.ok && !officeQueued) throw new Error("Your request could not be sent online.");
       assistanceSubmitted = true;
       track("assisted_quote_submit");
       const callbackNumber = validPhone(phoneInput?.value) ? ` at ${displayPhone(phoneInput.value)}` : "";

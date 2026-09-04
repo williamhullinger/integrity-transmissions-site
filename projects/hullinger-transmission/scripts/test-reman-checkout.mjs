@@ -6,6 +6,7 @@ import { resolve } from "node:path";
 
 const require = createRequire(import.meta.url);
 const { _internals: checkout } = require("../../../netlify/functions/reman-checkout.js");
+const { _internals: freightAssistance } = require("../../../netlify/functions/reman-freight-assistance.js");
 const { _internals: status } = require("../../../netlify/functions/reman-order-status.js");
 const { _internals: webhook } = require("../../../netlify/functions/stripe-webhook.js");
 
@@ -14,6 +15,7 @@ const selected = {
     family: "10R80",
     transmission: "10R80 / Automatic 10 Speed",
     description: "10R80 remanufactured transmission",
+    partUid: "ace-part-test-123",
     coreCharge: 1500,
   },
   upgrade: {
@@ -23,6 +25,7 @@ const selected = {
   },
   packageData: {
     warranty: "36 months, Unlimited miles",
+    wholesale: 3600,
     integrityRecommendedRetail: 4100,
   },
 };
@@ -191,6 +194,82 @@ const zeroWholesaleResponse = await zeroWholesaleHandler({
 });
 assert.equal(zeroWholesaleResponse.statusCode, 409, zeroWholesaleResponse.body);
 assert.equal(calls.sessions.length, 1, "A missing wholesale price must never create a Stripe session");
+
+const mismatchedWholesaleHandler = checkout.createCheckoutHandler({
+  stripeFactory: () => fakeStripe,
+  quoteLoader: async () => ({
+    ...quote,
+    selected: { ...selected, packageData: { ...selected.packageData, wholesale: 3599 } },
+  }),
+});
+const mismatchedWholesaleResponse = await mismatchedWholesaleHandler({
+  httpMethod: "POST",
+  headers: { origin: "https://integritydrivetrain.com", "x-nf-client-connection-ip": "203.0.113.25" },
+  body: JSON.stringify(payload),
+});
+assert.equal(mismatchedWholesaleResponse.statusCode, 409, mismatchedWholesaleResponse.body);
+assert.equal(calls.sessions.length, 1, "Checkout must enforce the exact $500 server-side margin");
+
+const orderForOffice = await checkout.verifiedOrder(payload, async () => quote);
+orderForOffice.termsAcceptedAt = new Date().toISOString();
+const officeSession = await checkout.createStripeCheckout({
+  stripe: fakeStripe,
+  order: orderForOffice,
+  attemptKey: "office-sync-test-1234567890",
+  expiresAt: payload.checkoutExpiresAt,
+});
+process.env.OFFICE_ORDER_INGEST_URL = "https://office.integritydrivetrain.com/.netlify/functions/internal-ingest";
+process.env.OFFICE_INTERNAL_INGEST_SECRET = "s".repeat(64);
+let officeSyncRequest;
+await checkout.syncOfficeOrder({
+  order: orderForOffice,
+  session: officeSession,
+  attemptKey: "office-sync-test-1234567890",
+  expiresAt: payload.checkoutExpiresAt,
+  requestId: "request-office-sync",
+  fetchImpl: async (url, options) => {
+    officeSyncRequest = { url: String(url), options };
+    return new Response("ok", { status: 201 });
+  },
+});
+delete process.env.OFFICE_ORDER_INGEST_URL;
+delete process.env.OFFICE_INTERNAL_INGEST_SECRET;
+assert.equal(officeSyncRequest.url, "https://office.integritydrivetrain.com/.netlify/functions/internal-ingest");
+assert.match(officeSyncRequest.options.headers["X-Office-Signature"], /^sha256=[a-f0-9]{64}$/);
+const officePayload = JSON.parse(officeSyncRequest.options.body);
+assert.equal(officePayload.supplierUnitCostCents, 360000);
+assert.equal(officePayload.customerUnitPriceCents - officePayload.supplierUnitCostCents, 50000);
+assert.equal(officePayload.supplierSnapshot.partUid, "ace-part-test-123");
+
+const assistancePayload = freightAssistance.normalizeRequest({
+  publicReference: "123e4567-e89b-12d3-a456-426614174000",
+  vin: payload.vin,
+  name: payload.name,
+  email: payload.email,
+  phone: payload.phone,
+  postalCode: payload.postalCode,
+  region: payload.state,
+  locationType: payload.deliveryLocation,
+  requestedSelectionId: payload.selectionId,
+  requestedPackage: "1000",
+  failureCode: "supplier_freight_rate_unavailable",
+  failureRequestId: "request-freight-123",
+});
+process.env.OFFICE_FREIGHT_INGEST_URL = "https://office.integritydrivetrain.com/.netlify/functions/internal-freight";
+process.env.OFFICE_INTERNAL_INGEST_SECRET = "f".repeat(64);
+let freightOfficeRequest;
+const forwardedAssistance = await freightAssistance.forwardToOffice(assistancePayload, {
+  fetchImpl: async (url, options) => {
+    freightOfficeRequest = { url: String(url), options };
+    return new Response("ok", { status: 201 });
+  },
+});
+delete process.env.OFFICE_FREIGHT_INGEST_URL;
+delete process.env.OFFICE_INTERNAL_INGEST_SECRET;
+assert.equal(forwardedAssistance.queued, true);
+assert.equal(freightOfficeRequest.url, "https://office.integritydrivetrain.com/.netlify/functions/internal-freight");
+assert.match(freightOfficeRequest.options.headers["X-Office-Signature"], /^sha256=[a-f0-9]{64}$/);
+assert.equal(JSON.parse(freightOfficeRequest.options.body).phone, payload.phone);
 
 const statusHandler = status.createStatusHandler({
   stripeFactory: () => ({

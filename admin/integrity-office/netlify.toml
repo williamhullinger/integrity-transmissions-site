@@ -1,0 +1,19 @@
+[build]
+  command = "npm run build:office"
+  publish = "/dist/integrity-office"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+[functions]
+  directory = "/admin/integrity-office/functions"
+  node_bundler = "esbuild"
+
+[functions."stripe-webhook"]
+  included_files = ["/admin/integrity-office/db/**"]
+
+[functions."event-worker"]
+  schedule = "*/5 * * * *"
+
+[build.processing.html]
+  pretty_urls = true

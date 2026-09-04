@@ -4,6 +4,7 @@ import {
   FULFILLMENT_TRANSITIONS,
   PAYMENT_TRANSITIONS,
   assertTransition,
+  assertOperationalTransition,
   assertBalancedJournal,
   calculatePromotionDiscount,
   normalizePromotionCode,
@@ -17,6 +18,12 @@ assert.equal(assertTransition(CORE_TRANSITIONS, "accepted", "refund_due"), "refu
 assert.throws(() => assertTransition(PAYMENT_TRANSITIONS, "checkout_open", "paid"), /not allowed/);
 assert.throws(() => assertTransition(FULFILLMENT_TRANSITIONS, "fitment_review", "shipped"), /not allowed/);
 assert.throws(() => assertTransition(CORE_TRANSITIONS, "awaiting_return", "refunded"), /not allowed/);
+assert.equal(assertOperationalTransition({ workflow: "fulfillment", from: "fitment_review", to: "ready_for_supplier", paymentStatus: "paid", coreStatus: "awaiting_return" }), "ready_for_supplier");
+assert.throws(() => assertOperationalTransition({ workflow: "fulfillment", from: "fitment_review", to: "ready_for_supplier", paymentStatus: "checkout_open", coreStatus: "awaiting_return" }), /payment is confirmed/);
+assert.throws(() => assertOperationalTransition({ workflow: "fulfillment", from: "delivered", to: "closed", paymentStatus: "paid", coreStatus: "awaiting_return" }), /core obligation/);
+assert.equal(assertOperationalTransition({ workflow: "fulfillment", from: "canceled", to: "closed", paymentStatus: "refunded", coreStatus: "not_required" }), "closed");
+assert.throws(() => assertOperationalTransition({ workflow: "fulfillment", from: "canceled", to: "closed", paymentStatus: "paid", coreStatus: "not_required" }), /fully refunded/);
+assert.throws(() => assertTransition(FULFILLMENT_TRANSITIONS, "supplier_ordered", "canceled"), /not allowed/);
 
 const money = summarizeOrderMoney({
   transmissionCents: 350_000,
