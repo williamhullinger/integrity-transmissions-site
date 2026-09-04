@@ -82,7 +82,11 @@ export const createInternalPromotionHandler = ({ env = process.env, repositoryFa
   } catch (error) {
     const safe = publicError(error);
     if (safe.statusCode >= 500) logger.error("Integrity Office could not reserve a promotion", { error: error.message });
-    return response(safe.statusCode, { error: safe.statusCode >= 500 ? "Promotion service unavailable" : safe.message });
+    return response(safe.statusCode, {
+      error: safe.statusCode >= 500
+        ? "Promotion service unavailable"
+        : "That promotion code cannot be applied to this order.",
+    });
   }
 };
 

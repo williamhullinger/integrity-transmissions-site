@@ -4,6 +4,7 @@ import test from "node:test";
 import { createInternalFreightHandler } from "../server/internal-freight.mjs";
 import { createInternalIngestHandler, _internals as ingestInternals } from "../server/internal-ingest.mjs";
 import { createInternalPromotionHandler } from "../server/internal-promotion.mjs";
+import { conflict } from "../server/errors.mjs";
 import { reconcileStripe } from "../server/reconciliation.mjs";
 import { createStripeWebhookHandler } from "../server/stripe-webhook.mjs";
 
@@ -151,6 +152,20 @@ test("promotion reservation intake requires signed server pricing and returns on
   const invalid = JSON.stringify({ ...request, supplierUnitCostCents: 359999 });
   const invalidSignature = `sha256=${crypto.createHmac("sha256", secret).update(`${timestamp}.${invalid}`).digest("hex")}`;
   assert.equal((await handler({ httpMethod: "POST", headers: { "x-office-timestamp": timestamp, "x-office-signature": invalidSignature }, body: invalid })).statusCode, 400);
+
+  const rejected = createInternalPromotionHandler({
+    env: { OFFICE_INTERNAL_INGEST_SECRET: secret },
+    repositoryFactory: () => ({ reservePromotion: async () => { throw conflict("wholesale margin detail"); } }),
+    logger: { warn() {}, error() {} },
+  });
+  const rejectedResponse = await rejected({
+    httpMethod: "POST",
+    headers: { "x-office-timestamp": timestamp, "x-office-signature": signature },
+    body: raw,
+  });
+  assert.equal(rejectedResponse.statusCode, 409);
+  assert.equal(JSON.parse(rejectedResponse.body).error, "That promotion code cannot be applied to this order.");
+  assert.doesNotMatch(rejectedResponse.body, /wholesale|margin/i);
 });
 
 test("Stripe reconciliation reports missing and mismatched sessions", async () => {
