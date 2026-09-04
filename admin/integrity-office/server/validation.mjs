@@ -65,7 +65,7 @@ export const promotionInput = (body) => {
     endsAt,
     maxRedemptions: optionalPositiveInteger(body.maxRedemptions, "maxRedemptions", { minimum: 1, maximum: 1_000_000 }),
     maxRedemptionsPerCustomer: optionalPositiveInteger(body.maxRedemptionsPerCustomer ?? 1, "maxRedemptionsPerCustomer", { minimum: 1, maximum: 100 }),
-    minimumMarginCents: optionalPositiveInteger(body.minimumMarginCents ?? 50_000, "minimumMarginCents", { minimum: 0, maximum: 100_000_000 }),
+    minimumMarginCents: optionalPositiveInteger(body.minimumMarginCents ?? 35_000, "minimumMarginCents", { minimum: 0, maximum: 100_000_000 }),
     reason: boundedText(body.reason, "reason", 500),
   });
 };

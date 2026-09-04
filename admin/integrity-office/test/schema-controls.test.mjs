@@ -17,7 +17,9 @@ for (const requiredControl of [
   "journal_entries_must_balance",
   "promotion_codes",
   "promotion_redemptions",
+  "promotion_reservations",
   "promotion_redemption_guard",
+  "quote_promotion_math",
   "minimum_margin_cents",
   "fitment_reviews",
   "order_documents",
@@ -36,5 +38,7 @@ assert.match(sql, /code citext NOT NULL UNIQUE/);
 assert.match(sql, /locked_by text,[\s\S]+locked_until timestamptz/);
 assert.match(sql, /freight_quote_requests_no_delete[\s\S]+reject_record_delete/);
 assert.match(sql, /stripe_reconciliation_runs_append_only[\s\S]+reject_record_change/);
+assert.match(sql, /promotion_reservations_no_delete[\s\S]+reject_record_delete/);
+assert.match(sql, /promotion can be applied only from a reserved redemption/i);
 
 console.log("Integrity Office schema control test passed: durable events, RBAC history, promotion limits, and double-entry accounting are present.");

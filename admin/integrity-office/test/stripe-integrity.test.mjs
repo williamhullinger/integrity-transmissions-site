@@ -3,6 +3,7 @@ import crypto from "node:crypto";
 import test from "node:test";
 import { createInternalFreightHandler } from "../server/internal-freight.mjs";
 import { createInternalIngestHandler, _internals as ingestInternals } from "../server/internal-ingest.mjs";
+import { createInternalPromotionHandler } from "../server/internal-promotion.mjs";
 import { reconcileStripe } from "../server/reconciliation.mjs";
 import { createStripeWebhookHandler } from "../server/stripe-webhook.mjs";
 
@@ -109,6 +110,47 @@ test("freight recovery ingestion validates contact data and deduplicates by publ
   assert.equal(JSON.parse(accepted.body).duplicate, true);
   assert.equal(received.destinationRegion, "MO");
   assert.equal(received.phone, "417-555-0100");
+});
+
+test("promotion reservation intake requires signed server pricing and returns only the approved discount", async () => {
+  const secret = "c".repeat(64);
+  const request = {
+    requestId: "request-promotion-123",
+    checkoutAttemptKey: "attempt-promotion-1234567890",
+    expiresAt: Math.floor(Date.now() / 1000) + 3600,
+    code: "SAVE-50",
+    customerEmail: "customer@example.com",
+    listUnitPriceCents: 410000,
+    freightChargedCents: 45000,
+    supplierUnitCostCents: 360000,
+    supplierFreightCostCents: 45000,
+  };
+  const raw = JSON.stringify(request);
+  const timestamp = String(Math.floor(Date.now() / 1000));
+  const signature = `sha256=${crypto.createHmac("sha256", secret).update(`${timestamp}.${raw}`).digest("hex")}`;
+  let received;
+  const handler = createInternalPromotionHandler({
+    env: { OFFICE_INTERNAL_INGEST_SECRET: secret },
+    repositoryFactory: () => ({
+      reservePromotion: async (value) => {
+        received = value;
+        return { id: "7f573082-2a5b-4d7f-a05f-2af8721af43b", code: value.code, discountCents: 5000, reservedUntil: value.reservedUntil, repeated: false };
+      },
+    }),
+    logger: { warn() {}, error() {} },
+  });
+  const accepted = await handler({
+    httpMethod: "POST",
+    headers: { "x-office-timestamp": timestamp, "x-office-signature": signature },
+    body: raw,
+  });
+  assert.equal(accepted.statusCode, 200, accepted.body);
+  assert.equal(JSON.parse(accepted.body).discountCents, 5000);
+  assert.equal(received.listUnitPriceCents - received.supplierUnitCostCents, 50000);
+
+  const invalid = JSON.stringify({ ...request, supplierUnitCostCents: 359999 });
+  const invalidSignature = `sha256=${crypto.createHmac("sha256", secret).update(`${timestamp}.${invalid}`).digest("hex")}`;
+  assert.equal((await handler({ httpMethod: "POST", headers: { "x-office-timestamp": timestamp, "x-office-signature": invalidSignature }, body: invalid })).statusCode, 400);
 });
 
 test("Stripe reconciliation reports missing and mismatched sessions", async () => {

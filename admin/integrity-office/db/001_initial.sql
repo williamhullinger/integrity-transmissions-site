@@ -320,7 +320,7 @@ CREATE TABLE promotion_codes (
   ends_at timestamptz,
   max_redemptions integer CHECK (max_redemptions > 0),
   max_redemptions_per_customer integer NOT NULL DEFAULT 1 CHECK (max_redemptions_per_customer > 0),
-  minimum_margin_cents bigint NOT NULL DEFAULT 50000 CHECK (minimum_margin_cents >= 0),
+  minimum_margin_cents bigint NOT NULL DEFAULT 35000 CHECK (minimum_margin_cents >= 0),
   active boolean NOT NULL DEFAULT true,
   created_by uuid NOT NULL REFERENCES staff_users(id),
   approved_by uuid REFERENCES staff_users(id),

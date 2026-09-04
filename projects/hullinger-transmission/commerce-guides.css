@@ -289,6 +289,10 @@
   display: none;
 }
 
+.form-field[data-promotion-field][hidden] {
+  display: none;
+}
+
 .reman-catalog__intro {
   padding: 1.1rem;
   color: #ffffff;

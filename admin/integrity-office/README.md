@@ -13,8 +13,8 @@ The implemented staff application includes:
 - Validated fulfillment and core state transitions with optimistic version checks
 - Append-only operational notes and audit events
 - HMAC-authenticated freight-recovery intake with idempotent queueing, assignment, follow-up, resolution, and conversion tracking
-- Promotion creation, separate approval, disable controls, redemption limits, and minimum-margin enforcement
-- Double-entry account reporting that separates revenue, tax liability, refundable core liability, supplier costs, Stripe fees, and refunds
+- Promotion creation, separate approval, disable controls, signed checkout reservations, redemption limits, and minimum-margin enforcement
+- Quote-level supplier cost and margin visibility plus double-entry reporting for revenue, tax liability, refundable core liability, discounts, and refunds
 - Read-only Stripe-to-Office payment reconciliation
 - HMAC-authenticated storefront checkout ingestion
 - Signature-verified, database-deduplicated Stripe webhooks
@@ -35,7 +35,7 @@ The public Netlify build uses the repository-root `netlify.toml` and never inclu
 ## Source layout
 
 - `db/001_initial.sql` — orders, immutable quotes, customers, vehicles, staff roles, promotions, payment records, double-entry journals, durable webhooks, outbox and audit controls
-- `db/002_office_runtime.sql` — freight-recovery queue, reconciliation history and runtime indexes
+- `db/002_office_runtime.sql` — promotion reservations, immutable retail discount snapshots, freight-recovery queue, reconciliation history and runtime indexes
 - `domain/order-state.mjs` — enforceable payment, fulfillment, core, promotion, margin and journal rules
 - `server/` — authentication, authorization, HTTP validation, database repositories, Office APIs, checkout ingestion, Stripe reconciliation and event processing
 - `functions/` — isolated Netlify entry points for the staff API, internal checkout intake, Stripe webhooks and scheduled event worker

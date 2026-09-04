@@ -1,7 +1,7 @@
 import { conflict, forbidden, notFound } from "./errors.mjs";
 import { normalizeRoles } from "./permissions.mjs";
 import { withTransaction } from "./db.mjs";
-import { assertOperationalTransition } from "../domain/order-state.mjs";
+import { assertOperationalTransition, calculatePromotionDiscount } from "../domain/order-state.mjs";
 
 const asInteger = (value) => {
   const parsed = Number(value || 0);
@@ -33,10 +33,13 @@ const orderDto = (row, includeFinancials) => ({
   vehicle: { vin: row.vin, year: row.year, make: row.make, model: row.model },
   application: row.transmission_family,
   packageName: row.package_name,
+  listUnitPriceCents: asInteger(row.list_unit_price_cents ?? row.customer_unit_price_cents),
   paymentStatus: row.payment_status,
   fulfillmentStatus: row.fulfillment_status,
   coreStatus: row.core_status,
   unitPriceCents: asInteger(row.customer_unit_price_cents),
+  promotionCode: row.promotion_code || null,
+  promotionDiscountCents: asInteger(row.promotion_discount_cents || 0),
   freightCents: asInteger(row.freight_charged_cents),
   coreDepositCents: asInteger(row.core_deposit_cents),
   collectedCents: asInteger(row.collected_cents),
@@ -108,6 +111,7 @@ export class PostgresOfficeRepository {
       SELECT o.*, c.name AS customer_name, c.email AS customer_email, c.phone AS customer_phone,
              v.vin, v.year, v.make, v.model,
              qv.transmission_family, qv.package_name, qv.customer_unit_price_cents,
+             qv.list_unit_price_cents, qv.promotion_code, qv.promotion_discount_cents,
              qv.core_deposit_cents, qv.freight_charged_cents,
              qv.supplier_unit_cost_cents, qv.supplier_freight_cost_cents,
              COALESCE((SELECT sum(pt.amount_cents) FROM payment_transactions pt
@@ -137,6 +141,7 @@ export class PostgresOfficeRepository {
       SELECT o.*, c.name AS customer_name, c.email AS customer_email, c.phone AS customer_phone,
              v.vin, v.year, v.make, v.model,
              qv.transmission_family, qv.package_name, qv.customer_unit_price_cents,
+             qv.list_unit_price_cents, qv.promotion_code, qv.promotion_discount_cents,
              qv.core_deposit_cents, qv.freight_charged_cents,
              qv.supplier_unit_cost_cents, qv.supplier_freight_cost_cents,
              COALESCE((SELECT sum(pt.amount_cents) FROM payment_transactions pt
@@ -181,6 +186,136 @@ export class PostgresOfficeRepository {
       ORDER BY pc.created_at DESC
     `);
     return rows.map(promotionDto);
+  }
+
+  async reservePromotion(request) {
+    return withTransaction(this.pool, async (client) => {
+      const existing = await client.query(`
+        SELECT pr.*, pc.code
+        FROM promotion_reservations pr
+        JOIN promotion_codes pc ON pc.id = pr.promotion_id
+        WHERE pr.checkout_attempt_key = $1
+        FOR UPDATE OF pr
+      `, [request.checkoutAttemptKey]);
+      if (existing.rows[0]) {
+        const row = existing.rows[0];
+        const sameRequest = String(row.code).toUpperCase() === request.code
+          && String(row.customer_email).toLowerCase() === request.customerEmail
+          && asInteger(row.list_unit_price_cents) === request.listUnitPriceCents
+          && asInteger(row.freight_charged_cents) === request.freightChargedCents
+          && asInteger(row.supplier_unit_cost_cents) === request.supplierUnitCostCents
+          && asInteger(row.supplier_freight_cost_cents) === request.supplierFreightCostCents;
+        if (!sameRequest) throw conflict("This checkout attempt already reserved a different promotion.");
+        if (row.status === "released"
+          || (row.status === "reserved" && new Date(row.reserved_until) <= new Date())) {
+          throw conflict("This promotion reservation expired. Refresh the order and try again.");
+        }
+        return {
+          id: row.id,
+          code: String(row.code).toUpperCase(),
+          discountCents: asInteger(row.discount_cents),
+          reservedUntil: row.reserved_until,
+          repeated: true,
+        };
+      }
+
+      const promotionResult = await client.query(`
+        SELECT * FROM promotion_codes WHERE code = $1 FOR UPDATE
+      `, [request.code]);
+      const promotion = promotionResult.rows[0];
+      if (!promotion) throw notFound("That promotion code is not valid.");
+      const counts = await client.query(`
+        SELECT
+          (SELECT count(*) FROM promotion_redemptions
+            WHERE promotion_id = $1 AND status IN ('reserved', 'applied'))
+          + (SELECT count(*) FROM promotion_reservations
+            WHERE promotion_id = $1 AND status = 'reserved' AND reserved_until > now()) AS total_uses,
+          (SELECT count(*) FROM promotion_redemptions pr
+            JOIN customers c ON c.id = pr.customer_id
+            WHERE pr.promotion_id = $1 AND lower(c.email) = lower($2)
+              AND pr.status IN ('reserved', 'applied'))
+          + (SELECT count(*) FROM promotion_reservations
+            WHERE promotion_id = $1 AND lower(customer_email) = lower($2)
+              AND status = 'reserved' AND reserved_until > now()) AS customer_uses
+      `, [promotion.id, request.customerEmail]);
+      let discount;
+      try {
+        discount = calculatePromotionDiscount({
+          code: promotion.code,
+          active: promotion.active && !promotion.disabled_at,
+          approved: Boolean(promotion.approved_at),
+          startsAt: promotion.starts_at,
+          endsAt: promotion.ends_at,
+          amountOffCents: promotion.amount_off_cents === null ? null : asInteger(promotion.amount_off_cents),
+          percentOff: promotion.percent_off === null ? null : Number(promotion.percent_off),
+          merchandiseCents: request.listUnitPriceCents + request.freightChargedCents,
+          supplierCostCents: request.supplierUnitCostCents + request.supplierFreightCostCents,
+          minimumMarginCents: asInteger(promotion.minimum_margin_cents),
+          redemptionCount: asInteger(counts.rows[0].total_uses),
+          maxRedemptions: promotion.max_redemptions,
+          customerRedemptionCount: asInteger(counts.rows[0].customer_uses),
+          maxRedemptionsPerCustomer: promotion.max_redemptions_per_customer,
+        });
+      } catch (error) {
+        throw conflict(error.message);
+      }
+      if (discount.discountCents >= request.listUnitPriceCents) {
+        throw conflict("That promotion cannot be applied to this transmission.");
+      }
+      const { rows } = await client.query(`
+        INSERT INTO promotion_reservations (
+          promotion_id, checkout_attempt_key, customer_email, list_unit_price_cents,
+          freight_charged_cents, supplier_unit_cost_cents, supplier_freight_cost_cents,
+          discount_cents, reserved_until
+        ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
+        RETURNING id, reserved_until
+      `, [promotion.id, request.checkoutAttemptKey, request.customerEmail, request.listUnitPriceCents,
+        request.freightChargedCents, request.supplierUnitCostCents, request.supplierFreightCostCents,
+        discount.discountCents, request.reservedUntil]);
+      return {
+        id: rows[0].id,
+        code: discount.code,
+        discountCents: discount.discountCents,
+        reservedUntil: rows[0].reserved_until,
+        repeated: false,
+      };
+    });
+  }
+
+  async consumePromotionReservation(client, snapshot, customerId, orderId) {
+    if (!snapshot.promotionReservationId) {
+      if (snapshot.promotionCode || snapshot.promotionDiscountCents) throw conflict("The promotion snapshot is incomplete.");
+      return;
+    }
+    const { rows } = await client.query(`
+      SELECT pr.*, pc.code
+      FROM promotion_reservations pr
+      JOIN promotion_codes pc ON pc.id = pr.promotion_id
+      WHERE pr.id = $1
+      FOR UPDATE OF pr
+    `, [snapshot.promotionReservationId]);
+    const reservation = rows[0];
+    const valid = reservation
+      && reservation.status === "reserved"
+      && new Date(reservation.reserved_until) > new Date()
+      && reservation.checkout_attempt_key === snapshot.checkoutAttemptKey
+      && String(reservation.customer_email).toLowerCase() === snapshot.customer.email
+      && String(reservation.code).toUpperCase() === snapshot.promotionCode
+      && asInteger(reservation.list_unit_price_cents) === snapshot.listUnitPriceCents
+      && asInteger(reservation.freight_charged_cents) === snapshot.freightChargedCents
+      && asInteger(reservation.supplier_unit_cost_cents) === snapshot.supplierUnitCostCents
+      && asInteger(reservation.supplier_freight_cost_cents) === snapshot.supplierFreightCostCents
+      && asInteger(reservation.discount_cents) === snapshot.promotionDiscountCents;
+    if (!valid) throw conflict("The promotion reservation is invalid or expired.");
+    await client.query(`
+      INSERT INTO promotion_redemptions (
+        promotion_id, order_id, customer_id, amount_cents, status, reserved_until
+      ) VALUES ($1,$2,$3,$4,'reserved',$5)
+    `, [reservation.promotion_id, orderId, customerId, snapshot.promotionDiscountCents, reservation.reserved_until]);
+    await client.query(`
+      UPDATE promotion_reservations SET status = 'consumed', consumed_order_id = $2
+      WHERE id = $1
+    `, [reservation.id, orderId]);
   }
 
   async listFreightExceptions({ page, pageSize, status = "" }) {
@@ -318,13 +453,15 @@ export class PostgresOfficeRepository {
           quote_id, version, selection_id, transmission_family, package_name, warranty_text,
           availability_code, availability_text, supplier_unit_cost_cents, customer_unit_price_cents,
           core_deposit_cents, freight_charged_cents, supplier_freight_cost_cents, currency,
-          supplier_snapshot, freight_snapshot, terms_version, terms_sha256
-        ) VALUES ($1,1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17)
+          supplier_snapshot, freight_snapshot, terms_version, terms_sha256,
+          list_unit_price_cents, promotion_code, promotion_discount_cents
+        ) VALUES ($1,1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20)
       `, [quote.rows[0].id, snapshot.selectionId, snapshot.application, snapshot.packageName,
         snapshot.warranty, snapshot.availability.code, snapshot.availability.text,
         snapshot.supplierUnitCostCents, snapshot.customerUnitPriceCents, snapshot.coreDepositCents,
         snapshot.freightChargedCents, snapshot.supplierFreightCostCents, snapshot.currency,
-        snapshot.supplierSnapshot, snapshot.freightSnapshot, snapshot.termsVersion, snapshot.termsSha256]);
+        snapshot.supplierSnapshot, snapshot.freightSnapshot, snapshot.termsVersion, snapshot.termsSha256,
+        snapshot.listUnitPriceCents, snapshot.promotionCode, snapshot.promotionDiscountCents]);
       const order = await client.query(`
         INSERT INTO orders (
           customer_id, vehicle_id, delivery_address_id, quote_id, quote_version, core_status
@@ -332,6 +469,7 @@ export class PostgresOfficeRepository {
         RETURNING id, public_order_number
       `, [customerId, vehicle.rows[0].id, address.rows[0].id, quote.rows[0].id,
         snapshot.coreDepositCents > 0 ? "awaiting_return" : "not_required"]);
+      await this.consumePromotionReservation(client, snapshot, customerId, order.rows[0].id);
       await client.query(`
         INSERT INTO checkout_sessions (
           order_id, stripe_checkout_session_id, stripe_payment_intent_id, idempotency_key, expires_at

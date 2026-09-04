@@ -47,6 +47,8 @@ function initVinDecoder() {
   const freightRequestReferenceInput = form.querySelector("[name='freight-request-reference']");
   const callbackPhoneConfirmedInput = form.querySelector("[name='callback-phone-confirmed']");
   const leadReferenceInput = form.querySelector("[name='lead-reference']");
+  const promotionField = form.querySelector("[data-promotion-field]");
+  const promotionInput = form.querySelector("[name='promotion-code']");
   const vinPattern = /^[A-HJ-NPR-Z0-9]{17}$/;
   const currency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
   const freightRetryLimit = 3;
@@ -300,6 +302,8 @@ function initVinDecoder() {
 
   const renderCatalog = (data) => {
     lookupData = data;
+    if (promotionField) promotionField.hidden = data.promotionsAvailable !== true;
+    if (promotionInput && data.promotionsAvailable !== true) promotionInput.value = "";
     clearSelection();
     catalog.hidden = false;
     catalog.replaceChildren();
@@ -869,6 +873,7 @@ function initVinDecoder() {
           termsAccepted: fields["quote-acknowledgment"] === "Understood",
           checkoutAttemptId: checkoutAttempt.id,
           checkoutExpiresAt: checkoutAttempt.expiresAt,
+          promotionCode: fields["promotion-code"] || "",
       });
 
       if (!/^https:\/\/checkout\.stripe\.com\//i.test(data.checkoutUrl || "")) {

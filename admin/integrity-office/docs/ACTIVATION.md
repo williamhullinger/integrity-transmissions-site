@@ -43,6 +43,10 @@ Set `OFFICE_FREIGHT_INGEST_URL` to:
 
 `https://office.integritydrivetrain.com/.netlify/functions/internal-freight`
 
+Set `OFFICE_PROMOTION_RESERVE_URL` to:
+
+`https://office.integritydrivetrain.com/.netlify/functions/internal-promotion`
+
 Do not configure the storefront ingestion values until the Office database, ingestion endpoints and monitoring are healthy. Once configured, checkout fails closed if its immutable Office record cannot be written; customers are never sent to payment with an untracked order. A freight callback is written to both the Office recovery queue and the existing Netlify form channel so one downstream outage does not lose the customer's request.
 
 ## 4. Configure Stripe events
@@ -70,10 +74,11 @@ Store its signing secret as `OFFICE_STRIPE_WEBHOOK_SECRET`. Keep the existing st
 4. Run a test-mode VIN-to-freight-to-Checkout flow and complete payment with a Stripe test card.
 5. Confirm exactly one customer, vehicle, quote, order, Checkout Session, payment transaction and balanced journal entry exist.
 6. Replay the same checkout snapshot and Stripe event; both must report duplicates without adding records.
-7. Verify viewer, operations and finance accounts cannot access administrator actions.
-8. Force one event-processing failure, confirm retry scheduling, resolve it and confirm processing succeeds.
-9. Run seven-day reconciliation and confirm no unmatched sessions or amount differences.
-10. Restore staging from a backup into a temporary database and document the recovery time.
+7. Create and separately approve a staging promotion. Confirm an eligible checkout receives the exact discount, a second use respects its limits, and an expired Checkout Session releases its reservation.
+8. Verify viewer, operations and finance accounts cannot access administrator actions.
+9. Force one event-processing failure, confirm retry scheduling, resolve it and confirm processing succeeds.
+10. Run seven-day reconciliation and confirm no unmatched sessions or amount differences.
+11. Restore staging from a backup into a temporary database and document the recovery time.
 
 ## 6. Production cutover
 

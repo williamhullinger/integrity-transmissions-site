@@ -1,7 +1,8 @@
 import crypto from "node:crypto";
+import { normalizePromotionCode } from "../domain/order-state.mjs";
 import { getPool } from "./db.mjs";
 import { PostgresOfficeRepository } from "./repository.mjs";
-import { boundedText, optionalPositiveInteger, positiveInteger } from "./validation.mjs";
+import { boundedText, optionalPositiveInteger, positiveInteger, uuid } from "./validation.mjs";
 
 const headers = Object.freeze({
   "Cache-Control": "no-store, max-age=0",
@@ -37,6 +38,20 @@ const parseSnapshot = (raw) => {
   if (!/^[A-HJ-NPR-Z0-9]{17}$/.test(vin)) throw new TypeError("Invalid VIN");
   const currency = boundedText(body.currency || "usd", "currency", 3).toLowerCase();
   if (!/^[a-z]{3}$/.test(currency)) throw new TypeError("Invalid currency");
+  const supplierUnitCostCents = positiveInteger(body.supplierUnitCostCents, "supplierUnitCostCents", { minimum: 1 });
+  const customerUnitPriceCents = positiveInteger(body.customerUnitPriceCents, "customerUnitPriceCents", { minimum: 1 });
+  const listUnitPriceCents = positiveInteger(body.listUnitPriceCents ?? customerUnitPriceCents, "listUnitPriceCents", { minimum: 1 });
+  const promotionDiscountCents = positiveInteger(body.promotionDiscountCents ?? 0, "promotionDiscountCents");
+  let promotionCode = null;
+  if (body.promotionCode) promotionCode = normalizePromotionCode(body.promotionCode);
+  const promotionReservationId = body.promotionReservationId ? uuid(body.promotionReservationId, "promotionReservationId") : null;
+  const freightChargedCents = positiveInteger(body.freightChargedCents, "freightChargedCents", { minimum: 1 });
+  const supplierFreightCostCents = positiveInteger(body.supplierFreightCostCents, "supplierFreightCostCents", { minimum: 1 });
+  if (listUnitPriceCents !== customerUnitPriceCents + promotionDiscountCents) throw new TypeError("Invalid promotion price math");
+  if ((promotionDiscountCents > 0) !== Boolean(promotionCode && promotionReservationId)) throw new TypeError("Incomplete promotion snapshot");
+  if (listUnitPriceCents - supplierUnitCostCents !== 50_000 || freightChargedCents !== supplierFreightCostCents) {
+    throw new TypeError("Invalid storefront margin snapshot");
+  }
   return {
     requestId: boundedText(body.requestId, "requestId", 128),
     stripeSessionId: sessionId,
@@ -74,11 +89,15 @@ const parseSnapshot = (raw) => {
       code: boundedText(body.availability?.code, "availability.code", 80),
       text: boundedText(body.availability?.text, "availability.text", 1_000),
     },
-    supplierUnitCostCents: positiveInteger(body.supplierUnitCostCents, "supplierUnitCostCents", { minimum: 1 }),
-    customerUnitPriceCents: positiveInteger(body.customerUnitPriceCents, "customerUnitPriceCents", { minimum: 1 }),
+    supplierUnitCostCents,
+    listUnitPriceCents,
+    customerUnitPriceCents,
+    promotionCode,
+    promotionDiscountCents,
+    promotionReservationId,
     coreDepositCents: positiveInteger(body.coreDepositCents, "coreDepositCents"),
-    freightChargedCents: positiveInteger(body.freightChargedCents, "freightChargedCents", { minimum: 1 }),
-    supplierFreightCostCents: positiveInteger(body.supplierFreightCostCents, "supplierFreightCostCents", { minimum: 1 }),
+    freightChargedCents,
+    supplierFreightCostCents,
     currency,
     supplierSnapshot: body.supplierSnapshot && typeof body.supplierSnapshot === "object" ? body.supplierSnapshot : {},
     freightSnapshot: body.freightSnapshot && typeof body.freightSnapshot === "object" ? body.freightSnapshot : {},

@@ -28,6 +28,14 @@ const jsonResponse = (statusCode, body, extraHeaders = {}) => ({
   body: JSON.stringify(body),
 });
 
+const runtimeCatalog = (value) => ({
+  ...value,
+  promotionsAvailable: Boolean(
+    String(process.env.OFFICE_PROMOTION_RESERVE_URL || "").trim()
+    && String(process.env.OFFICE_INTERNAL_INGEST_SECRET || "").length >= 32,
+  ),
+});
+
 const allowedOrigin = (origin) => {
   if (!origin) return true;
   const deployedOrigins = [
@@ -325,7 +333,7 @@ const handler = async (event) => {
   }
 
   const cached = catalogCache.get(vin);
-  if (cached && cached.expiresAt > Date.now()) return jsonResponse(200, cached.value);
+  if (cached && cached.expiresAt > Date.now()) return jsonResponse(200, runtimeCatalog(cached.value));
   if (cached) catalogCache.delete(vin);
   if (catalogCache.size > 500) {
     for (const [cacheVin, entry] of catalogCache) {
@@ -336,7 +344,7 @@ const handler = async (event) => {
   try {
     const catalog = await buildCatalog(vin);
     catalogCache.set(vin, { expiresAt: Date.now() + CACHE_TTL_MS, value: catalog });
-    return jsonResponse(200, catalog);
+    return jsonResponse(200, runtimeCatalog(catalog));
   } catch (error) {
     console.error("Public reman catalog lookup failed:", error.message);
     return jsonResponse(502, {
@@ -354,6 +362,7 @@ exports._internals = {
   selectionId,
   sourceIp,
   publicLineItems,
+  runtimeCatalog,
   scrubText,
   toPublicCandidate,
   withinRateLimit,

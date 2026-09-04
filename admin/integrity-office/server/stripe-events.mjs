@@ -45,9 +45,8 @@ const linkedOrderForSession = async (client, sessionId) => {
     SELECT o.id, o.version, o.payment_status::text AS payment_status,
            o.core_status::text AS core_status,
            qv.customer_unit_price_cents, qv.freight_charged_cents,
-           qv.core_deposit_cents,
-           COALESCE((SELECT sum(pr.amount_cents) FROM promotion_redemptions pr
-             WHERE pr.order_id = o.id AND pr.status = 'applied'), 0) AS discount_cents
+           qv.list_unit_price_cents, qv.core_deposit_cents,
+           qv.promotion_discount_cents AS discount_cents
     FROM checkout_sessions cs
     JOIN orders o ON o.id = cs.order_id
     JOIN quote_versions qv ON qv.quote_id = o.quote_id AND qv.version = o.quote_version
@@ -65,7 +64,7 @@ const appendStatus = (client, { orderId, workflow, from, to, eventId, reason }) 
 
 const ensurePaidJournal = async (client, event, session, order) => {
   const total = cents(session.amount_total, "amount_total");
-  const unit = cents(order.customer_unit_price_cents, "customer_unit_price_cents");
+  const unit = cents(order.list_unit_price_cents, "list_unit_price_cents");
   const freight = cents(order.freight_charged_cents, "freight_charged_cents");
   const core = cents(order.core_deposit_cents, "core_deposit_cents");
   const discount = cents(order.discount_cents, "discount_cents");
@@ -116,6 +115,11 @@ const processPaidSession = async (client, row) => {
     from = "processing";
   }
   await client.query("UPDATE orders SET payment_status = 'paid', paid_at = COALESCE(paid_at, to_timestamp($2)), version = version + 1 WHERE id = $1", [order.id, row.payload.created]);
+  await client.query(`
+    UPDATE promotion_redemptions
+    SET status = 'applied', applied_at = to_timestamp($2)
+    WHERE order_id = $1 AND status = 'reserved'
+  `, [order.id, row.payload.created]);
   await appendStatus(client, { orderId: order.id, workflow: "payment", from, to: "paid", eventId: row.stripe_event_id, reason: "Stripe payment confirmed" });
   await client.query(`
     INSERT INTO notification_outbox (topic, deduplication_key, payload)
@@ -135,6 +139,11 @@ const processFailedSession = async (client, row) => {
     from = "processing";
   }
   await client.query(`UPDATE orders SET payment_status = $2, version = version + 1 WHERE id = $1`, [order.id, target]);
+  await client.query(`
+    UPDATE promotion_redemptions
+    SET status = 'released', released_at = to_timestamp($2)
+    WHERE order_id = $1 AND status = 'reserved'
+  `, [order.id, row.payload.created]);
   await appendStatus(client, { orderId: order.id, workflow: "payment", from, to: target, eventId: row.stripe_event_id, reason: target === "expired" ? "Stripe Checkout Session expired" : "Stripe asynchronous payment failed" });
 };
 
@@ -163,6 +172,13 @@ const processRefund = async (client, row) => {
   if (order.payment_status !== target) {
     await client.query("UPDATE orders SET payment_status = $2, version = version + 1 WHERE id = $1", [order.id, target]);
     await appendStatus(client, { orderId: order.id, workflow: "payment", from: order.payment_status, to: target, eventId: row.stripe_event_id, reason: "Stripe refund confirmed; accounting classification pending" });
+  }
+  if (target === "refunded") {
+    await client.query(`
+      UPDATE promotion_redemptions
+      SET status = 'reversed', released_at = to_timestamp($2)
+      WHERE order_id = $1 AND status = 'applied'
+    `, [order.id, row.payload.created]);
   }
   await client.query(`
     INSERT INTO notification_outbox (topic, deduplication_key, payload)

@@ -67,6 +67,7 @@ const checkoutAttemptKey = (payload) => {
     clean(payload.selectionId, 64),
     clean(payload.freightRateId, 64),
     clean(payload.email, 160).toLowerCase(),
+    clean(payload.promotionCode || payload["promotion-code"], 32).toUpperCase(),
   ].join("|")).digest("hex").slice(0, 40);
 };
 
@@ -190,7 +191,11 @@ const verifiedOrder = async (payload, quoteLoader = shipping.loadFreightQuote) =
     upgrade: catalog.scrubText(upgrade.name || "Base"),
     warranty: catalog.scrubText(packageData.warranty || "Warranty shown with selected package"),
     selectionId: quote.selectionId,
+    listUnitPrice: unitPrice,
     unitPrice,
+    promotionCode: null,
+    promotionDiscount: 0,
+    promotionReservationId: null,
     supplierUnitCost,
     coreDeposit,
     freight,
@@ -220,6 +225,9 @@ const stripeMetadata = (order) => ({
   selection_id: order.selectionId,
   availability: order.availability.code,
   unit_price: dollars(order.unitPrice / 100),
+  list_unit_price: dollars(order.listUnitPrice / 100),
+  promotion_code: order.promotionCode || "none",
+  promotion_discount: dollars(order.promotionDiscount / 100),
   core_deposit: dollars(order.coreDeposit / 100),
   freight: dollars(order.freight / 100),
   freight_carrier: order.rate.carrier,
@@ -317,7 +325,7 @@ const createStripeCheckout = async ({ stripe, order, attemptKey, expiresAt }) =>
     line_items: [
       lineItem({
         name: `${order.application} remanufactured transmission`,
-        description: `${order.upgrade} package • ${order.warranty}. Exact application is tied to the VIN on this order.`,
+        description: `${order.upgrade} package • ${order.warranty}. Exact application is tied to the VIN on this order.${order.promotionCode ? ` Promotion ${order.promotionCode} applied (${dollars(order.promotionDiscount / 100)} off).` : ""}`,
         amount: order.unitPrice,
         taxCode: process.env.STRIPE_TRANSMISSION_TAX_CODE || "txcd_99999999",
         component: "transmission",
@@ -385,7 +393,11 @@ const officeSnapshot = ({ order, session, attemptKey, expiresAt, requestId }) =>
     text: [order.availability.title, order.availability.detail].filter(Boolean).join(" — "),
   },
   supplierUnitCostCents: order.supplierUnitCost,
+  listUnitPriceCents: order.listUnitPrice,
   customerUnitPriceCents: order.unitPrice,
+  promotionCode: order.promotionCode,
+  promotionDiscountCents: order.promotionDiscount,
+  promotionReservationId: order.promotionReservationId,
   coreDepositCents: order.coreDeposit,
   freightChargedCents: order.freight,
   supplierFreightCostCents: order.supplierFreightCost,
@@ -431,6 +443,63 @@ const syncOfficeOrder = async ({ order, session, attemptKey, expiresAt, requestI
   return { enabled: true };
 };
 
+const reserveOfficePromotion = async ({ order, payload, attemptKey, expiresAt, requestId, fetchImpl = fetch }) => {
+  const suppliedCode = clean(payload.promotionCode || payload["promotion-code"], 32).toUpperCase();
+  if (!suppliedCode) return { applied: false };
+  if (!/^[A-Z0-9][A-Z0-9_-]{2,31}$/.test(suppliedCode)) {
+    throw checkoutError(400, "Enter a valid promotion code.");
+  }
+  const endpoint = String(process.env.OFFICE_PROMOTION_RESERVE_URL || "").trim();
+  const secret = String(process.env.OFFICE_INTERNAL_INGEST_SECRET || "");
+  if (!endpoint || secret.length < 32) throw checkoutError(409, "Promotion codes are not available for this order yet.");
+  const url = new URL(endpoint);
+  const allowedOfficeHosts = new Set(["office.integritydrivetrain.com", "office-staging.integritydrivetrain.com"]);
+  if (url.protocol !== "https:" || !allowedOfficeHosts.has(url.hostname) || url.pathname !== "/.netlify/functions/internal-promotion") {
+    throw checkoutError(503, "Promotion verification is temporarily unavailable.");
+  }
+  const body = JSON.stringify({
+    requestId,
+    checkoutAttemptKey: attemptKey,
+    expiresAt,
+    code: suppliedCode,
+    customerEmail: order.customer.email,
+    listUnitPriceCents: order.listUnitPrice,
+    freightChargedCents: order.freight,
+    supplierUnitCostCents: order.supplierUnitCost,
+    supplierFreightCostCents: order.supplierFreightCost,
+  });
+  const timestamp = String(Math.floor(Date.now() / 1_000));
+  const signature = `sha256=${crypto.createHmac("sha256", secret).update(`${timestamp}.${body}`).digest("hex")}`;
+  let response;
+  try {
+    response = await fetchImpl(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Office-Timestamp": timestamp, "X-Office-Signature": signature },
+      body,
+      signal: AbortSignal.timeout(8_000),
+    });
+  } catch {
+    throw checkoutError(503, "Promotion verification is temporarily unavailable.");
+  }
+  const result = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw checkoutError(response.status >= 500 ? 503 : 409, result.error || "That promotion code could not be applied.");
+  }
+  const discount = Number(result.discountCents);
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(String(result.reservationId || ""))
+      || result.code !== suppliedCode
+      || !Number.isSafeInteger(discount)
+      || discount <= 0
+      || discount >= order.listUnitPrice) {
+    throw checkoutError(503, "Promotion verification returned an invalid result.");
+  }
+  order.promotionCode = suppliedCode;
+  order.promotionDiscount = discount;
+  order.promotionReservationId = result.reservationId;
+  order.unitPrice = order.listUnitPrice - discount;
+  return { applied: true, code: suppliedCode, discountCents: discount };
+};
+
 const defaultStripeFactory = () => {
   const key = process.env.STRIPE_RESTRICTED_KEY || "";
   if (!key) throw checkoutError(503, "Secure checkout is not available yet.");
@@ -463,6 +532,8 @@ const createCheckoutHandler = ({ stripeFactory = defaultStripeFactory, quoteLoad
     const expiresAt = checkoutExpiry(payload);
     const order = await verifiedOrder(payload, quoteLoader);
     order.termsAcceptedAt = new Date().toISOString();
+    const requestId = event.headers?.["x-nf-request-id"] || crypto.randomUUID();
+    await reserveOfficePromotion({ order, payload, attemptKey, expiresAt, requestId, fetchImpl });
     const stripe = stripeFactory();
     const session = await createStripeCheckout({ stripe, order, attemptKey, expiresAt });
     if (!session?.id || !/^https:\/\/checkout\.stripe\.com\//i.test(session.url || "")) {
@@ -473,7 +544,7 @@ const createCheckoutHandler = ({ stripeFactory = defaultStripeFactory, quoteLoad
       session,
       attemptKey,
       expiresAt,
-      requestId: event.headers?.["x-nf-request-id"] || crypto.randomUUID(),
+      requestId,
       fetchImpl,
     });
     return jsonResponse(200, {
@@ -510,6 +581,7 @@ exports._internals = {
   stripeMetadata,
   officeSnapshot,
   parseVehicle,
+  reserveOfficePromotion,
   syncOfficeOrder,
   verifiedOrder,
 };

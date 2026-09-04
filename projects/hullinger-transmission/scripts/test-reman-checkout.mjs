@@ -271,6 +271,43 @@ assert.equal(freightOfficeRequest.url, "https://office.integritydrivetrain.com/.
 assert.match(freightOfficeRequest.options.headers["X-Office-Signature"], /^sha256=[a-f0-9]{64}$/);
 assert.equal(JSON.parse(freightOfficeRequest.options.body).phone, payload.phone);
 
+const promotedOrder = await checkout.verifiedOrder(payload, async () => quote);
+process.env.OFFICE_PROMOTION_RESERVE_URL = "https://office.integritydrivetrain.com/.netlify/functions/internal-promotion";
+process.env.OFFICE_INTERNAL_INGEST_SECRET = "p".repeat(64);
+let promotionOfficeRequest;
+await checkout.reserveOfficePromotion({
+  order: promotedOrder,
+  payload: { ...payload, promotionCode: "SAVE-50" },
+  attemptKey: "promotion-attempt-1234567890",
+  expiresAt: payload.checkoutExpiresAt,
+  requestId: "request-promotion-sync",
+  fetchImpl: async (url, options) => {
+    promotionOfficeRequest = { url: String(url), options };
+    return new Response(JSON.stringify({
+      accepted: true,
+      reservationId: "7f573082-2a5b-4d7f-a05f-2af8721af43b",
+      code: "SAVE-50",
+      discountCents: 5000,
+    }), { status: 200, headers: { "Content-Type": "application/json" } });
+  },
+});
+delete process.env.OFFICE_PROMOTION_RESERVE_URL;
+delete process.env.OFFICE_INTERNAL_INGEST_SECRET;
+assert.equal(promotionOfficeRequest.url, "https://office.integritydrivetrain.com/.netlify/functions/internal-promotion");
+assert.match(promotionOfficeRequest.options.headers["X-Office-Signature"], /^sha256=[a-f0-9]{64}$/);
+assert.equal(promotedOrder.listUnitPrice, 410000);
+assert.equal(promotedOrder.unitPrice, 405000);
+assert.equal(promotedOrder.promotionDiscount, 5000);
+const promotedSession = await checkout.createStripeCheckout({
+  stripe: fakeStripe,
+  order: promotedOrder,
+  attemptKey: "promotion-attempt-1234567890",
+  expiresAt: payload.checkoutExpiresAt,
+});
+assert.equal(calls.sessions.at(-1).params.line_items[0].price_data.unit_amount, 405000);
+assert.match(calls.sessions.at(-1).params.line_items[0].price_data.product_data.description, /SAVE-50/);
+assert.equal(checkout.officeSnapshot({ order: promotedOrder, session: promotedSession, attemptKey: "promotion-attempt-1234567890", expiresAt: payload.checkoutExpiresAt, requestId: "request" }).promotionDiscountCents, 5000);
+
 const statusHandler = status.createStatusHandler({
   stripeFactory: () => ({
     checkout: {
