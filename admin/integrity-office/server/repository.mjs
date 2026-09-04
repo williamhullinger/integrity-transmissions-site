@@ -745,13 +745,15 @@ export class PostgresOfficeRepository {
           availability_code, availability_text, supplier_unit_cost_cents, customer_unit_price_cents,
           core_deposit_cents, freight_charged_cents, supplier_freight_cost_cents, currency,
           supplier_snapshot, freight_snapshot, terms_version, terms_sha256,
+          policy_accepted_at, policy_acceptance,
           list_unit_price_cents, promotion_code, promotion_discount_cents
-        ) VALUES ($1,1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20)
+        ) VALUES ($1,1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22)
       `, [quote.rows[0].id, snapshot.selectionId, snapshot.application, snapshot.packageName,
         snapshot.warranty, snapshot.availability.code, snapshot.availability.text,
         snapshot.supplierUnitCostCents, snapshot.customerUnitPriceCents, snapshot.coreDepositCents,
         snapshot.freightChargedCents, snapshot.supplierFreightCostCents, snapshot.currency,
         snapshot.supplierSnapshot, snapshot.freightSnapshot, snapshot.termsVersion, snapshot.termsSha256,
+        snapshot.policyAcceptedAt, snapshot.policyAcceptance,
         snapshot.listUnitPriceCents, snapshot.promotionCode, snapshot.promotionDiscountCents]);
       const order = await client.query(`
         INSERT INTO orders (

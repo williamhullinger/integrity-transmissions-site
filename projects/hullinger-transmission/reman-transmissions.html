@@ -20,7 +20,7 @@
   <link rel="stylesheet" href="/modern-pages.css?v=20260903.1">
   <link rel="stylesheet" href="/seo-landing.css?v=20260903.1">
   <link rel="stylesheet" href="/contact.css?v=20260903.1">
-  <link rel="stylesheet" href="/commerce-guides.css?v=20260903.1">
+  <link rel="stylesheet" href="/commerce-guides.css?v=20260904.1">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Remanufactured Transmissions for Sale | Integrity">
   <meta property="og:description" content="Start with the VIN. Integrity verifies the application, price, warranty, freight and core terms before a reman transmission is ordered.">
@@ -610,11 +610,21 @@
               <label for="reman-message">Symptoms, Codes or Other Details</label>
               <textarea id="reman-message" name="message" rows="5" placeholder="Tell us what failed, any diagnostic codes, prior repairs, and what you need included in the quote."></textarea>
             </div>
-            <div class="form-field form-field--full">
-              <label class="form-consent" for="reman-acknowledgment">
-                <input id="reman-acknowledgment" name="quote-acknowledgment" type="checkbox" value="Understood" required>
-                <span>I agree to the <a href="/reman-order-terms" target="_blank" rel="noopener">Reman Transmission Order & Core Return Terms</a>. I understand that the displayed total includes a refundable core deposit, and that the correct, complete original transmission must be returned within 30 days and accepted before the core deposit and its applicable tax are refunded.</span>
+            <div class="form-field form-field--full reman-consent-group" aria-labelledby="reman-consent-heading">
+              <strong id="reman-consent-heading">Required purchase acknowledgments</strong>
+              <label class="form-consent" for="reman-purchase-terms">
+                <input id="reman-purchase-terms" name="purchase-terms-acceptance" type="checkbox" value="Accepted" required>
+                <span>I have had the opportunity to read and agree to the <a href="/legal/reman-policy-bundle-2026-09-04" target="_blank" rel="noopener">Reman Transmission Purchase Agreement (version 2026-09-04)</a>, including price, delivery, cancellation, return and refund terms.</span>
               </label>
+              <label class="form-consent" for="reman-core-warranty">
+                <input id="reman-core-warranty" name="core-warranty-acknowledgment" type="checkbox" value="Acknowledged" required>
+                <span>I understand the <a href="/legal/reman-policy-bundle-2026-09-04#core" target="_blank" rel="noopener">30-day core-return requirements</a> and have reviewed the <a href="/legal/reman-policy-bundle-2026-09-04#warranty-installation" target="_blank" rel="noopener">limited warranty, installer duties and claim procedure</a> for the selected package.</span>
+              </label>
+              <label class="form-consent" for="reman-electronic-consent">
+                <input id="reman-electronic-consent" name="electronic-records-consent" type="checkbox" value="Consented" required>
+                <span>I consent to electronic records and signatures for this purchase. I can view, print or save the agreement and may request a paper or electronic copy from Integrity at no charge.</span>
+              </label>
+              <p class="reman-consent-privacy">We use your information to verify fitment, process payment, arrange delivery and service the order as described in the <a href="/privacy" target="_blank" rel="noopener">Privacy Policy</a>. Transactional calls, texts or emails do not enroll you in recurring marketing.</p>
             </div>
           </div>
 
@@ -758,13 +768,13 @@
         All rights reserved.
       </p>
       <p>Serving Springfield, Ozark, Rogersville, Nixa, Republic & Southwest Missouri.</p>
-      <p><a href="/privacy">Privacy</a> • <a href="/reman-order-terms">Reman Order & Core Terms</a></p>
+      <p><a href="/customer-policies">Customer Policies</a> • <a href="/privacy">Privacy</a> • <a href="/website-terms">Website Terms</a></p>
       <p>Website by <a href="https://hullingerdigital.com/">Hullinger Digital</a>.</p>
     </div>
   </div>
 </footer>
   <!-- SITE_FOOTER_END -->
   <script src="/script.js?v=20260903.1" defer></script>
-  <script src="/vin-decoder.js?v=20260903.1" defer></script>
+  <script src="/vin-decoder.js?v=20260904.1" defer></script>
 </body>
 </html>

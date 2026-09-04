@@ -248,6 +248,13 @@ function initVinDecoder() {
       node("strong", "reman-package-card__price", currency.format(packageData.customerPrice)),
       node("span", "reman-package-card__label", "Transmission price"),
     );
+    if (packageData.warrantyDetailsUrl) {
+      const warrantyLink = node("a", "reman-package-card__warranty-link", "Read warranty and installer terms");
+      warrantyLink.href = packageData.warrantyDetailsUrl;
+      warrantyLink.target = "_blank";
+      warrantyLink.rel = "noopener";
+      card.append(warrantyLink);
+    }
 
     const core = node("div", "reman-core-line");
     core.append(
@@ -870,7 +877,9 @@ function initVinDecoder() {
           programmingCapability: fields["programming-capability"],
           vehicleUse: fields["vehicle-use-modifications"],
           driveType: fields["drive-type"],
-          termsAccepted: fields["quote-acknowledgment"] === "Understood",
+          purchaseTermsAccepted: fields["purchase-terms-acceptance"] === "Accepted",
+          coreWarrantyAcknowledged: fields["core-warranty-acknowledgment"] === "Acknowledged",
+          electronicRecordsConsented: fields["electronic-records-consent"] === "Consented",
           checkoutAttemptId: checkoutAttempt.id,
           checkoutExpiresAt: checkoutAttempt.expiresAt,
           promotionCode: fields["promotion-code"] || "",

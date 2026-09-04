@@ -493,6 +493,16 @@
   text-transform: uppercase;
 }
 
+.reman-package-card__warranty-link {
+  display: inline-block;
+  margin-top: 0.55rem;
+  color: var(--accent-dark, #9b4308);
+  font-size: 0.76rem;
+  font-weight: 850;
+  text-decoration: underline;
+  text-underline-offset: 0.16em;
+}
+
 .reman-core-line {
   display: flex;
   gap: 0.5rem;
@@ -722,6 +732,51 @@
   text-underline-offset: 0.16em;
 }
 
+.reman-consent-group {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: #fffaf5;
+  border: 1px solid #e5d5c8;
+  border-radius: 12px;
+}
+
+.reman-consent-group > strong {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.national-reman-page .form-consent {
+  display: grid;
+  grid-template-columns: 1.2rem minmax(0, 1fr);
+  gap: 0.7rem;
+  align-items: start;
+  color: var(--text-soft);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.national-reman-page .form-consent input {
+  width: 1.1rem;
+  height: 1.1rem;
+  margin: 0.18rem 0 0;
+  accent-color: var(--accent-dark, #9b4308);
+}
+
+.reman-consent-privacy {
+  margin: 0;
+  color: var(--text-soft);
+  font-size: 0.72rem;
+  line-height: 1.5;
+}
+
+.reman-consent-privacy a {
+  color: #9b4308;
+  font-weight: 800;
+}
+
 .national-reman-page .quote-form__submit .btn:disabled {
   cursor: not-allowed;
   filter: grayscale(0.25);
@@ -864,6 +919,104 @@
 
 .reman-terms-content p:last-child {
   margin-bottom: 0;
+}
+
+.reman-terms-content a:not(.btn),
+.policy-center a:not(.btn) {
+  color: var(--accent-dark, #9b4308);
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 0.16em;
+}
+
+.policy-notice {
+  padding: 1.1rem 1.25rem;
+  color: #5f3a08;
+  background: #fff7df;
+  border: 1px solid #e7c47a;
+  border-left: 5px solid #c77822;
+  border-radius: 10px;
+}
+
+.policy-notice > strong {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  text-transform: uppercase;
+}
+
+.policy-notice p {
+  margin: 0.35rem 0 0;
+  color: inherit;
+  line-height: 1.6;
+}
+
+.policy-center {
+  display: grid;
+  gap: 2rem;
+}
+
+.policy-center__intro {
+  max-width: 760px;
+}
+
+.policy-center__intro h2 {
+  margin: 0.35rem 0 0.6rem;
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  line-height: 0.98;
+  text-transform: uppercase;
+}
+
+.policy-center__intro p:last-child {
+  color: var(--text-soft);
+  line-height: 1.7;
+}
+
+.policy-card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.policy-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: clamp(1.2rem, 2.5vw, 1.8rem);
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 14px 38px rgba(25, 21, 18, 0.06);
+}
+
+.policy-card--featured {
+  border-top: 4px solid var(--accent);
+}
+
+.policy-card > span {
+  color: var(--accent-dark, #9b4308);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.policy-card h2 {
+  margin: 0.55rem 0 0;
+  font-family: var(--font-heading);
+  font-size: 1.65rem;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.policy-card p {
+  color: var(--text-soft);
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+
+.policy-card a {
+  margin-top: auto;
 }
 
 .reman-terms-contact {
@@ -1195,6 +1348,10 @@
   .reman-family-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .policy-card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 680px) {
@@ -1230,7 +1387,8 @@
   }
 
   .reman-family-search,
-  .reman-family-grid {
+  .reman-family-grid,
+  .policy-card-grid {
     grid-template-columns: 1fr;
   }
 

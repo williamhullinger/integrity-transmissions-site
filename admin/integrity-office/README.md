@@ -41,6 +41,7 @@ The public Netlify build uses the repository-root `netlify.toml` and never inclu
 - `db/001_initial.sql` — orders, immutable quotes, customers, vehicles, staff roles, promotions, payment records, double-entry journals, durable webhooks, outbox and audit controls
 - `db/002_office_runtime.sql` — promotion reservations, immutable retail discount snapshots, freight-recovery queue, reconciliation history and runtime indexes
 - `db/003_operational_controls.sql` — separation of duties, supplier-record integrity, Stripe session timestamps, refund allocations, payment-dispute tracking, access-revocation history, retry recovery counters and accounting controls
+- `db/004_policy_acceptance.sql` — immutable clickwrap version, SHA-256 fingerprint, accepted URL, timestamp and separate purchase/core-warranty/electronic-consent evidence
 - `domain/order-state.mjs` — enforceable payment, fulfillment, core, promotion, margin and journal rules
 - `server/` — authentication, authorization, HTTP validation, database repositories, Office APIs, checkout ingestion, Stripe reconciliation and event processing
 - `functions/` — isolated Netlify entry points for the staff API, signed internal intake, Stripe webhooks, scheduled event processing and signed notification delivery

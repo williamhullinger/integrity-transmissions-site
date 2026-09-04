@@ -4,7 +4,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const testRoot = path.dirname(fileURLToPath(import.meta.url));
-const sql = `${await readFile(path.resolve(testRoot, "../db/001_initial.sql"), "utf8")}\n${await readFile(path.resolve(testRoot, "../db/002_office_runtime.sql"), "utf8")}\n${await readFile(path.resolve(testRoot, "../db/003_operational_controls.sql"), "utf8")}`;
+const sql = `${await readFile(path.resolve(testRoot, "../db/001_initial.sql"), "utf8")}\n${await readFile(path.resolve(testRoot, "../db/002_office_runtime.sql"), "utf8")}\n${await readFile(path.resolve(testRoot, "../db/003_operational_controls.sql"), "utf8")}\n${await readFile(path.resolve(testRoot, "../db/004_policy_acceptance.sql"), "utf8")}`;
 const repository = await readFile(path.resolve(testRoot, "../server/repository.mjs"), "utf8");
 
 for (const requiredControl of [
@@ -34,6 +34,8 @@ for (const requiredControl of [
   "payment_disputes",
   "payment_disputes_no_delete",
   "last_event_created_at",
+  "policy_acceptance_evidence",
+  "electronicRecordsConsented",
   "Dispute losses and fees",
   "refund_allocations_must_balance",
   "promotion_separation_of_duties",

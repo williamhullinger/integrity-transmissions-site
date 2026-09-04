@@ -14,6 +14,7 @@ const LOOKUP_LIMIT = 12;
 const CACHE_TTL_MS = 3 * 60 * 1000;
 const requestCounts = new Map();
 const catalogCache = new Map();
+const WARRANTY_DETAILS_URL = "/legal/reman-policy-bundle-2026-09-04#warranty-installation";
 
 const headers = {
   "Content-Type": "application/json; charset=utf-8",
@@ -233,6 +234,7 @@ const toPublicCandidate = (vin, candidate) => {
       .map((packageData) => ({
         selectionId: selectionId(vin, candidate, upgrade, packageData),
         warranty: scrubText(packageData.warranty),
+        warrantyDetailsUrl: WARRANTY_DETAILS_URL,
         customerPrice: packageData.integrityRecommendedRetail,
         coreDeposit: candidate.coreCharge,
         subtotalBeforeFreightAndTax: Math.round((packageData.integrityRecommendedRetail + candidate.coreCharge) * 100) / 100,

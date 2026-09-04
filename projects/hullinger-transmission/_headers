@@ -27,6 +27,30 @@
   Cache-Control: no-store, max-age=0
   X-Robots-Tag: noindex, follow
 
+/legal/*
+  Cache-Control: no-store, max-age=0
+  X-Robots-Tag: noindex, follow
+
+/customer-policies
+  Cache-Control: no-store, max-age=0
+  X-Robots-Tag: noindex, follow
+
+/integrity-limited-warranty
+  Cache-Control: no-store, max-age=0
+  X-Robots-Tag: noindex, follow
+
+/service-policies
+  Cache-Control: no-store, max-age=0
+  X-Robots-Tag: noindex, follow
+
+/website-terms
+  Cache-Control: no-store, max-age=0
+  X-Robots-Tag: noindex, follow
+
+/privacy
+  Cache-Control: no-store, max-age=0
+  X-Robots-Tag: noindex, follow
+
 /api/*
   Cache-Control: no-store, max-age=0
   X-Robots-Tag: noindex, nofollow, noarchive

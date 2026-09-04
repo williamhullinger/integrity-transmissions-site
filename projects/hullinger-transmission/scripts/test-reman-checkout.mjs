@@ -10,6 +10,17 @@ const { _internals: freightAssistance } = require("../../../netlify/functions/re
 const { _internals: status } = require("../../../netlify/functions/reman-order-status.js");
 const { _internals: webhook } = require("../../../netlify/functions/stripe-webhook.js");
 
+const storefrontHtml = readFileSync(resolve(import.meta.dirname, "../reman-transmissions.html"), "utf8");
+for (const consentName of [
+  "purchase-terms-acceptance",
+  "core-warranty-acknowledgment",
+  "electronic-records-consent",
+]) {
+  assert.match(storefrontHtml, new RegExp(`name=["']${consentName}["'][^>]*required`, "i"), `${consentName} must be an affirmative required checkbox`);
+}
+assert.match(storefrontHtml, /\/legal\/reman-policy-bundle-2026-09-04/);
+assert.match(storefrontHtml, /href=["']\/privacy["']/);
+
 const selected = {
   candidate: {
     family: "10R80",
@@ -78,7 +89,9 @@ const payload = {
   mileage: "125000",
   vehicleUse: "Daily driving",
   message: "No modifications",
-  termsAccepted: true,
+  purchaseTermsAccepted: true,
+  coreWarrantyAcknowledged: true,
+  electronicRecordsConsented: true,
   "catalog-unit-price": "4100.00",
   "catalog-core-deposit": "1500.00",
   checkoutAttemptId: "123e4567-e89b-12d3-a456-426614174000",
@@ -154,11 +167,27 @@ assert.deepEqual(sessionParams.line_items.map((item) => item.metadata.order_comp
 ]);
 assert.doesNotMatch(JSON.stringify(sessionParams), /wholesale|ACE authenticated|Distributor Partner/i);
 assert.equal(calls.sessions[0].options.idempotencyKey.startsWith("reman_session_"), true);
-assert.equal(sessionParams.metadata.terms_version, "2026-09-03");
-const termsPath = resolve(import.meta.dirname, "../reman-order-terms.html");
+assert.equal(sessionParams.metadata.terms_version, "2026-09-04");
+assert.equal(sessionParams.metadata.acceptance_method, "clickwrap");
+assert.equal(sessionParams.metadata.purchase_terms_accepted, "true");
+assert.equal(sessionParams.metadata.core_warranty_acknowledged, "true");
+assert.equal(sessionParams.metadata.electronic_records_consented, "true");
+assert.equal(sessionParams.metadata.policy_bundle_url, "https://integritydrivetrain.com/legal/reman-policy-bundle-2026-09-04");
+assert.equal(sessionParams.metadata.warranty_provider, "ACE Transmission Remanufacturing");
+assert.equal(sessionParams.metadata.warranty_publication_url, "https://acetransmissionreman.com/warranty/");
+assert.equal(sessionParams.metadata.warranty_publication_checked_on, "2026-09-04");
+const termsPath = resolve(import.meta.dirname, "../legal/reman-policy-bundle-2026-09-04.html");
 const currentTermsHash = createHash("sha256").update(readFileSync(termsPath)).digest("hex");
 assert.equal(sessionParams.metadata.terms_sha256, currentTermsHash, "Checkout terms fingerprint must match the published terms file");
 assert.match(sessionParams.metadata.terms_accepted_at, /^\d{4}-\d{2}-\d{2}T/);
+
+for (const [field, message] of [
+  ["purchaseTermsAccepted", /purchase agreement/i],
+  ["coreWarrantyAcknowledged", /core-return, limited warranty and installation/i],
+  ["electronicRecordsConsented", /electronic records and signatures/i],
+]) {
+  assert.throws(() => checkout.customerInput({ ...payload, [field]: false }), message);
+}
 
 const tamperedPrice = await handler({
   httpMethod: "POST",
@@ -243,6 +272,13 @@ assert.equal(officePayload.supplierUnitCostCents, 360000);
 assert.equal(officePayload.stripeSessionCreatedAt, officeSession.created);
 assert.equal(officePayload.customerUnitPriceCents - officePayload.supplierUnitCostCents, 50000);
 assert.equal(officePayload.supplierSnapshot.partUid, "ace-part-test-123");
+assert.equal(officePayload.supplierSnapshot.warrantyProvider, "ACE Transmission Remanufacturing");
+assert.equal(officePayload.policyAcceptance.version, "2026-09-04");
+assert.equal(officePayload.policyAcceptance.sha256, currentTermsHash);
+assert.equal(officePayload.policyAcceptance.acceptanceMethod, "clickwrap");
+assert.equal(officePayload.policyAcceptance.purchaseTermsAccepted, true);
+assert.equal(officePayload.policyAcceptance.coreWarrantyAcknowledged, true);
+assert.equal(officePayload.policyAcceptance.electronicRecordsConsented, true);
 
 const assistancePayload = freightAssistance.normalizeRequest({
   publicReference: "123e4567-e89b-12d3-a456-426614174000",

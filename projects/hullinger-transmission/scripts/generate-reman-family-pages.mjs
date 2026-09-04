@@ -224,7 +224,7 @@ ${header}
       ${family.buyingNotes.map(([heading, text], index) => `<article class="seo-card"><span class="seo-card__number">${String(index + 1).padStart(2, "0")}</span><h3>${escapeHtml(heading)}</h3><p>${escapeHtml(text)}</p></article>`).join("\n      ")}
     </div></div></section>
 
-    <section class="section reman-family-cta"><div class="container seo-final"><p class="eyebrow">Shop ${family.unit} Options</p><h2>Get the current VIN-matched price.</h2><p>Have the VIN ready. You can review the package, warranty, core deposit, availability and freight before making a payment.</p><div class="seo-final__actions"><a class="btn btn-primary" href="${shopUrl}">Find My ${family.unit}</a><a class="btn btn-dark" href="/reman-order-terms">Read Order & Core Terms</a></div></div></section>
+    <section class="section reman-family-cta"><div class="container seo-final"><p class="eyebrow">Shop ${family.unit} Options</p><h2>Get the current VIN-matched price.</h2><p>Have the VIN ready. You can review the package, warranty, core deposit, availability and freight before making a payment.</p><div class="seo-final__actions"><a class="btn btn-primary" href="${shopUrl}">Find My ${family.unit}</a><a class="btn btn-dark" href="/legal/reman-policy-bundle-2026-09-04">Read Purchase Terms</a></div></div></section>
 
     <section class="section section-soft"><div class="container"><div class="seo-section-heading"><p class="eyebrow">Questions</p><h2>${family.unit} ordering questions</h2></div><div class="seo-faq-list">
       ${faq.map(([question, answer]) => `<article class="seo-faq-item"><h3>${escapeHtml(question)}</h3><p>${escapeHtml(answer)}</p></article>`).join("\n      ")}

@@ -60,7 +60,7 @@ Refunds remain Stripe-authoritative. A successful Stripe refund event creates an
 
 ## Internal storefront ingestion
 
-`POST /.netlify/functions/internal-ingest` accepts the server-verified checkout snapshot from the public storefront. It is not a browser API. The storefront signs the exact request body and a five-minute timestamp with `OFFICE_INTERNAL_INGEST_SECRET`. Integrity Office validates that HMAC before creating the customer, vehicle, immutable quote, order, Checkout Session link, initial workflow history, and audit record in one transaction.
+`POST /.netlify/functions/internal-ingest` accepts the server-verified checkout snapshot from the public storefront. It is not a browser API. The storefront signs the exact request body and a five-minute timestamp with `OFFICE_INTERNAL_INGEST_SECRET`. Integrity Office validates that HMAC before creating the customer, vehicle, immutable quote, order, Checkout Session link, initial workflow history, and audit record in one transaction. The immutable quote also stores the accepted policy-bundle version, SHA-256 fingerprint, public archive URL, acceptance timestamp, clickwrap method, and separate affirmative purchase-terms, core/warranty, and electronic-record consent flags.
 
 `POST /.netlify/functions/internal-freight` accepts a separately signed callback request after automatic freight retries are exhausted. It idempotently creates one `freight_quote_requests` queue record keyed by the customer-visible lead reference. The browser cannot call or sign this endpoint directly; the public `reman-freight-assistance` function validates and forwards the request while the existing Netlify form submission remains a redundant notification channel.
 

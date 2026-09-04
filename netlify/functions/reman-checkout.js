@@ -5,8 +5,12 @@ const { _internals: catalog } = require("./reman-catalog.js");
 const { _internals: shipping } = require("./reman-shipping.js");
 
 const SITE_URL = "https://integritydrivetrain.com";
-const TERMS_VERSION = "2026-09-03";
-const TERMS_SHA256 = "2a50eb8026ab66a6a4126381f66a7436c809f714ead78f2c784019884b5615be";
+const TERMS_VERSION = "2026-09-04";
+const TERMS_SHA256 = "ba7ac819aa6c4dbab8cdbaee9b1ed8525c8f68c52bedffd8605061cb1abe3022";
+const POLICY_BUNDLE_URL = `${SITE_URL}/legal/reman-policy-bundle-2026-09-04`;
+const WARRANTY_PROVIDER = "ACE Transmission Remanufacturing";
+const WARRANTY_PUBLICATION_URL = "https://acetransmissionreman.com/warranty/";
+const WARRANTY_PUBLICATION_CHECKED_ON = "2026-09-04";
 const CHECKOUT_WINDOW_MS = 10 * 60 * 1000;
 const CHECKOUT_LIMIT = 6;
 const requestCounts = new Map();
@@ -108,9 +112,29 @@ const customerInput = (payload) => {
   ].includes(coreReturnFreight)) {
     throw checkoutError(409, "Choose whether to include prepaid core-return shipping before checkout.");
   }
-  if (payload.termsAccepted !== true) throw checkoutError(400, "Accept the order and core-return terms before checkout.");
+  if (payload.purchaseTermsAccepted !== true) {
+    throw checkoutError(400, "Accept the reman transmission purchase agreement before checkout.");
+  }
+  if (payload.coreWarrantyAcknowledged !== true) {
+    throw checkoutError(400, "Acknowledge the core-return, limited warranty and installation requirements before checkout.");
+  }
+  if (payload.electronicRecordsConsented !== true) {
+    throw checkoutError(400, "Consent to electronic records and signatures before checkout.");
+  }
 
-  return { name, email, phone, address, deliveryLocation, coreReturnFreight };
+  return {
+    name,
+    email,
+    phone,
+    address,
+    deliveryLocation,
+    coreReturnFreight,
+    policyAcceptance: {
+      purchaseTermsAccepted: true,
+      coreWarrantyAcknowledged: true,
+      electronicRecordsConsented: true,
+    },
+  };
 };
 
 const requiredChoice = (payload, camelName, formName, allowed, message) => {
@@ -222,6 +246,9 @@ const stripeMetadata = (order) => ({
   application: order.application,
   upgrade: order.upgrade,
   warranty: order.warranty,
+  warranty_provider: WARRANTY_PROVIDER,
+  warranty_publication_url: WARRANTY_PUBLICATION_URL,
+  warranty_publication_checked_on: WARRANTY_PUBLICATION_CHECKED_ON,
   selection_id: order.selectionId,
   availability: order.availability.code,
   unit_price: dollars(order.unitPrice / 100),
@@ -241,6 +268,11 @@ const stripeMetadata = (order) => ({
   terms_version: TERMS_VERSION,
   terms_sha256: TERMS_SHA256,
   terms_accepted_at: order.termsAcceptedAt,
+  policy_bundle_url: POLICY_BUNDLE_URL,
+  acceptance_method: "clickwrap",
+  purchase_terms_accepted: "true",
+  core_warranty_acknowledged: "true",
+  electronic_records_consented: "true",
 });
 
 const stripeAddress = (address) => ({
@@ -299,7 +331,7 @@ const createStripeCheckout = async ({ stripe, order, attemptKey, expiresAt }) =>
       enabled: true,
       invoice_data: {
         description: `VIN-matched remanufactured transmission order for ${order.vin}`,
-        footer: "The core deposit is refundable after the correct, complete core is returned within 30 days and accepted under Integrity's core-return terms. Applicable tax is adjusted with an approved core refund.",
+        footer: `Purchase agreement ${TERMS_VERSION}: ${POLICY_BUNDLE_URL}. The core deposit is refundable after the correct, complete core is returned within 30 days and accepted. Applicable tax is adjusted with an approved core refund.`,
         custom_fields: [
           { name: "VIN", value: order.vin },
           { name: "Package", value: clean(`${order.application} / ${order.upgrade} / ${order.warranty}`, 140) },
@@ -314,7 +346,7 @@ const createStripeCheckout = async ({ stripe, order, attemptKey, expiresAt }) =>
     },
     custom_text: {
       submit: {
-        message: "Payment is made to Integrity Transmission & Drivetrain. The VIN-matched package, availability, price and delivery rate were refreshed before this checkout opened.",
+        message: `Payment is made to Integrity Transmission & Drivetrain. You accepted reman purchase agreement ${TERMS_VERSION} before this page opened. The VIN match, package, price, availability and delivery rate were refreshed.`,
       },
       after_submit: {
         message: "We begin final fitment review after payment is confirmed. If we cannot supply the correct unit, your order will be refunded.",
@@ -409,6 +441,9 @@ const officeSnapshot = ({ order, session, attemptKey, expiresAt, requestId }) =>
     application: order.application,
     packageName: order.upgrade,
     availability: order.availability,
+    warrantyProvider: WARRANTY_PROVIDER,
+    warrantyPublicationUrl: WARRANTY_PUBLICATION_URL,
+    warrantyPublicationCheckedOn: WARRANTY_PUBLICATION_CHECKED_ON,
   },
   freightSnapshot: {
     carrier: order.rate.carrier,
@@ -419,6 +454,14 @@ const officeSnapshot = ({ order, session, attemptKey, expiresAt, requestId }) =>
   },
   termsVersion: TERMS_VERSION,
   termsSha256: TERMS_SHA256,
+  policyAcceptance: {
+    version: TERMS_VERSION,
+    sha256: TERMS_SHA256,
+    url: POLICY_BUNDLE_URL,
+    acceptedAt: order.termsAcceptedAt,
+    acceptanceMethod: "clickwrap",
+    ...order.customer.policyAcceptance,
+  },
 });
 
 const syncOfficeOrder = async ({ order, session, attemptKey, expiresAt, requestId, fetchImpl = fetch }) => {

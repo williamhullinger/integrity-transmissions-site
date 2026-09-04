@@ -55,8 +55,18 @@ test("storefront checkout ingestion requires a fresh HMAC and preserves the veri
     currency: "usd",
     supplierSnapshot: { application: "10R80" },
     freightSnapshot: { carrier: "Carrier" },
-    termsVersion: "2026-09-03",
+    termsVersion: "2026-09-04",
     termsSha256: "a".repeat(64),
+    policyAcceptance: {
+      version: "2026-09-04",
+      sha256: "a".repeat(64),
+      url: "https://integritydrivetrain.com/legal/reman-policy-bundle-2026-09-04",
+      acceptedAt: new Date().toISOString(),
+      acceptanceMethod: "clickwrap",
+      purchaseTermsAccepted: true,
+      coreWarrantyAcknowledged: true,
+      electronicRecordsConsented: true,
+    },
   };
   const raw = JSON.stringify(snapshot);
   const timestamp = String(Math.floor(Date.now() / 1000));
@@ -72,12 +82,23 @@ test("storefront checkout ingestion requires a fresh HMAC and preserves the veri
   assert.equal(received.supplierUnitCostCents, 360000);
   assert.equal(received.customer.email, "customer@example.com");
   assert.match(received.stripeSessionCreatedAt, /^\d{4}-\d{2}-\d{2}T/);
+  assert.match(received.policyAcceptedAt, /^\d{4}-\d{2}-\d{2}T/);
+  assert.equal(received.policyAcceptance.acceptanceMethod, "clickwrap");
   assert.equal(ingestInternals.verifySignature({ raw, timestamp: String(Number(timestamp) - 301), signature, secret }), false);
 
   const unsupportedRaw = JSON.stringify({ ...snapshot, currency: "cad" });
   const unsupportedSignature = `sha256=${crypto.createHmac("sha256", secret).update(`${timestamp}.${unsupportedRaw}`).digest("hex")}`;
   const unsupported = await handler({ httpMethod: "POST", headers: { "x-office-timestamp": timestamp, "x-office-signature": unsupportedSignature }, body: unsupportedRaw });
   assert.equal(unsupported.statusCode, 400);
+
+  const missingConsentRaw = JSON.stringify({ ...snapshot, policyAcceptance: undefined });
+  const missingConsentSignature = `sha256=${crypto.createHmac("sha256", secret).update(`${timestamp}.${missingConsentRaw}`).digest("hex")}`;
+  const missingConsent = await handler({
+    httpMethod: "POST",
+    headers: { "x-office-timestamp": timestamp, "x-office-signature": missingConsentSignature },
+    body: missingConsentRaw,
+  });
+  assert.equal(missingConsent.statusCode, 400, "Office must reject a checkout without durable clickwrap evidence");
 });
 
 test("freight recovery ingestion validates contact data and deduplicates by public reference", async () => {

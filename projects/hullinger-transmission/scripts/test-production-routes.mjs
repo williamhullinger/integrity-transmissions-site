@@ -77,6 +77,21 @@ for (const canonical of canonicalUrls) {
   }
 }
 
+for (const policyPath of [
+  "/customer-policies",
+  "/integrity-limited-warranty",
+  "/service-policies",
+  "/website-terms",
+  "/privacy",
+  "/legal/reman-policy-bundle-2026-09-04",
+]) {
+  const response = await fetch(`${origin}${policyPath}`, { redirect: "manual" });
+  const body = await response.text();
+  if (response.status !== 200) failures.push(`${policyPath}: expected policy route 200, received ${response.status}`);
+  if (!body.includes(`https://integritydrivetrain.com${policyPath}`)) failures.push(`${policyPath}: missing matching canonical URL`);
+  if (!/name="robots" content="noindex, follow"/i.test(body)) failures.push(`${policyPath}: missing noindex policy directive`);
+}
+
 for (const [from, to, status] of redirectRules.filter(([, , status]) => status !== 200)) {
   const testPath = from.replace("*", "contract-test");
   const response = await fetch(`${origin}${testPath}`, { redirect: "manual" });

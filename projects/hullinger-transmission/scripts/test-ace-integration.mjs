@@ -345,6 +345,7 @@ try {
   assert.equal(publicPayload.vehicle.model, "F-150");
   assert.equal(publicPayload.candidates[0].upgrades[0].packages[0].customerPrice, 3590.2);
   assert.equal(publicPayload.candidates[0].upgrades[0].packages[0].coreDeposit, 1500);
+  assert.equal(publicPayload.candidates[0].upgrades[0].packages[0].warrantyDetailsUrl, "/legal/reman-policy-bundle-2026-09-04#warranty-installation");
   assert.equal(publicPayload.candidates[0].upgrades[0].availability.code, "build_to_order");
   assert.equal(publicPayload.candidates[0].upgrades[0].availability.leadTime, "7–10 days");
   assert.equal(publicPayload.candidates[0].upgrades[1].name, "1000");

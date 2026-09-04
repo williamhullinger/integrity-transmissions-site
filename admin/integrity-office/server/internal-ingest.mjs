@@ -53,6 +53,33 @@ const parseSnapshot = (raw) => {
   if (listUnitPriceCents - supplierUnitCostCents !== 50_000 || freightChargedCents !== supplierFreightCostCents) {
     throw new TypeError("Invalid storefront margin snapshot");
   }
+  const termsVersion = boundedText(body.termsVersion, "termsVersion", 40);
+  const termsSha256 = boundedText(body.termsSha256, "termsSha256", 64);
+  const acceptance = body.policyAcceptance;
+  if (!acceptance || typeof acceptance !== "object" || Array.isArray(acceptance)) {
+    throw new TypeError("Missing policy acceptance evidence");
+  }
+  const policyAcceptedAt = new Date(boundedText(acceptance.acceptedAt, "policyAcceptance.acceptedAt", 40));
+  if (Number.isNaN(policyAcceptedAt.getTime())) throw new TypeError("Invalid policy acceptance time");
+  const policyAcceptance = {
+    version: boundedText(acceptance.version, "policyAcceptance.version", 40),
+    sha256: boundedText(acceptance.sha256, "policyAcceptance.sha256", 64),
+    url: boundedText(acceptance.url, "policyAcceptance.url", 255),
+    acceptedAt: policyAcceptedAt.toISOString(),
+    acceptanceMethod: boundedText(acceptance.acceptanceMethod, "policyAcceptance.acceptanceMethod", 40),
+    purchaseTermsAccepted: acceptance.purchaseTermsAccepted === true,
+    coreWarrantyAcknowledged: acceptance.coreWarrantyAcknowledged === true,
+    electronicRecordsConsented: acceptance.electronicRecordsConsented === true,
+  };
+  if (policyAcceptance.version !== termsVersion
+      || policyAcceptance.sha256 !== termsSha256
+      || policyAcceptance.acceptanceMethod !== "clickwrap"
+      || !policyAcceptance.purchaseTermsAccepted
+      || !policyAcceptance.coreWarrantyAcknowledged
+      || !policyAcceptance.electronicRecordsConsented
+      || !/^https:\/\/integritydrivetrain[.]com\/legal\/reman-policy-bundle-\d{4}-\d{2}-\d{2}$/.test(policyAcceptance.url)) {
+    throw new TypeError("Invalid policy acceptance evidence");
+  }
   return {
     requestId: boundedText(body.requestId, "requestId", 128),
     stripeSessionId: sessionId,
@@ -103,8 +130,10 @@ const parseSnapshot = (raw) => {
     currency,
     supplierSnapshot: body.supplierSnapshot && typeof body.supplierSnapshot === "object" ? body.supplierSnapshot : {},
     freightSnapshot: body.freightSnapshot && typeof body.freightSnapshot === "object" ? body.freightSnapshot : {},
-    termsVersion: boundedText(body.termsVersion, "termsVersion", 40),
-    termsSha256: boundedText(body.termsSha256, "termsSha256", 64),
+    termsVersion,
+    termsSha256,
+    policyAcceptedAt: policyAcceptedAt.toISOString(),
+    policyAcceptance,
   };
 };
 

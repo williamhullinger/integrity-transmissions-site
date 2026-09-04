@@ -6,6 +6,10 @@
 /reviews.html                                    /reviews                           301!
 /warranty.html                                   /warranty                          301!
 /privacy.html                                    /privacy                           301!
+/integrity-limited-warranty.html                 /integrity-limited-warranty       301!
+/customer-policies.html                          /customer-policies                 301!
+/service-policies.html                           /service-policies                  301!
+/website-terms.html                              /website-terms                    301!
 /contact.html                                    /contact                           301!
 /thank-you.html                                  /thank-you                         301!
 /review-thank-you.html                           /review-thank-you                  301!
@@ -33,7 +37,9 @@
 /reman-transmissions/700r4.html                  /reman-transmissions/700r4         301!
 /guides/transmission-problems.html               /guides/transmission-problems      301!
 /guides/cvt-transmission-problems.html           /guides/cvt-transmission-problems  301!
-/reman-order-terms.html                          /reman-order-terms                 301!
+/reman-order-terms.html                          /legal/reman-policy-bundle-2026-09-04 301!
+/reman-order-terms                               /legal/reman-policy-bundle-2026-09-04 301!
+/legal/reman-policy-bundle-2026-09-04.html       /legal/reman-policy-bundle-2026-09-04 301!
 /reman-order-success.html                        /reman-order-success               301!
 /staff/*                                         /404                              404!
 /ACE_INTEGRATION.md                              /404                              404!
