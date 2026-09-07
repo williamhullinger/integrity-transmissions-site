@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "@auth0/auth0-spa-js": "2.24.1",
-    "jose": "6.2.10",
+    "jose": "6.2.11",
     "pg": "8.23.0",
     "stripe": "22.6.1"
   },
