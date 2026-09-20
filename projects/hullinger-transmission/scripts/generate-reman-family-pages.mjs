@@ -11,7 +11,7 @@ const families = [
   {
     slug: "10r80",
     unit: "10R80",
-    image: "/images/seo-10r80-hero.webp",
+    image: "/images/reman-family-10r80.webp",
     applications: ["Ford F-150", "Ford Mustang", "Ford Expedition and Lincoln Navigator", "Ford Ranger", "Selected Ford Transit applications"],
     summary: "Ford's electronically controlled 10-speed automatic appears in several rear-wheel-drive and four-wheel-drive applications. Engine, drive type, model year, calibration and production changes can affect the correct unit.",
     buyingNotes: [
@@ -21,9 +21,45 @@ const families = [
     ],
   },
   {
+    slug: "6r80",
+    unit: "6R80",
+    image: "/images/reman-family-6r80.webp",
+    applications: ["Ford F-150", "Ford Mustang", "Ford Expedition and Lincoln Navigator", "Selected Ford Transit and utility applications"],
+    summary: "The Ford 6R80 six-speed automatic appears in rear-wheel-drive and four-wheel-drive trucks, SUVs and performance cars. Model year, engine, drive type, gear ratio, electronics and calibration must match the vehicle.",
+    buyingNotes: [
+      ["Strategy and lead frame", "Solenoid-body strategy, molded lead-frame and programming requirements vary. Confirm exactly which electronics are included and what setup the installer must perform."],
+      ["Converter and cooling", "Converter-clutch debris can circulate through the fluid system. The cooler and lines must meet the remanufacturer's written service requirements."],
+      ["Application differences", "Truck, SUV and performance applications can use different cases, outputs and calibration. Use the VIN and transmission identification data rather than appearance alone."],
+    ],
+  },
+  {
+    slug: "5r55s",
+    unit: "5R55S",
+    image: "/images/reman-family-5r55s.webp",
+    applications: ["Ford Mustang", "Selected Ford Explorer applications", "Selected Lincoln and Mercury rear-wheel-drive vehicles"],
+    summary: "The Ford 5R55S five-speed automatic is used in selected rear-wheel-drive Ford, Lincoln and Mercury applications. Case, output, converter, valve-body and calibration details must be confirmed before ordering.",
+    buyingNotes: [
+      ["Servo and case wear", "Servo-bore wear and hydraulic leakage can affect band application and shift quality. Ask how the reman package addresses the complete hydraulic cause."],
+      ["Application matching", "Mustang and utility applications are not interchangeable by family name alone. VIN, tag, drive type and production information matter."],
+      ["Installation setup", "Cooler service, correct fluid, programming where required and an intentional road test are part of the replacement plan."],
+    ],
+  },
+  {
+    slug: "4r100",
+    unit: "4R100",
+    image: "/images/reman-family-4r100.webp",
+    applications: ["Ford Super Duty trucks", "Ford Excursion", "Ford E-Series vans", "Gas and 7.3L diesel work-vehicle applications"],
+    summary: "The heavy-duty Ford 4R100 four-speed automatic serves gas and diesel trucks, SUVs and vans. Engine, vehicle weight, drive type, output configuration, converter and work load must be included in the match.",
+    buyingNotes: [
+      ["Gas or diesel", "Converter, calibration and internal requirements differ across gas and 7.3L diesel applications. The VIN and unit tag are essential."],
+      ["Work and towing load", "Vehicle weight, trailer weight, heat history and use help determine the suitable converter, clutch and cooling package."],
+      ["Fluid-system protection", "A replacement needs a clean cooler circuit, correct converter installation and verified line pressure and electronics before returning to service."],
+    ],
+  },
+  {
     slug: "6l80",
     unit: "6L80",
-    image: "/images/seo-6l80-6l90-hero.webp",
+    image: "/images/reman-family-6l80.webp",
     applications: ["Chevrolet Silverado 1500", "GMC Sierra 1500", "Tahoe, Suburban, Yukon and Escalade", "Camaro and Corvette", "Selected GM vans and utility vehicles"],
     summary: "The GM 6L80 six-speed automatic is used across trucks, SUVs and performance vehicles. The VIN, RPO information, engine, drive type and controller strategy all matter when matching a replacement.",
     buyingNotes: [
@@ -35,7 +71,7 @@ const families = [
   {
     slug: "6l90",
     unit: "6L90",
-    image: "/images/seo-6l80-6l90-hero.webp",
+    image: "/images/reman-family-6l90.webp",
     applications: ["Chevrolet Silverado HD", "GMC Sierra HD", "Chevrolet Express and GMC Savana", "Selected Cadillac and performance applications", "Commercial GM vehicles"],
     summary: "The heavier-duty GM 6L90 serves truck, van, commercial and selected performance applications. Vehicle weight rating, engine, output configuration and production information must be checked before ordering.",
     buyingNotes: [
@@ -47,7 +83,7 @@ const families = [
   {
     slug: "68rfe",
     unit: "68RFE",
-    image: "/images/seo-68rfe-hero.webp",
+    image: "/images/reman-family-68rfe.webp",
     applications: ["Ram 2500 with 6.7L Cummins", "Ram 3500 with 6.7L Cummins", "Stock and modified diesel trucks", "Towing and work-truck applications"],
     summary: "The 68RFE six-speed automatic is widely used behind the 6.7L Cummins in Ram heavy-duty trucks. Tuning, tire size, towing weight, horsepower and vehicle use help determine the suitable upgrade level.",
     buyingNotes: [
@@ -57,9 +93,45 @@ const families = [
     ],
   },
   {
+    slug: "545rfe",
+    unit: "545RFE",
+    image: "/images/reman-family-545rfe.webp",
+    applications: ["Dodge Ram 1500", "Jeep Grand Cherokee and Commander", "Dodge Durango and Chrysler Aspen", "Selected Chrysler, Dodge and Jeep applications"],
+    summary: "The Chrysler 545RFE five-speed automatic appears in trucks and rear-wheel-drive or four-wheel-drive SUVs. Later related RFE applications can look similar, so VIN, model year, engine, drive type and unit identification all matter.",
+    buyingNotes: [
+      ["Identify the RFE variant", "45RFE, 545RFE and later related units share architecture but are not interchangeable solely by appearance. Use the VIN and transmission tag."],
+      ["Hydraulic integrity", "Solenoid-pack, valve-body, accumulator and pressure-control condition influence clutch life and shift quality."],
+      ["Cooling and converter", "Debris and heat from a converter or clutch failure must be addressed in the cooler, lines and installation procedure."],
+    ],
+  },
+  {
+    slug: "62te",
+    unit: "62TE",
+    image: "/images/reman-family-62te.webp",
+    applications: ["Chrysler Town & Country", "Dodge Grand Caravan", "Dodge Journey", "Ram ProMaster and selected transverse applications"],
+    summary: "The Chrysler 62TE is a six-speed transverse automatic transaxle used in minivans and selected crossover or commercial applications. Engine, final drive, electronics, case and production changes require VIN-based matching.",
+    buyingNotes: [
+      ["Transaxle configuration", "The differential, final drive, case and electronics are part of the unit. Similar-looking 62TE applications are not automatically interchangeable."],
+      ["Hydraulic and clutch damage", "Solenoid, valve-body and pressure problems can damage clutch packs and hard parts. A replacement plan should address the cause, not only the failed friction material."],
+      ["Programming and relearn", "Depending on the vehicle and supplied components, setup can include module procedures, quick-learn or adaptive relearning and fluid-level verification."],
+    ],
+  },
+  {
+    slug: "48re",
+    unit: "48RE",
+    image: "/images/reman-family-48re.webp",
+    applications: ["Dodge Ram 2500 with 5.9L Cummins", "Dodge Ram 3500 with 5.9L Cummins", "Stock, towing and modified diesel applications"],
+    summary: "The Dodge/Ram 48RE four-speed automatic is used behind the 5.9L Cummins in heavy-duty trucks. Engine tuning, towing load, tire size, converter, valve-body calibration and cooling materially affect the correct build level.",
+    buyingNotes: [
+      ["Disclose power changes", "Added fuel, turbo or tuning changes increase torque and can exceed a stock package's assumptions. Provide the complete engine setup."],
+      ["Converter and valve body", "Converter clutch capacity, line pressure, throttle-valve setup and shift calibration must work together for the truck's use."],
+      ["Overdrive and cooling", "Overdrive housing condition, direct and band apply, fluid temperature and cooler capacity deserve attention in towing or work service."],
+    ],
+  },
+  {
     slug: "4l60e",
     unit: "4L60E",
-    image: "/images/seo-4l60e-hero.webp",
+    image: "/images/reman-family-4l60e.webp",
     applications: ["Chevrolet and GMC half-ton trucks", "Tahoe, Suburban, Yukon and Escalade", "Camaro, Firebird and Corvette", "S-series trucks and utility vehicles", "Selected GM vans and rear-wheel-drive cars"],
     summary: "The 4L60E family covers many years and applications, with important differences in cases, shafts, converters, electronics and calibration. The VIN and transmission identification tag are essential.",
     buyingNotes: [
@@ -71,7 +143,7 @@ const families = [
   {
     slug: "4l80e",
     unit: "4L80E",
-    image: "/images/seo-4l80e-hero.webp",
+    image: "/images/reman-family-4l80e.webp",
     applications: ["Chevrolet and GMC heavy-duty trucks", "Express and Savana vans", "Suburban and commercial utility applications", "Motorhome and fleet applications", "Performance and conversion projects requiring verification"],
     summary: "The GM 4L80E is a heavy-duty four-speed automatic used in trucks, vans, fleet vehicles and specialty applications. Case style, speed sensors, converter and controller details vary by year and use.",
     buyingNotes: [
@@ -83,7 +155,7 @@ const families = [
   {
     slug: "700r4",
     unit: "700R4",
-    image: "/images/seo-700r4-hero.webp",
+    image: "/images/reman-family-700r4.webp",
     applications: ["Classic Chevrolet and GMC trucks", "Camaro, Firebird and Corvette", "Full-size GM rear-wheel-drive cars", "Street rods and verified conversion projects"],
     summary: "The hydraulically controlled 700R4 combines overdrive with classic GM applications. Correct year range, input and output configuration, converter, gearing, TV-cable setup and intended use must be matched carefully.",
     buyingNotes: [
@@ -146,6 +218,17 @@ const render = (family) => {
     ],
   };
   const shopUrl = `/reman-transmissions?family=${encodeURIComponent(family.unit)}#vin-quote`;
+  const serviceGuidePaths = {
+    "10r80": "/transmissions/10r80",
+    "6l80": "/transmissions/6l80-6l90",
+    "6l90": "/transmissions/6l80-6l90",
+    "68rfe": "/transmissions/68rfe",
+    "4l60e": "/transmissions/4l60e",
+    "4l80e": "/transmissions/4l80e",
+    "700r4": "/transmissions/700r4",
+  };
+  const serviceGuidePath = serviceGuidePaths[family.slug] || "/transmissions";
+  const serviceGuideLabel = serviceGuidePaths[family.slug] ? `${family.unit} Service Guide` : "Transmission Service Guides";
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -167,7 +250,7 @@ const render = (family) => {
   <link rel="stylesheet" href="/styles.css?v=20260903.1">
   <link rel="stylesheet" href="/modern-pages.css?v=20260903.1">
   <link rel="stylesheet" href="/seo-landing.css?v=20260903.1">
-  <link rel="stylesheet" href="/commerce-guides.css?v=20260903.1">
+  <link rel="stylesheet" href="/commerce-guides.css?v=20260920.1">
   <meta property="og:type" content="website">
   <meta property="og:title" content="${escapeHtml(title)}">
   <meta property="og:description" content="${escapeHtml(description)}">
@@ -230,7 +313,7 @@ ${header}
       ${faq.map(([question, answer]) => `<article class="seo-faq-item"><h3>${escapeHtml(question)}</h3><p>${escapeHtml(answer)}</p></article>`).join("\n      ")}
     </div></div></section>
 
-    <section class="section"><div class="container seo-final"><p class="eyebrow">Related Information</p><h2>Research before you order.</h2><div class="seo-final__actions"><a class="btn btn-secondary" href="/transmissions/${family.slug === "6l80" || family.slug === "6l90" ? "6l80-6l90" : family.slug}">${family.unit} Service Guide</a><a class="btn btn-secondary" href="/guides/transmission-problems">Transmission Problems Guide</a><a class="btn btn-secondary" href="/reman-transmissions">All Reman Options</a></div></div></section>
+    <section class="section"><div class="container seo-final"><p class="eyebrow">Related Information</p><h2>Research before you order.</h2><div class="seo-final__actions"><a class="btn btn-secondary" href="${serviceGuidePath}">${serviceGuideLabel}</a><a class="btn btn-secondary" href="/guides/transmission-problems">Transmission Problems Guide</a><a class="btn btn-secondary" href="/reman-transmissions">All Reman Options</a></div></div></section>
   </main>
   <!-- SITE_FOOTER_START -->
 ${footer}
