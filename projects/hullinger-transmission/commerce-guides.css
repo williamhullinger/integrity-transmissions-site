@@ -51,8 +51,10 @@
 .powertrain-category-card img {
   display: block;
   width: 100%;
+  height: auto;
   aspect-ratio: 3 / 2;
-  object-fit: cover;
+  object-fit: contain;
+  object-position: center;
   background: #d2d0cd;
 }
 
@@ -90,6 +92,108 @@
 
 .powertrain-category-card .btn {
   margin-top: auto;
+}
+
+.reman-quality-section {
+  background: #ffffff;
+}
+
+.reman-quality-section .seo-section-heading {
+  max-width: 880px;
+}
+
+.reman-quality-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.reman-quality-card {
+  padding: clamp(1.25rem, 2.5vw, 1.75rem);
+  background: #f4f1ec;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
+
+.reman-quality-card__number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.35rem;
+  height: 2.35rem;
+  margin-bottom: 1rem;
+  color: #ffffff;
+  background: var(--accent-dark, #b5520a);
+  border-radius: 50%;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.reman-quality-card h3 {
+  margin: 0 0 0.6rem;
+  font-family: var(--font-heading);
+  font-size: clamp(1.35rem, 2vw, 1.75rem);
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+
+.reman-quality-card p {
+  margin: 0;
+  color: var(--text-soft);
+  line-height: 1.65;
+}
+
+.reman-quality-assurance {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.65fr) minmax(0, 1.35fr);
+  gap: 1.25rem;
+  align-items: center;
+  margin-top: 1rem;
+  padding: 1.25rem 1.5rem;
+  color: #ffffff;
+  background: #151515;
+  border-left: 5px solid var(--accent, #f47b20);
+  border-radius: 12px;
+}
+
+.reman-quality-assurance strong {
+  font-family: var(--font-heading);
+  font-size: clamp(1.4rem, 2.5vw, 2rem);
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.reman-quality-assurance p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.6;
+}
+
+.reman-quality-summary {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.55fr) minmax(0, 1.45fr);
+  gap: 1.25rem;
+  align-items: center;
+  margin-top: 1.25rem;
+  padding: 1.25rem 1.5rem;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+
+.reman-quality-summary h3 {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: clamp(1.5rem, 2.5vw, 2.15rem);
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.reman-quality-summary p {
+  margin: 0;
+  color: var(--text-soft);
+  line-height: 1.65;
 }
 
 .conversion-panel {
@@ -1464,6 +1568,10 @@
   .policy-card-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .reman-quality-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 680px) {
@@ -1474,7 +1582,10 @@
   .nationwide-band__grid,
   .symptom-grid,
   .evidence-grid,
-  .guide-callout {
+  .guide-callout,
+  .reman-quality-grid,
+  .reman-quality-assurance,
+  .reman-quality-summary {
     grid-template-columns: 1fr;
   }
 

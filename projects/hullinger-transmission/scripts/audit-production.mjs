@@ -64,6 +64,25 @@ if (!process.argv.includes("--syntax-only")) {
     }
   }
 
+  const commerceStyles = readFileSync(join(siteRoot, "commerce-guides.css"), "utf8");
+  const powertrainCardImageRule = commerceStyles.match(/\.powertrain-category-card\s+img\s*\{([\s\S]*?)\}/)?.[1] || "";
+  if (!/height:\s*auto\s*;/.test(powertrainCardImageRule)) {
+    failures.push("commerce-guides.css: powertrain product-card images must preserve their aspect ratio");
+  }
+  if (!/object-fit:\s*contain\s*;/.test(powertrainCardImageRule)) {
+    failures.push("commerce-guides.css: powertrain product-card images must show the complete unit");
+  }
+
+  for (const filename of ["index.html", "reman-powertrain.html", "reman-engines.html", "reman-transmissions.html", "reman-transfer-cases.html"]) {
+    const remanPage = readFileSync(join(siteRoot, filename), "utf8");
+    if (!/data-reman-quality/.test(remanPage)) {
+      failures.push(`${filename}: missing customer-facing remanufacturing quality explanation`);
+    }
+    if (/\b(?:JASPER|ACE Transmission)\b/i.test(remanPage)) {
+      failures.push(`${filename}: public reman sales copy must remain supplier-neutral`);
+    }
+  }
+
   for (const page of publicHtml) {
     const html = readFileSync(page, "utf8");
     const label = relative(siteRoot, page);
