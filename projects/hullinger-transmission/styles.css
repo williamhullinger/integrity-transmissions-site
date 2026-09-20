@@ -935,7 +935,12 @@ html {
   line-height: 1.55;
 }
 
-.privacy-consent p a { color: #ffffff; }
+.privacy-consent p a {
+  color: #ffffff;
+  text-decoration: underline;
+  text-decoration-thickness: 0.1em;
+  text-underline-offset: 0.16em;
+}
 
 .privacy-consent__actions {
   display: flex;

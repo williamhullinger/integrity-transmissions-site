@@ -82,7 +82,7 @@
 
 .seo-proofbar__item span {
   margin-top: 0.42rem;
-  color: rgba(17, 17, 17, 0.72);
+  color: #252525;
   font-size: 0.82rem;
   font-weight: 700;
   line-height: 1.4;
@@ -301,6 +301,10 @@
 .seo-related {
   color: #ffffff;
   background: var(--surface-charcoal);
+}
+
+.section.seo-related .eyebrow {
+  color: var(--accent-light);
 }
 
 .seo-related__grid {
