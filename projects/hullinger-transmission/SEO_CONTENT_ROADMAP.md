@@ -1,6 +1,6 @@
 # Integrity SEO Content Roadmap
 
-Updated: September 2, 2026
+Updated: September 20, 2026
 
 ## Objective
 
@@ -9,7 +9,7 @@ Grow qualified search traffic for Integrity Transmission & Drivetrain without cr
 The content program has three jobs:
 
 1. Improve the pages Google is already testing for Springfield-area service searches.
-2. Build national demand around remanufactured transmission research and VIN-assisted quotes.
+2. Build national demand around remanufactured engine, transmission and transfer-case research and VIN-assisted quotes.
 3. Publish useful symptom and case-study resources that can earn links and convert readers into calls or quote requests.
 
 ## Current Search Baseline
@@ -62,6 +62,18 @@ These figures are Bing's selected-period impressions, not guaranteed monthly sea
 
 ## Content Completed in This Expansion
 
+### `/reman-powertrain`
+
+A national product hub that separates engines, transmissions and transfer cases into distinct customer paths while explaining fitment, freight, core and warranty expectations before purchase.
+
+### `/reman-engines`
+
+A VIN-first reman engine page and dedicated quote form covering engine code, emissions configuration, package contents, delivery type, warranty, core and nationwide freight.
+
+### `/reman-transfer-cases`
+
+A VIN-first transfer-case page and dedicated quote form covering drivetrain, shift type, case tag or RPO, package contents, warranty, core and nationwide freight.
+
 ### `/guides/transmission-problems`
 
 An original symptom guide covering slipping, delayed engagement, harsh shifting, no movement, loss of reverse, shudder, overheating, leaks, noises, and limp mode. It includes stop-driving guidance, an evidence checklist, repair-versus-rebuild-versus-reman context, FAQ schema, and relevant calls to action.
@@ -86,6 +98,8 @@ A search-demand-driven CVT guide covering normal versus abnormal RPM behavior, d
 | 6 | Honda CVT Problems | Make-specific research | Supported years/models, real examples, precise limitations |
 | 7 | Real 6L80/6L90 Diagnosis or Replacement Case Study | Commercial proof | Complete job record, photos, permission, outcome follow-up |
 | 8 | Real Towing/68RFE Case Study | Heavy-duty commercial proof | Duty cycle, modifications, failure evidence, solution, outcome |
+| 9 | Top Verified Reman Engine Families | National product demand | Active catalog, supported applications, contents, warranty and real availability |
+| 10 | Top Verified Transfer-Case Families | National product demand | Active catalog, tag/RPO rules, package contents, warranty and real availability |
 
 ## Case-Study Selection Rules
 
@@ -118,7 +132,8 @@ Every new guide should:
 ## Avoiding Keyword Cannibalization
 
 - Keep Springfield service intent on the existing service pages.
-- Keep national product/quote intent on `/reman-transmissions`.
+- Keep national category intent on `/reman-powertrain`, `/reman-engines`, `/reman-transmissions` and `/reman-transfer-cases`.
+- Create engine- or transfer-case-family pages only after the supplier catalog confirms real applications and support; do not publish speculative model lists.
 - Keep education and symptom intent in `/guides/`.
 - Keep transmission-family expertise in `/transmissions/`.
 - A guide may link to a service page, but it should not repeat the service page's title, H1, or core sales copy.
@@ -135,6 +150,8 @@ Track:
 - reman quote form starts and submissions;
 - calls and text clicks from guide and reman pages;
 - qualified lead rate, quote rate, and completed-order rate;
+- category views, product-family selections, freight completions and checkout starts;
+- scroll depth and form abandonment by product category;
 - links and referring domains earned by each asset; and
 - real customer questions that should change or expand the content queue.
 

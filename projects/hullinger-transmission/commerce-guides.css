@@ -27,6 +27,111 @@
   line-height: 0.98;
 }
 
+.commerce-hero::before {
+  background-color: #77736f;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.powertrain-category-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(1rem, 2.5vw, 1.6rem);
+  margin-top: 2.25rem;
+}
+
+.powertrain-category-card {
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: 0 24px 60px rgba(25, 21, 18, 0.1);
+}
+
+.powertrain-category-card img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  background: #d2d0cd;
+}
+
+.powertrain-category-card > div {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-height: 285px;
+  padding: 1.45rem;
+}
+
+.powertrain-category-card p {
+  margin: 0 0 0.35rem;
+  color: var(--accent-dark, #b5520a);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.powertrain-category-card h3 {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: clamp(1.75rem, 3vw, 2.4rem);
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.powertrain-category-card span {
+  display: block;
+  margin: 0.8rem 0 1.2rem;
+  color: var(--text-soft);
+  line-height: 1.6;
+}
+
+.powertrain-category-card .btn {
+  margin-top: auto;
+}
+
+.conversion-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(340px, 0.9fr);
+  gap: 2rem;
+  align-items: center;
+  padding: clamp(1.5rem, 4vw, 3rem);
+  color: #ffffff;
+  background: #151515;
+  border-radius: 20px;
+  box-shadow: 0 28px 70px rgba(25, 21, 18, 0.18);
+}
+
+.conversion-panel h2 {
+  margin: 0;
+  color: #ffffff;
+  font-family: var(--font-heading);
+  font-size: clamp(2.3rem, 4.5vw, 4rem);
+  line-height: 0.96;
+  text-transform: uppercase;
+}
+
+.conversion-panel p:not(.eyebrow) {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.conversion-panel__actions {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.conversion-panel .btn-secondary {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.seo-section-heading--light :is(h2, p) {
+  color: #ffffff;
+}
+
+
 .nationwide-band {
   color: #ffffff;
   background:
@@ -1329,6 +1434,11 @@
 }
 
 @media (max-width: 980px) {
+  .powertrain-category-grid,
+  .conversion-panel {
+    grid-template-columns: 1fr;
+  }
+
   .nationwide-band__grid,
   .evidence-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1357,6 +1467,10 @@
 }
 
 @media (max-width: 680px) {
+  .powertrain-category-grid {
+    grid-template-columns: 1fr;
+  }
+
   .nationwide-band__grid,
   .symptom-grid,
   .evidence-grid,

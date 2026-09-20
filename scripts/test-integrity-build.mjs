@@ -15,6 +15,9 @@ const publishedFiles = (await readdir(publishRoot, { recursive: true, withFileTy
 
 const requiredFiles = [
   "index.html",
+  "reman-powertrain.html",
+  "reman-engines.html",
+  "reman-transfer-cases.html",
   "reman-transmissions.html",
   "reman-transmissions/10r80.html",
   "reman-transmissions/4r100.html",
@@ -44,6 +47,9 @@ const requiredFiles = [
   "_headers",
   "_redirects",
   "images/reman-nationwide-shipping-hero.webp",
+  "images/reman-engine-assembly.webp",
+  "images/reman-transfer-case-assembly.webp",
+  "images/upgrade-selection-guide.webp",
 ];
 
 for (const file of requiredFiles) {

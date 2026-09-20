@@ -28,6 +28,9 @@
 /transmissions/700r4.html                        /transmissions/700r4               301!
 /transmissions/4l80e.html                        /transmissions/4l80e               301!
 /reman-transmissions.html                        /reman-transmissions               301!
+/reman-powertrain.html                           /reman-powertrain                  301!
+/reman-engines.html                              /reman-engines                     301!
+/reman-transfer-cases.html                       /reman-transfer-cases              301!
 /reman-transmissions/10r80.html                  /reman-transmissions/10r80         301!
 /reman-transmissions/4r100.html                  /reman-transmissions/4r100         301!
 /reman-transmissions/48re.html                   /reman-transmissions/48re          301!
@@ -67,3 +70,4 @@
 /api/reman-freight-assistance                    /.netlify/functions/reman-freight-assistance 200
 /api/reman-order-status                          /.netlify/functions/reman-order-status 200
 /api/stripe-webhook                              /.netlify/functions/stripe-webhook 200
+/api/analytics-config                            /.netlify/functions/analytics-config 200

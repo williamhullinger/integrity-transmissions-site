@@ -384,9 +384,9 @@ export const seoPages = [
       ["Is a transfer case leak urgent?", "It can be. Because transfer cases hold limited fluid, a leak can quickly lower the level enough to damage bearings, chains, gears or pumps."],
     ],
     related: [
+      ["/reman-transfer-cases", "Nationwide Units", "Request a VIN-verified reman transfer-case quote"],
       ["/services/differential", "Related Drivetrain", "Differential noise and repair"],
       ["/services/transmission-repair", "Symptom Review", "Separate transmission and drivetrain causes"],
-      ["/contact", "Request Service", "Send VIN, codes and four-wheel-drive symptoms"],
     ],
   },
   {

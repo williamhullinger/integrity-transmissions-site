@@ -146,7 +146,7 @@ const renderPage = (page) => {
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css?v=20260903.1">
+  <link rel="stylesheet" href="/styles.css?v=20260920.2">
   <link rel="stylesheet" href="/modern-pages.css?v=20260903.1">
   <link rel="stylesheet" href="/seo-landing.css?v=20260903.1">
   <meta property="og:type" content="website">
@@ -307,7 +307,7 @@ ${page.faqs.map(([question, answer]) => `          <article class="seo-faq-item"
   <!-- SITE_FOOTER_START -->
 ${footer}
   <!-- SITE_FOOTER_END -->
-  <script src="/script.js?v=20260903.1" defer></script>
+  <script src="/script.js?v=20260920.2" defer></script>
 </body>
 </html>
 `;

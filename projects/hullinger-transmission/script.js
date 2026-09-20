@@ -129,8 +129,12 @@ function initActiveNavLink() {
 
   if (currentPath.startsWith("/services/")) {
     currentPage = "services";
+  } else if (["/reman-powertrain", "/reman-engines", "/reman-transfer-cases"].includes(currentPath)) {
+    currentPage = "reman-powertrain";
   } else if (currentPath.startsWith("/reman-transmissions/")) {
-    currentPage = "reman-transmissions";
+    currentPage = "reman-powertrain";
+  } else if (currentPath === "/reman-transmissions") {
+    currentPage = "reman-powertrain";
   } else if (currentPath.startsWith("/transmissions/")) {
     currentPage = "transmissions";
   } else if (currentPath === "/service-area") {
@@ -162,11 +166,25 @@ function initActiveNavLink() {
 ========================================================= */
 
 function pushConversionEvent(eventName, details = {}) {
+  const allowedKeys = new Set([
+    "page_path", "destination", "form_name", "unit_type", "category",
+    "transmission_family", "upgrade_level", "warranty", "candidate_count",
+    "rate_count", "round_trip", "delivery_type", "scroll_percent", "link_host",
+    "value", "currency", "item_category",
+  ]);
+  const safeDetails = Object.fromEntries(Object.entries(details)
+    .filter(([key]) => allowedKeys.has(key))
+    .map(([key, value]) => [key, typeof value === "string" ? value.slice(0, 120) : value])
+    .filter(([, value]) => ["string", "number", "boolean"].includes(typeof value)));
+  const safeEventName = String(eventName || "").toLowerCase().replace(/[^a-z0-9_]/g, "_").slice(0, 40);
+
+  if (!safeEventName) return;
   window.dataLayer = window.dataLayer || [];
-  window.dataLayer.push({
-    event: eventName,
-    ...details,
-  });
+  window.integrityAnalyticsQueue = window.integrityAnalyticsQueue || [];
+  const eventData = { event: safeEventName, ...safeDetails };
+  window.dataLayer.push(eventData);
+  window.integrityAnalyticsQueue.push(eventData);
+  window.integrityAnalyticsDispatch?.(eventData);
 }
 
 function initConversionTracking() {
@@ -190,6 +208,17 @@ function initConversionTracking() {
   });
 
   document.querySelectorAll("form").forEach((form) => {
+    let started = false;
+    form.addEventListener("input", () => {
+      if (started) return;
+      started = true;
+      pushConversionEvent("quote_form_start", {
+        page_path: window.location.pathname,
+        form_name: form.getAttribute("name") || form.id || "unknown",
+        unit_type: form.querySelector('[name="unit-type"]')?.value || "service",
+      });
+    }, { once: true });
+
     form.addEventListener("submit", (event) => {
       queueMicrotask(() => {
         if (event.defaultPrevented) return;
@@ -197,10 +226,222 @@ function initConversionTracking() {
         pushConversionEvent("quote_form_submit", {
           page_path: window.location.pathname,
           form_name: form.getAttribute("name") || form.id || "unknown",
+          unit_type: form.querySelector('[name="unit-type"]')?.value || "service",
+        });
+        pushConversionEvent("generate_lead", {
+          page_path: window.location.pathname,
+          form_name: form.getAttribute("name") || form.id || "unknown",
+          unit_type: form.querySelector('[name="unit-type"]')?.value || "service",
         });
       });
     });
   });
+}
+
+
+/* =========================================================
+  CONSENT-CONTROLLED ANALYTICS
+========================================================= */
+
+const ANALYTICS_CONSENT_KEY = "integrity_analytics_consent_v1";
+
+function setAttributionFields() {
+  const params = new URLSearchParams(window.location.search);
+  const attribution = {
+    "utm-source": params.get("utm_source") || "",
+    "utm-medium": params.get("utm_medium") || "",
+    "utm-campaign": params.get("utm_campaign") || "",
+    "landing-page": window.location.pathname.slice(0, 160),
+    "referrer-host": (() => {
+      try { return document.referrer ? new URL(document.referrer).hostname.slice(0, 120) : ""; }
+      catch { return ""; }
+    })(),
+  };
+
+  document.querySelectorAll("[data-attribution-form]").forEach((form) => {
+    Object.entries(attribution).forEach(([name, value]) => {
+      const field = form.querySelector(`[name="${name}"]`);
+      if (field) field.value = value;
+    });
+  });
+}
+
+function createAnalyticsConsentPanel() {
+  const panel = document.createElement("aside");
+  panel.className = "privacy-consent";
+  panel.hidden = true;
+  panel.setAttribute("aria-labelledby", "privacy-consent-title");
+  panel.innerHTML = `
+    <h2 id="privacy-consent-title">Optional website analytics</h2>
+    <p>Allow anonymous usage analytics and session-quality tools so we can improve product pages and quote paths. We do not send VINs, names, phone numbers, email addresses, delivery addresses or payment details. Read our <a href="/privacy">Privacy Policy</a>.</p>
+    <div class="privacy-consent__actions">
+      <button class="btn btn-primary" type="button" data-analytics-allow>Allow Analytics</button>
+      <button class="btn btn-secondary" type="button" data-analytics-decline>Not Now</button>
+    </div>`;
+  document.body.appendChild(panel);
+  return panel;
+}
+
+function loadExternalScript(source, attributes = {}) {
+  if (document.querySelector(`script[src="${source}"]`)) return;
+  const script = document.createElement("script");
+  script.async = true;
+  script.src = source;
+  Object.entries(attributes).forEach(([name, value]) => script.setAttribute(name, value));
+  document.head.appendChild(script);
+}
+
+function activateAnalytics(config) {
+  if (window.integrityAnalyticsActive) return;
+  window.integrityAnalyticsActive = true;
+
+  if (config.ga4MeasurementId) {
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = window.gtag || function gtag() { window.dataLayer.push(arguments); };
+    window.gtag("consent", "default", {
+      ad_storage: "denied",
+      ad_user_data: "denied",
+      ad_personalization: "denied",
+      analytics_storage: "denied",
+    });
+    window.gtag("consent", "update", {
+      ad_storage: "denied",
+      ad_user_data: "denied",
+      ad_personalization: "denied",
+      analytics_storage: "granted",
+    });
+    window.gtag("js", new Date());
+    window.gtag("config", config.ga4MeasurementId, {
+      anonymize_ip: true,
+      allow_google_signals: false,
+      allow_ad_personalization_signals: false,
+    });
+    loadExternalScript(`https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(config.ga4MeasurementId)}`);
+  }
+
+  if (config.clarityProjectId) {
+    window.clarity = window.clarity || function clarity() {
+      (window.clarity.q = window.clarity.q || []).push(arguments);
+    };
+    loadExternalScript(`https://www.clarity.ms/tag/${encodeURIComponent(config.clarityProjectId)}`);
+    window.clarity("consentv2", { ad_Storage: "denied", analytics_Storage: "granted" });
+  }
+
+  window.integrityAnalyticsDispatch = (eventData) => {
+    const { event, ...parameters } = eventData;
+    if (config.ga4MeasurementId && typeof window.gtag === "function") {
+      window.gtag("event", event, parameters);
+    }
+    if (config.clarityProjectId && typeof window.clarity === "function") {
+      window.clarity("event", event);
+    }
+  };
+
+  (window.integrityAnalyticsQueue || []).forEach(window.integrityAnalyticsDispatch);
+  window.integrityAnalyticsQueue = [];
+}
+
+function initEngagementTracking() {
+  const category = document.body.dataset.analyticsCategory;
+  if (category) {
+    pushConversionEvent("view_product_category", {
+      page_path: window.location.pathname,
+      category,
+    });
+  }
+
+  const reached = new Set();
+  const onScroll = () => {
+    const available = document.documentElement.scrollHeight - window.innerHeight;
+    if (available <= 0) return;
+    const percent = Math.round((window.scrollY / available) * 100);
+    [25, 50, 75, 90].forEach((threshold) => {
+      if (percent >= threshold && !reached.has(threshold)) {
+        reached.add(threshold);
+        pushConversionEvent("scroll_depth", {
+          page_path: window.location.pathname,
+          scroll_percent: threshold,
+        });
+      }
+    });
+  };
+  window.addEventListener("scroll", onScroll, { passive: true });
+
+  document.addEventListener("click", (event) => {
+    const link = event.target.closest("a[href]");
+    if (!link) return;
+    try {
+      const url = new URL(link.href, window.location.href);
+      if (url.origin !== window.location.origin && !["tel:", "sms:", "mailto:"].includes(url.protocol)) {
+        pushConversionEvent("outbound_click", {
+          page_path: window.location.pathname,
+          link_host: url.hostname,
+        });
+      }
+    } catch {
+      // Ignore malformed links; navigation remains unaffected.
+    }
+  });
+}
+
+async function initOptionalAnalytics() {
+  setAttributionFields();
+  initEngagementTracking();
+  document.querySelectorAll("form").forEach((form) => form.setAttribute("data-clarity-mask", "true"));
+
+  const privacyButtons = document.querySelectorAll("[data-privacy-choices]");
+  let config;
+  try {
+    const response = await fetch("/api/analytics-config", { headers: { Accept: "application/json" } });
+    if (!response.ok) throw new Error("Analytics configuration unavailable");
+    config = await response.json();
+  } catch {
+    privacyButtons.forEach((button) => { button.hidden = true; });
+    return;
+  }
+
+  if (!config.ga4MeasurementId && !config.clarityProjectId) {
+    privacyButtons.forEach((button) => { button.hidden = true; });
+    return;
+  }
+
+  const panel = createAnalyticsConsentPanel();
+  const readChoice = () => {
+    try { return localStorage.getItem(ANALYTICS_CONSENT_KEY); }
+    catch { return null; }
+  };
+  const saveChoice = (value) => {
+    try { localStorage.setItem(ANALYTICS_CONSENT_KEY, value); }
+    catch { /* The current-page choice still applies when storage is unavailable. */ }
+  };
+  const savedChoice = readChoice();
+
+  const choose = (value) => {
+    saveChoice(value);
+    panel.hidden = true;
+    if (value === "granted") {
+      activateAnalytics(config);
+    } else if (window.integrityAnalyticsActive) {
+      window.gtag?.("consent", "update", {
+        ad_storage: "denied",
+        ad_user_data: "denied",
+        ad_personalization: "denied",
+        analytics_storage: "denied",
+      });
+      window.clarity?.("consentv2", { ad_Storage: "denied", analytics_Storage: "denied" });
+      window.location.reload();
+    }
+  };
+
+  panel.querySelector("[data-analytics-allow]").addEventListener("click", () => choose("granted"));
+  panel.querySelector("[data-analytics-decline]").addEventListener("click", () => choose("denied"));
+  privacyButtons.forEach((button) => button.addEventListener("click", () => {
+    panel.hidden = false;
+    panel.querySelector("[data-analytics-allow]").focus();
+  }));
+
+  if (savedChoice === "granted") activateAnalytics(config);
+  else if (savedChoice !== "denied") panel.hidden = false;
 }
 
 
@@ -213,6 +454,7 @@ function initSiteScripts() {
   initCurrentYear();
   initActiveNavLink();
   initConversionTracking();
+  initOptionalAnalytics();
 }
 
 

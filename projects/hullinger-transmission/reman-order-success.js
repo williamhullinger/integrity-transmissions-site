@@ -25,7 +25,10 @@ function initRemanOrderResult() {
   let processingAttempts = 0;
   let requestFailures = 0;
 
-  if (querySessionId) storeSession(querySessionId);
+  if (querySessionId) {
+    storeSession(querySessionId);
+    window.history.replaceState({}, "", window.location.pathname);
+  }
 
   const showProblem = (copy) => {
     icon.textContent = "!";
@@ -43,7 +46,6 @@ function initRemanOrderResult() {
 
   const finishReferenceCleanup = () => {
     forgetSession();
-    if (querySessionId) window.history.replaceState({}, "", window.location.pathname);
   };
 
   const loadStatus = () => {
@@ -80,6 +82,22 @@ function initRemanOrderResult() {
       get("[data-order-email]").textContent = data.email || "Sent by Stripe";
       get("[data-order-reference]").textContent = String(data.orderReference || "").slice(-18);
       summary.hidden = false;
+      if (paid && typeof pushConversionEvent === "function") {
+        const eventKey = `integrity-order-confirmed-${String(data.orderReference || "").slice(-18)}`;
+        let alreadyTracked = false;
+        try {
+          alreadyTracked = window.sessionStorage.getItem(eventKey) === "true";
+          if (!alreadyTracked) window.sessionStorage.setItem(eventKey, "true");
+        } catch { /* An in-memory event is still privacy-safe when storage is unavailable. */ }
+        if (!alreadyTracked) {
+          pushConversionEvent("order_payment_confirmed", {
+            page_path: window.location.pathname,
+            value: (data.amountTotal || 0) / 100,
+            currency: "USD",
+            item_category: "reman_transmission",
+          });
+        }
+      }
       const invoice = get("[data-order-invoice]");
       if (data.invoiceUrl && /^https:\/\/(?:invoice|pay)\.stripe\.com\//i.test(data.invoiceUrl)) {
         invoice.href = data.invoiceUrl;

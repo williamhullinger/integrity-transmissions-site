@@ -23,6 +23,7 @@ const publicFiles = [
   "privacy.html",
   "rebuild-guide.css", "rebuild-guide.html",
   "reman-order-success.html", "reman-order-success.js",
+  "reman-engines.html", "reman-powertrain.html", "reman-transfer-cases.html",
   "reman-order-terms.html", "reman-transmissions.html",
   "review-thank-you.html",
   "reviews.css", "reviews.html",
