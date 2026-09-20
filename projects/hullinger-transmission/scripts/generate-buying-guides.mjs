@@ -454,7 +454,7 @@ const renderPage = (page) => {
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=Oswald:wght@500;600;700&amp;display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css?v=20260920.4">
   <link rel="stylesheet" href="/modern-pages.css?v=20260903.1">
-  <link rel="stylesheet" href="/seo-landing.css?v=20260903.1">
+  <link rel="stylesheet" href="/seo-landing.css?v=20260920.2">
   <link rel="stylesheet" href="/commerce-guides.css?v=20260920.4">
   <meta property="og:type" content="${page.isHub ? "website" : "article"}">
   <meta property="og:title" content="${escapeHtml(page.title)}">
