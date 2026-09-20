@@ -900,6 +900,10 @@ html {
   cursor: pointer;
 }
 
+.footer-privacy-button[hidden] {
+  display: none;
+}
+
 .privacy-consent {
   position: fixed;
   z-index: 2000;

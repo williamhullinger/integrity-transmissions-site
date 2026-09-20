@@ -27,6 +27,7 @@ const postResponse = await handler({ httpMethod: "POST" });
 assert.equal(postResponse.statusCode, 405);
 
 const script = await readFile(path.join(repositoryRoot, "projects/hullinger-transmission/script.js"), "utf8");
+const styles = await readFile(path.join(repositoryRoot, "projects/hullinger-transmission/styles.css"), "utf8");
 for (const prohibited of ["vin", "phone", "email", "address", "customer_name", "checkout_session"]) {
   const allowlist = script.match(/const allowedKeys = new Set\(\[([\s\S]*?)\]\);/)?.[1] || "";
   assert(!new RegExp(`['\"]${prohibited}['\"]`, "i").test(allowlist), `Analytics allowlist includes ${prohibited}`);
@@ -34,5 +35,9 @@ for (const prohibited of ["vin", "phone", "email", "address", "customer_name", "
 assert(script.includes("integrity_analytics_consent_v1"), "Consent version key is missing");
 assert(script.includes("/api/analytics-config"), "Analytics configuration endpoint is not used");
 assert(script.includes("data-privacy-choices"), "Privacy choices control is not wired");
+assert(
+  /\.footer-privacy-button\[hidden\]\s*\{[^}]*display:\s*none;/s.test(styles),
+  "Hidden privacy controls must not be restored by footer button styling",
+);
 
 console.log("Analytics privacy and configuration tests passed.");
