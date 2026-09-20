@@ -6,7 +6,7 @@ const { _internals: shipping } = require("./reman-shipping.js");
 
 const SITE_URL = "https://integritydrivetrain.com";
 const TERMS_VERSION = "2026-09-04";
-const TERMS_SHA256 = "0d035d3ed164f799bb689838c9a44229afe00bc03c9383648770adac4fbf209d";
+const TERMS_SHA256 = "f67992b0343fbf202a665d7c13565c3a00d89f064d06c0cec6b61750856ee36b";
 const POLICY_BUNDLE_URL = `${SITE_URL}/legal/reman-policy-bundle-2026-09-04`;
 const WARRANTY_PROVIDER = "ACE Transmission Remanufacturing";
 const WARRANTY_PUBLICATION_URL = "https://acetransmissionreman.com/warranty/";

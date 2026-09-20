@@ -167,7 +167,7 @@ function initActiveNavLink() {
 
 function pushConversionEvent(eventName, details = {}) {
   const allowedKeys = new Set([
-    "page_path", "destination", "form_name", "unit_type", "category",
+    "page_path", "destination", "destination_path", "form_name", "unit_type", "category",
     "transmission_family", "upgrade_level", "warranty", "candidate_count",
     "rate_count", "round_trip", "delivery_type", "scroll_percent", "link_host",
     "value", "currency", "item_category",
@@ -244,10 +244,11 @@ function initConversionTracking() {
 ========================================================= */
 
 const ANALYTICS_CONSENT_KEY = "integrity_analytics_consent_v1";
+const ATTRIBUTION_SESSION_KEY = "integrity_attribution_v1";
 
 function setAttributionFields() {
   const params = new URLSearchParams(window.location.search);
-  const attribution = {
+  const currentAttribution = {
     "utm-source": params.get("utm_source") || "",
     "utm-medium": params.get("utm_medium") || "",
     "utm-campaign": params.get("utm_campaign") || "",
@@ -257,6 +258,16 @@ function setAttributionFields() {
       catch { return ""; }
     })(),
   };
+  let attribution = currentAttribution;
+
+  try {
+    const saved = JSON.parse(sessionStorage.getItem(ATTRIBUTION_SESSION_KEY) || "null");
+    const hasCampaign = Boolean(currentAttribution["utm-source"] || currentAttribution["utm-medium"] || currentAttribution["utm-campaign"]);
+    if (saved && !hasCampaign) attribution = saved;
+    else sessionStorage.setItem(ATTRIBUTION_SESSION_KEY, JSON.stringify(currentAttribution));
+  } catch {
+    // Form attribution still works on the current page when session storage is unavailable.
+  }
 
   document.querySelectorAll("[data-attribution-form]").forEach((form) => {
     Object.entries(attribution).forEach(([name, value]) => {
@@ -372,6 +383,12 @@ function initEngagementTracking() {
     if (!link) return;
     try {
       const url = new URL(link.href, window.location.href);
+      if (category === "transmission-buying-guide" && url.origin === window.location.origin) {
+        pushConversionEvent("buying_guide_link_click", {
+          page_path: window.location.pathname,
+          destination_path: url.pathname,
+        });
+      }
       if (url.origin !== window.location.origin && !["tel:", "sms:", "mailto:"].includes(url.protocol)) {
         pushConversionEvent("outbound_click", {
           page_path: window.location.pathname,

@@ -24,7 +24,7 @@ const listHtml = async (directory, root = directory) => {
 
 try {
   await cp(sourceRoot, generatedRoot, { recursive: true, filter: (source) => !source.includes(`${path.sep}images${path.sep}`) });
-  for (const script of ["generate-seo-pages.mjs", "generate-reman-family-pages.mjs", "sync-partials.mjs"]) {
+  for (const script of ["generate-seo-pages.mjs", "generate-reman-family-pages.mjs", "generate-buying-guides.mjs", "sync-partials.mjs"]) {
     execFileSync(process.execPath, [path.join(generatedRoot, "scripts", script)], { stdio: "pipe" });
   }
 

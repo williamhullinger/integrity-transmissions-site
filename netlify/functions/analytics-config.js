@@ -1,8 +1,11 @@
 const GA4_PATTERN = /^G-[A-Z0-9]{4,20}$/;
 const CLARITY_PATTERN = /^[a-z0-9]{6,20}$/i;
+// Google Measurement IDs are public identifiers. Keep the production stream
+// available by default while allowing an environment override for staging.
+const DEFAULT_GA4_MEASUREMENT_ID = "G-7395FMBNE9";
 
 const publicAnalyticsConfig = (environment = process.env) => {
-  const ga4MeasurementId = String(environment.GA4_MEASUREMENT_ID || "").trim().toUpperCase();
+  const ga4MeasurementId = String(environment.GA4_MEASUREMENT_ID || DEFAULT_GA4_MEASUREMENT_ID).trim().toUpperCase();
   const clarityProjectId = String(environment.MICROSOFT_CLARITY_PROJECT_ID || "").trim();
 
   return {

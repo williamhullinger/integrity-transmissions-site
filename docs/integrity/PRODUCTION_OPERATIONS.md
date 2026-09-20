@@ -53,6 +53,24 @@ This is the current source of truth for the public remanufactured-transmission s
 - `STRIPE_RESTRICTED_KEY`: restricted live Stripe API key
 - `STRIPE_WEBHOOK_SECRET`: Stripe signature-verification secret
 
+Optional measurement configuration:
+
+- `GA4_MEASUREMENT_ID`: optional Google Analytics 4 stream override; production defaults to the public Integrity stream `G-7395FMBNE9`
+- `MICROSOFT_CLARITY_PROJECT_ID`: Microsoft Clarity project ID
+
+The public `/api/analytics-config` endpoint exposes only validated public project identifiers. Analytics and Clarity remain disabled until the visitor grants optional analytics consent. VINs, customer contact details, delivery addresses, payment details, free-form messages, and full order identifiers are excluded from the event allowlist.
+
+## Analytics activation and verification
+
+1. The Integrity-owned GA4 property and `Integrity Production Website` data stream are already created for `https://integritydrivetrain.com`.
+2. Production uses `G-7395FMBNE9` by default; use `GA4_MEASUREMENT_ID` only when staging needs a different stream.
+3. Create or select an Integrity-owned Microsoft Clarity project for the production domain.
+4. Add its project ID to Netlify as `MICROSOFT_CLARITY_PROJECT_ID` for Production and Deploy Previews.
+5. Trigger a production deploy, then confirm `/api/analytics-config` returns the GA4 ID and, after Clarity activation, the Clarity project ID—never a secret.
+6. In a private browser session, allow analytics and confirm page views plus `view_product_category`, `buying_guide_link_click`, `quote_cta_click`, `quote_form_start`, `generate_lead`, `freight_quote_success`, `checkout_redirect`, and `order_payment_confirmed` in the vendor real-time/debug views.
+7. Decline analytics in a separate session and confirm no Google Analytics or Clarity request loads while quote, phone, text, and checkout functions remain usable.
+8. Mark `generate_lead`, `freight_quote_success`, `checkout_redirect`, and `order_payment_confirmed` as key business events; do not mark page views or scroll depth as conversions.
+
 Rotate `REMAN_SIGNING_SECRET` independently of ACE credentials. A rotation invalidates existing browser selections, so deploy it during a controlled window and verify a fresh VIN-to-checkout path afterward.
 
 ## Current administrative boundary

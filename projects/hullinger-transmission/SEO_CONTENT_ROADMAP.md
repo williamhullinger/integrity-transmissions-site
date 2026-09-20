@@ -14,15 +14,25 @@ The content program has three jobs:
 
 ## Current Search Baseline
 
-Google Search Console, last three months as reviewed September 2, 2026:
+Google Search Console, last three months as reviewed September 20, 2026 (data through September 18):
 
-- 12 clicks
-- 1,132 impressions
-- 1.1% click-through rate
-- 14.8 average position
-- 112 distinct queries
+- 37 clicks
+- 4,154 impressions
+- 0.9% click-through rate
+- 11.8 average position
+- 248 distinct queries
 
-These numbers are the campaign baseline. They are not yet enough volume to judge leads or revenue by page, so content decisions should use query relevance, position, impressions, and business value together.
+The site gained substantially more impressions and improved from an average position of 14.8 to 11.8. Click-through rate declined slightly as Google tested more pages and queries. The next priority is converting page-two visibility into clicks and building national commercial-intent coverage without weakening the local service pages.
+
+### Indexing and technical status
+
+- 22 pages indexed in the September 17 Page indexing report.
+- 9 recently discovered pages and 1 crawled page were waiting for indexing.
+- 6 intentional `noindex` policy/utility pages and 6 permanent redirects were excluded as expected.
+- The submitted sitemap was successful with 32 discovered pages on its September 12 read. The September 20 release expands the sitemap to 48 canonical pages and must be resubmitted after deployment.
+- HTTPS reports 0 non-HTTPS URLs and no critical issues.
+- Breadcrumb enhancement reports 11 valid items and 0 invalid items.
+- Core Web Vitals has insufficient real-user volume for a 90-day field report; continue lab and browser testing until field data appears.
 
 ## Demand Already Visible in Google
 
@@ -85,6 +95,19 @@ A national commercial page for VIN-assisted reman transmission quotes. It makes 
 ### `/guides/cvt-transmission-problems`
 
 A search-demand-driven CVT guide covering normal versus abnormal RPM behavior, delayed engagement, flare, judder, whining, overheating, fail-safe operation, fluid specification, stop-driving criteria, diagnostic evidence, repair-versus-replacement decisions, and VIN-verified reman options. It cites manufacturer and transmission-industry technical sources and uses an original CVT-specific hero image.
+
+### Transmission buying-guide cluster
+
+The September 20 expansion adds a dedicated `/guides` hub and six original commercial-intent resources:
+
+- `/guides/remanufactured-transmission-cost`
+- `/guides/reman-vs-rebuilt-vs-used-transmission`
+- `/guides/transmission-core-return`
+- `/guides/shipping-transmission`
+- `/guides/transmission-warranty-coverage`
+- `/guides/how-to-identify-transmission`
+
+Together they answer the cost, risk, fitment, freight, core, warranty, and installation questions that occur before a nationwide reman purchase. Each page uses unique metadata, visible FAQ content, Article or CollectionPage schema, breadcrumb markup, buyer-focused internal links, and VIN-quote calls to action. Buying-guide navigation and assisted conversions are tracked without sending vehicle or customer identifiers to analytics.
 
 ## Prioritized Publishing Queue
 
