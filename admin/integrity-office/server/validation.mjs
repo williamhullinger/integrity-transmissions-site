@@ -3,6 +3,11 @@ import { badRequest } from "./errors.mjs";
 
 const STAFF_ROLES = Object.freeze(["viewer", "operations", "finance", "administrator"]);
 const REFUND_CATEGORIES = Object.freeze(["transmission", "freight", "sales_tax", "core_deposit", "other"]);
+const PRODUCT_KINDS = Object.freeze(["transmission", "engine", "transfer_case", "differential", "accessory", "service"]);
+const LEAD_STATES = Object.freeze(["new", "assigned", "contacted", "qualified", "quoted", "won", "lost", "closed"]);
+const TASK_STATES = Object.freeze(["open", "in_progress", "blocked", "completed", "canceled"]);
+const TASK_PRIORITIES = Object.freeze(["low", "normal", "high", "urgent"]);
+const TASK_ENTITIES = Object.freeze(["lead", "quote", "order", "customer", "purchase_order", "shipment", "core_return", "warranty_claim", "dispute", "system"]);
 
 export const uuid = (value, field = "id") => {
   const result = String(value || "").toLowerCase();
@@ -40,6 +45,16 @@ export const instant = (value, field) => {
 export const emailAddress = (value, field = "email") => {
   const result = boundedText(value, field, 320).toLowerCase();
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(result)) throw badRequest(`${field} must be a valid email address.`);
+  return result;
+};
+
+const optionalEmailAddress = (value, field = "email") => (
+  value === null || value === undefined || String(value).trim() === "" ? null : emailAddress(value, field)
+);
+
+const listedValue = (value, field, allowed) => {
+  const result = boundedText(value, field, 40);
+  if (!allowed.includes(result)) throw badRequest(`${field} is not valid.`);
   return result;
 };
 
@@ -118,7 +133,7 @@ export const fitmentReviewInput = (body) => {
 
 export const supplierOrderInput = (body) => Object.freeze({
   version: positiveInteger(body.version, "version", { minimum: 1, maximum: 1_000_000 }),
-  supplierName: boundedText(body.supplierName || "ACE Transmission", "supplierName", 160),
+  supplierName: boundedText(body.supplierName, "supplierName", 160),
   supplierOrderReference: boundedText(body.supplierOrderReference, "supplierOrderReference", 160),
   estimatedShipAt: body.estimatedShipAt ? instant(body.estimatedShipAt, "estimatedShipAt") : null,
   reason: boundedText(body.reason, "reason", 1_000),
@@ -163,4 +178,66 @@ export const refundClassificationInput = (body) => {
   return Object.freeze({ allocations: Object.freeze(allocations), reason: boundedText(body.reason, "reason", 500) });
 };
 
-export const _internals = { REFUND_CATEGORIES, STAFF_ROLES, roleList };
+export const leadInput = (body) => {
+  const contactEmail = optionalEmailAddress(body.contactEmail, "contactEmail");
+  const contactPhone = boundedText(body.contactPhone, "contactPhone", 40, { required: false });
+  if (!contactEmail && !contactPhone) throw badRequest("A contact email or phone number is required.");
+  const vehicleSummary = body.vehicleSummary && typeof body.vehicleSummary === "object" && !Array.isArray(body.vehicleSummary)
+    ? body.vehicleSummary
+    : {};
+  return Object.freeze({
+    contactName: boundedText(body.contactName, "contactName", 160),
+    contactEmail,
+    contactPhone,
+    organizationName: boundedText(body.organizationName, "organizationName", 160, { required: false }),
+    productInterest: body.productInterest ? listedValue(body.productInterest, "productInterest", PRODUCT_KINDS) : null,
+    vehicleSummary,
+    source: boundedText(body.source, "source", 120),
+    priority: listedValue(body.priority || "normal", "priority", TASK_PRIORITIES),
+    estimatedValueCents: optionalPositiveInteger(body.estimatedValueCents, "estimatedValueCents", { minimum: 0, maximum: 1_000_000_000 }),
+    assignedTo: body.assignedTo ? uuid(body.assignedTo, "assignedTo") : null,
+    nextFollowUpAt: body.nextFollowUpAt ? instant(body.nextFollowUpAt, "nextFollowUpAt") : null,
+    reason: boundedText(body.reason, "reason", 500),
+  });
+};
+
+export const leadUpdateInput = (body) => {
+  const state = listedValue(body.state, "state", LEAD_STATES);
+  return Object.freeze({
+    version: positiveInteger(body.version, "version", { minimum: 1, maximum: 1_000_000 }),
+    state,
+    priority: listedValue(body.priority || "normal", "priority", TASK_PRIORITIES),
+    assignedTo: Object.hasOwn(body, "assignedTo") ? (body.assignedTo ? uuid(body.assignedTo, "assignedTo") : null) : undefined,
+    nextFollowUpAt: body.nextFollowUpAt ? instant(body.nextFollowUpAt, "nextFollowUpAt") : null,
+    lostReason: boundedText(body.lostReason, "lostReason", 500, { required: state === "lost" }),
+    wonOrderId: state === "won" ? uuid(body.wonOrderId, "wonOrderId") : null,
+    reason: boundedText(body.reason, "reason", 500),
+  });
+};
+
+export const taskInput = (body) => Object.freeze({
+  taskType: boundedText(body.taskType, "taskType", 80),
+  title: boundedText(body.title, "title", 240),
+  entityType: listedValue(body.entityType, "entityType", TASK_ENTITIES),
+  entityId: body.entityId ? uuid(body.entityId, "entityId") : null,
+  priority: listedValue(body.priority || "normal", "priority", TASK_PRIORITIES),
+  assignedTo: body.assignedTo ? uuid(body.assignedTo, "assignedTo") : null,
+  dueAt: body.dueAt ? instant(body.dueAt, "dueAt") : null,
+  reason: boundedText(body.reason, "reason", 500),
+});
+
+export const taskUpdateInput = (body) => {
+  const state = listedValue(body.state, "state", TASK_STATES);
+  return Object.freeze({
+    version: positiveInteger(body.version, "version", { minimum: 1, maximum: 1_000_000 }),
+    state,
+    priority: listedValue(body.priority || "normal", "priority", TASK_PRIORITIES),
+    assignedTo: Object.hasOwn(body, "assignedTo") ? (body.assignedTo ? uuid(body.assignedTo, "assignedTo") : null) : undefined,
+    dueAt: body.dueAt ? instant(body.dueAt, "dueAt") : null,
+    blockedReason: boundedText(body.blockedReason, "blockedReason", 500, { required: state === "blocked" }),
+    completionEvidence: boundedText(body.completionEvidence, "completionEvidence", 1_000, { required: state === "completed" }),
+    reason: boundedText(body.reason, "reason", 500),
+  });
+};
+
+export const _internals = { LEAD_STATES, PRODUCT_KINDS, REFUND_CATEGORIES, STAFF_ROLES, TASK_ENTITIES, TASK_PRIORITIES, TASK_STATES, roleList };

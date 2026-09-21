@@ -1,4 +1,5 @@
 const Stripe = require("stripe");
+const crypto = require("node:crypto");
 
 const headers = {
   "Content-Type": "application/json; charset=utf-8",
@@ -26,7 +27,13 @@ const maskedEmail = (email) => {
   return `${local.slice(0, 2)}${"*".repeat(Math.max(1, Math.min(6, local.length - 2)))}@${domain}`;
 };
 
-const createStatusHandler = ({ stripeFactory } = {}) => async (event) => {
+const analyticsTransactionId = (sessionId, signingSecret = process.env.REMAN_SIGNING_SECRET) => {
+  const secret = String(signingSecret || "");
+  if (secret.length < 32) return null;
+  return crypto.createHmac("sha256", secret).update(String(sessionId)).digest("hex").slice(0, 24);
+};
+
+const createStatusHandler = ({ stripeFactory, signingSecret } = {}) => async (event) => {
   if (event.httpMethod !== "GET") return jsonResponse(405, { error: "GET required" });
   const origin = event.headers?.origin || event.headers?.Origin || "";
   if (!allowedOrigin(origin)) return jsonResponse(403, { error: "Origin not allowed" });
@@ -48,6 +55,7 @@ const createStatusHandler = ({ stripeFactory } = {}) => async (event) => {
     const invoice = session.invoice && typeof session.invoice === "object" ? session.invoice : null;
     return jsonResponse(200, {
       orderReference: session.id,
+      analyticsTransactionId: analyticsTransactionId(session.id, signingSecret),
       paymentStatus: session.payment_status,
       checkoutStatus: session.status,
       amountTotal: session.amount_total,
@@ -57,6 +65,9 @@ const createStatusHandler = ({ stripeFactory } = {}) => async (event) => {
       application: session.metadata?.application || "Remanufactured transmission",
       upgrade: session.metadata?.upgrade || "",
       warranty: session.metadata?.warranty || "",
+      unitPrice: Number(session.metadata?.unit_price || 0),
+      coreDeposit: Number(session.metadata?.core_deposit || 0),
+      freight: Number(session.metadata?.freight || 0),
       invoiceUrl: invoice?.hosted_invoice_url || null,
     });
   } catch (error) {
@@ -67,4 +78,4 @@ const createStatusHandler = ({ stripeFactory } = {}) => async (event) => {
 };
 
 exports.handler = createStatusHandler();
-exports._internals = { createStatusHandler, maskedEmail };
+exports._internals = { analyticsTransactionId, createStatusHandler, maskedEmail };

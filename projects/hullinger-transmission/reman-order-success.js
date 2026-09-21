@@ -96,6 +96,31 @@ function initRemanOrderResult() {
             currency: "USD",
             item_category: "reman_transmission",
           });
+          if (data.analyticsTransactionId) {
+            const items = [{
+              item_id: String(data.application || "reman-transmission").toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "").slice(0, 80),
+              item_name: `${data.application || "Remanufactured"} transmission`,
+              item_category: "reman_transmission",
+              item_variant: [data.upgrade, data.warranty].filter(Boolean).join(" • "),
+              price: Number(data.unitPrice || 0),
+              quantity: 1,
+            }];
+            if (Number(data.coreDeposit || 0) > 0) items.push({
+              item_id: "refundable_core_deposit",
+              item_name: "Refundable transmission core deposit",
+              item_category: "core_deposit",
+              price: Number(data.coreDeposit),
+              quantity: 1,
+            });
+            pushConversionEvent("purchase", {
+              transaction_id: data.analyticsTransactionId,
+              value: items.reduce((total, item) => total + (item.price * item.quantity), 0),
+              tax: Number(data.amountTax || 0) / 100,
+              shipping: Number(data.freight || 0),
+              currency: String(data.currency || "usd").toUpperCase(),
+              items,
+            });
+          }
         }
       }
       const invoice = get("[data-order-invoice]");

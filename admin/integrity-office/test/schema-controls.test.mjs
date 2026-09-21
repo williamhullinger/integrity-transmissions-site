@@ -4,7 +4,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const testRoot = path.dirname(fileURLToPath(import.meta.url));
-const sql = `${await readFile(path.resolve(testRoot, "../db/001_initial.sql"), "utf8")}\n${await readFile(path.resolve(testRoot, "../db/002_office_runtime.sql"), "utf8")}\n${await readFile(path.resolve(testRoot, "../db/003_operational_controls.sql"), "utf8")}\n${await readFile(path.resolve(testRoot, "../db/004_policy_acceptance.sql"), "utf8")}`;
+const sql = `${await readFile(path.resolve(testRoot, "../db/001_initial.sql"), "utf8")}\n${await readFile(path.resolve(testRoot, "../db/002_office_runtime.sql"), "utf8")}\n${await readFile(path.resolve(testRoot, "../db/003_operational_controls.sql"), "utf8")}\n${await readFile(path.resolve(testRoot, "../db/004_policy_acceptance.sql"), "utf8")}\n${await readFile(path.resolve(testRoot, "../db/005_nationwide_operations.sql"), "utf8")}`;
 const repository = await readFile(path.resolve(testRoot, "../server/repository.mjs"), "utf8");
 
 for (const requiredControl of [
@@ -36,6 +36,33 @@ for (const requiredControl of [
   "last_event_created_at",
   "policy_acceptance_evidence",
   "electronicRecordsConsented",
+  "CREATE TYPE product_kind",
+  "CREATE TABLE suppliers",
+  "CREATE TABLE catalog_products",
+  "CREATE TABLE catalog_price_versions",
+  "CREATE TABLE order_items",
+  "CREATE TABLE leads",
+  "CREATE TABLE lead_activities",
+  "CREATE TABLE sales_quotes",
+  "CREATE TABLE sales_quote_versions",
+  "CREATE TABLE sales_quote_items",
+  "CREATE TABLE office_tasks",
+  "CREATE TABLE risk_reviews",
+  "CREATE TABLE supplier_purchase_orders",
+  "CREATE TABLE supplier_purchase_order_lines",
+  "CREATE TABLE fulfillment_shipments",
+  "CREATE TABLE shipment_items",
+  "CREATE TABLE warranty_claims",
+  "CREATE TABLE communication_events",
+  "CREATE TABLE document_assets",
+  "CREATE TABLE document_links",
+  "CREATE TABLE supplier_invoices",
+  "office_task_completion",
+  "sales_quotes_current_version_fk",
+  "active_catalog_product_verified",
+  "catalog_price_versions_append_only",
+  "communication_events_append_only",
+  "document_assets_no_delete",
   "Dispute losses and fees",
   "refund_allocations_must_balance",
   "promotion_separation_of_duties",

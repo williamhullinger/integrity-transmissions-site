@@ -55,6 +55,45 @@ const reconciliationDto = (row) => ({
   createdAt: row.created_at,
 });
 
+const leadDto = (row) => ({
+  id: row.id,
+  reference: row.public_reference,
+  contact: { name: row.contact_name, email: row.contact_email, phone: row.contact_phone, organization: row.organization_name },
+  productInterest: row.product_interest,
+  vehicleSummary: row.vehicle_summary || {},
+  source: row.source,
+  state: row.state,
+  priority: row.priority,
+  estimatedValueCents: row.estimated_value_cents === null ? null : asInteger(row.estimated_value_cents),
+  assignedTo: row.assigned_to,
+  assigneeName: row.assignee_name,
+  nextFollowUpAt: row.next_follow_up_at,
+  lostReason: row.lost_reason,
+  wonOrderId: row.won_order_id,
+  version: row.version,
+  createdAt: row.created_at,
+  updatedAt: row.updated_at,
+});
+
+const taskDto = (row) => ({
+  id: row.id,
+  taskType: row.task_type,
+  title: row.title,
+  entityType: row.entity_type,
+  entityId: row.entity_id,
+  state: row.state,
+  priority: row.priority,
+  assignedTo: row.assigned_to,
+  assigneeName: row.assignee_name,
+  dueAt: row.due_at,
+  blockedReason: row.blocked_reason,
+  completionEvidence: row.completion_evidence,
+  completedAt: row.completed_at,
+  version: row.version,
+  createdAt: row.created_at,
+  updatedAt: row.updated_at,
+});
+
 const orderDto = (row, includeFinancials) => ({
   id: row.id,
   orderNumber: String(row.public_order_number),
@@ -126,6 +165,10 @@ export class PostgresOfficeRepository {
         (SELECT count(*) FROM orders WHERE fulfillment_status NOT IN ('closed', 'canceled')) AS active_orders,
         (SELECT count(*) FROM orders WHERE core_status IN ('awaiting_return', 'pickup_scheduled', 'in_transit', 'received', 'accepted', 'refund_due')) AS open_cores,
         (SELECT count(*) FROM freight_quote_requests WHERE status IN ('open', 'contacted', 'quoted')) AS freight_exceptions,
+        (SELECT count(*) FROM leads WHERE state = 'new') AS new_leads,
+        (SELECT count(*) FROM leads WHERE state NOT IN ('won', 'lost', 'closed') AND assigned_to IS NULL) AS unassigned_leads,
+        (SELECT count(*) FROM office_tasks WHERE state NOT IN ('completed', 'canceled') AND due_at < now()) AS overdue_tasks,
+        (SELECT count(*) FROM office_tasks WHERE state NOT IN ('completed', 'canceled') AND due_at >= now() AND due_at < now() + interval '24 hours') AS tasks_due_24h,
         (SELECT count(*) FROM webhook_events WHERE processing_status IN ('retry', 'dead_letter')) AS webhook_exceptions,
         (SELECT count(*) FROM notification_outbox
           WHERE delivered_at IS NULL AND attempts >= 10
@@ -141,11 +184,121 @@ export class PostgresOfficeRepository {
       activeOrders: asInteger(row.active_orders),
       openCores: asInteger(row.open_cores),
       freightExceptions: asInteger(row.freight_exceptions),
+      newLeads: asInteger(row.new_leads),
+      unassignedLeads: asInteger(row.unassigned_leads),
+      overdueTasks: asInteger(row.overdue_tasks),
+      tasksDue24h: asInteger(row.tasks_due_24h),
       webhookExceptions: asInteger(row.webhook_exceptions),
       notificationExceptions: asInteger(row.notification_exceptions),
       collected30dCents: asInteger(row.collected_30d),
       refunds30dCents: asInteger(row.refunds_30d),
     };
+  }
+
+  async listLeads({ page, pageSize, search = "", status = "" }) {
+    const offset = (page - 1) * pageSize;
+    const { rows } = await this.pool.query(`
+      SELECT l.*, su.display_name AS assignee_name, count(*) OVER() AS total_count
+      FROM leads l
+      LEFT JOIN staff_users su ON su.id = l.assigned_to
+      WHERE ($3 = '' OR l.public_reference ILIKE '%' || $3 || '%' OR l.contact_name ILIKE '%' || $3 || '%'
+        OR COALESCE(l.contact_email, '') ILIKE '%' || $3 || '%' OR COALESCE(l.contact_phone, '') ILIKE '%' || $3 || '%')
+        AND ($4 = '' OR l.state::text = $4)
+      ORDER BY
+        CASE l.priority WHEN 'urgent' THEN 1 WHEN 'high' THEN 2 WHEN 'normal' THEN 3 ELSE 4 END,
+        l.next_follow_up_at NULLS LAST, l.created_at DESC
+      LIMIT $1 OFFSET $2
+    `, [pageSize, offset, search.trim(), status.trim()]);
+    return { items: rows.map(leadDto), page, pageSize, total: rows[0] ? asInteger(rows[0].total_count) : 0 };
+  }
+
+  async createLead(client, input, principal) {
+    const { rows } = await client.query(`
+      INSERT INTO leads (
+        public_reference, contact_name, contact_email, contact_phone, organization_name,
+        product_interest, vehicle_summary, source, priority, estimated_value_cents,
+        assigned_to, next_follow_up_at, state
+      ) VALUES (
+        'LD-' || upper(substr(replace(gen_random_uuid()::text, '-', ''), 1, 12)),
+        $1,$2,$3,$4,$5,$6::jsonb,$7,$8,$9,$10,$11,
+        CASE WHEN $10::uuid IS NULL THEN 'new'::lead_state ELSE 'assigned'::lead_state END
+      )
+      RETURNING *
+    `, [input.contactName, input.contactEmail, input.contactPhone, input.organizationName,
+      input.productInterest, JSON.stringify(input.vehicleSummary), input.source, input.priority,
+      input.estimatedValueCents, input.assignedTo, input.nextFollowUpAt]);
+    await client.query(`
+      INSERT INTO lead_activities (lead_id, activity_type, summary, metadata, created_by)
+      VALUES ($1, 'created', $2, $3::jsonb, $4)
+    `, [rows[0].id, input.reason, JSON.stringify({ source: input.source, priority: input.priority }), principal.id]);
+    return leadDto(rows[0]);
+  }
+
+  async updateLead(client, id, input, principal) {
+    const existing = await client.query("SELECT * FROM leads WHERE id = $1 FOR UPDATE", [id]);
+    if (!existing.rows[0]) throw notFound("Lead not found.");
+    if (existing.rows[0].version !== input.version) throw conflict("This lead changed after it was opened. Refresh and try again.");
+    const assignedTo = input.assignedTo === undefined ? existing.rows[0].assigned_to : input.assignedTo;
+    const { rows } = await client.query(`
+      UPDATE leads SET state = $2, priority = $3, assigned_to = $4, next_follow_up_at = $5,
+        lost_reason = $6, won_order_id = $7, version = version + 1
+      WHERE id = $1
+      RETURNING *
+    `, [id, input.state, input.priority, assignedTo, input.nextFollowUpAt, input.lostReason, input.wonOrderId]);
+    await client.query(`
+      INSERT INTO lead_activities (lead_id, activity_type, summary, metadata, created_by)
+      VALUES ($1, 'status_change', $2, $3::jsonb, $4)
+    `, [id, input.reason, JSON.stringify({ from: existing.rows[0].state, to: input.state, priority: input.priority }), principal.id]);
+    const assignee = assignedTo ? await client.query("SELECT display_name FROM staff_users WHERE id = $1", [assignedTo]) : { rows: [] };
+    return leadDto({ ...rows[0], assignee_name: assignee.rows[0]?.display_name || null });
+  }
+
+  async listTasks({ page, pageSize, status = "", assignedTo = null }) {
+    const offset = (page - 1) * pageSize;
+    const { rows } = await this.pool.query(`
+      SELECT t.*, su.display_name AS assignee_name, count(*) OVER() AS total_count
+      FROM office_tasks t
+      LEFT JOIN staff_users su ON su.id = t.assigned_to
+      WHERE ($3 = '' OR t.state::text = $3)
+        AND ($4::uuid IS NULL OR t.assigned_to = $4)
+      ORDER BY
+        CASE WHEN t.state NOT IN ('completed', 'canceled') AND t.due_at < now() THEN 0 ELSE 1 END,
+        CASE t.priority WHEN 'urgent' THEN 1 WHEN 'high' THEN 2 WHEN 'normal' THEN 3 ELSE 4 END,
+        t.due_at NULLS LAST, t.created_at DESC
+      LIMIT $1 OFFSET $2
+    `, [pageSize, offset, status.trim(), assignedTo]);
+    return { items: rows.map(taskDto), page, pageSize, total: rows[0] ? asInteger(rows[0].total_count) : 0 };
+  }
+
+  async createTask(client, input, principal) {
+    const { rows } = await client.query(`
+      INSERT INTO office_tasks (
+        task_type, title, entity_type, entity_id, priority, assigned_to, due_at, created_by
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
+      RETURNING *
+    `, [input.taskType, input.title, input.entityType, input.entityId, input.priority, input.assignedTo, input.dueAt, principal.id]);
+    const assignee = input.assignedTo ? await client.query("SELECT display_name FROM staff_users WHERE id = $1", [input.assignedTo]) : { rows: [] };
+    return taskDto({ ...rows[0], assignee_name: assignee.rows[0]?.display_name || null });
+  }
+
+  async updateTask(client, id, input, principal) {
+    const existing = await client.query("SELECT * FROM office_tasks WHERE id = $1 FOR UPDATE", [id]);
+    if (!existing.rows[0]) throw notFound("Task not found.");
+    if (existing.rows[0].version !== input.version) throw conflict("This task changed after it was opened. Refresh and try again.");
+    const assignedTo = input.assignedTo === undefined ? existing.rows[0].assigned_to : input.assignedTo;
+    const completed = input.state === "completed";
+    const { rows } = await client.query(`
+      UPDATE office_tasks SET state = $2, priority = $3, assigned_to = $4, due_at = $5,
+        blocked_reason = $6, completion_evidence = $7,
+        completed_by = CASE WHEN $8 THEN $9 ELSE NULL END,
+        completed_at = CASE WHEN $8 THEN now() ELSE NULL END,
+        version = version + 1
+      WHERE id = $1
+      RETURNING *
+    `, [id, input.state, input.priority, assignedTo, input.dueAt, input.blockedReason,
+      input.completionEvidence, completed, principal.id]);
+    const assignee = assignedTo ? await client.query("SELECT display_name FROM staff_users WHERE id = $1", [assignedTo]) : { rows: [] };
+    return taskDto({ ...rows[0], assignee_name: assignee.rows[0]?.display_name || null });
   }
 
   async listOrders({ page, pageSize, search = "", status = "", includeFinancials = false }) {

@@ -350,6 +350,7 @@ assert.match(calls.sessions.at(-1).params.line_items[0].price_data.product_data.
 assert.equal(checkout.officeSnapshot({ order: promotedOrder, session: promotedSession, attemptKey: "promotion-attempt-1234567890", expiresAt: payload.checkoutExpiresAt, requestId: "request" }).promotionDiscountCents, 5000);
 
 const statusHandler = status.createStatusHandler({
+  signingSecret: "s".repeat(64),
   stripeFactory: () => ({
     checkout: {
       sessions: {
@@ -361,7 +362,7 @@ const statusHandler = status.createStatusHandler({
           currency: "usd",
           total_details: { amount_tax: 49500 },
           customer_details: { email: "customer@example.com" },
-          metadata: { order_type: "reman_transmission", application: "10R80", upgrade: "1000", warranty: "36 months" },
+          metadata: { order_type: "reman_transmission", application: "10R80", upgrade: "1000", warranty: "36 months", unit_price: "4100.00", core_deposit: "1500.00", freight: "450.00" },
           invoice: { hosted_invoice_url: "https://invoice.stripe.com/i/test" },
         }),
       },
@@ -376,6 +377,12 @@ const statusResponse = await statusHandler({
 assert.equal(statusResponse.statusCode, 200, statusResponse.body);
 assert.equal(JSON.parse(statusResponse.body).paymentStatus, "paid");
 assert.equal(JSON.parse(statusResponse.body).email, "cu******@example.com");
+assert.match(JSON.parse(statusResponse.body).analyticsTransactionId, /^[a-f0-9]{24}$/);
+assert.equal(JSON.parse(statusResponse.body).unitPrice, 4100);
+assert.equal(JSON.parse(statusResponse.body).coreDeposit, 1500);
+assert.equal(JSON.parse(statusResponse.body).freight, 450);
+assert.equal(status.analyticsTransactionId("cs_test_example", "s".repeat(64)), status.analyticsTransactionId("cs_test_example", "s".repeat(64)));
+assert.notEqual(status.analyticsTransactionId("cs_test_example", "s".repeat(64)), "cs_test_example");
 
 const webhookUpdates = [];
 const notificationRequests = [];

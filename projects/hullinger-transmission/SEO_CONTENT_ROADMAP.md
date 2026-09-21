@@ -1,6 +1,6 @@
 # Integrity SEO Content Roadmap
 
-Updated: September 20, 2026
+Updated: September 21, 2026
 
 ## Objective
 
@@ -109,20 +109,30 @@ The September 20 expansion adds a dedicated `/guides` hub and six original comme
 
 Together they answer the cost, risk, fitment, freight, core, warranty, and installation questions that occur before a nationwide reman purchase. Each page uses unique metadata, visible FAQ content, Article or CollectionPage schema, breadcrumb markup, buyer-focused internal links, and VIN-quote calls to action. Buying-guide navigation and assisted conversions are tracked without sending vehicle or customer identifiers to analytics.
 
+### First symptom-guide publishing wave
+
+The September 21 release adds four original high-intent resources:
+
+- `/guides/transmission-slipping`
+- `/guides/delayed-engagement-drive-reverse`
+- `/guides/transmission-shudder-vs-engine-misfire`
+- `/guides/no-reverse-transmission`
+
+The `/guides` hub is now the Integrity Powertrain Knowledge Center and exposes the new symptom material alongside the existing buying, transmission-problem and CVT guides. A separate crawlable `/shipping-returns` explainer distinguishes delivery, freight damage, delays, cancellations, convenience returns, wrong or defective units, and the refundable core process without inventing a standard merchandise-return window.
+
 ## Prioritized Publishing Queue
 
 | Priority | Page or story | Search intent | Required evidence before publication |
 |---:|---|---|---|
-| 1 | Transmission Slipping: What It Feels Like and What to Record | Symptom research and urgent local help | Diagnostic distinctions; no blanket failure claims |
-| 2 | Delayed Engagement Into Drive or Reverse | Symptom research | Cold/hot behavior, fluid, codes, and model distinctions |
-| 3 | Transmission Shudder vs. Engine Misfire | Symptom comparison | Diagnostic process and safety review |
-| 4 | No Reverse but Forward Gears Work | Symptom research | Unit-specific caveats and next-step evidence |
-| 5 | Nissan CVT Problems | Make-specific research | Supported years/models, real examples, precise limitations |
-| 6 | Honda CVT Problems | Make-specific research | Supported years/models, real examples, precise limitations |
-| 7 | Real 6L80/6L90 Diagnosis or Replacement Case Study | Commercial proof | Complete job record, photos, permission, outcome follow-up |
-| 8 | Real Towing/68RFE Case Study | Heavy-duty commercial proof | Duty cycle, modifications, failure evidence, solution, outcome |
-| 9 | Top Verified Reman Engine Families | National product demand | Active catalog, supported applications, contents, warranty and real availability |
-| 10 | Top Verified Transfer-Case Families | National product demand | Active catalog, tag/RPO rules, package contents, warranty and real availability |
+| 1 | P0741/P0742: What the Codes Prove and What They Do Not | Diagnostic research | Authoritative service information and careful application boundaries |
+| 2 | Cooler Flush vs. Cooler Replacement After Failure | Installation and warranty | General technical guidance plus current written supplier requirements |
+| 3 | Programming, Strategy Setup and Adaptive Relearn | Installation research | General principles; exact procedures remain application-specific |
+| 4 | Nissan CVT Problems | Make-specific research | Supported years/models, real examples, precise limitations |
+| 5 | Honda CVT Problems | Make-specific research | Supported years/models, real examples, precise limitations |
+| 6 | Real 6L80/6L90 Diagnosis or Replacement Case Study | Commercial proof | Complete job record, photos, permission, outcome follow-up |
+| 7 | Real Towing/68RFE Case Study | Heavy-duty commercial proof | Duty cycle, modifications, failure evidence, solution, outcome |
+| 8 | Top Verified Reman Engine Families | National product demand | Active catalog, supported applications, contents, warranty and real availability |
+| 9 | Top Verified Transfer-Case Families | National product demand | Active catalog, tag/RPO rules, package contents, warranty and real availability |
 
 ## Case-Study Selection Rules
 

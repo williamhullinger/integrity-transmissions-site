@@ -13,6 +13,8 @@ const dateTime = new Intl.DateTimeFormat("en-US", { dateStyle: "medium", timeSty
 
 const titles = Object.freeze({
   dashboard: ["Operations", "Overview"],
+  leads: ["Sales pipeline", "Sales leads"],
+  tasks: ["Work management", "Tasks"],
   orders: ["Sales & fulfillment", "Orders"],
   freight: ["Customer recovery", "Freight queue"],
   promotions: ["Controlled discounts", "Promotions"],
@@ -35,9 +37,14 @@ const state = {
   route: "dashboard",
   ordersPage: 1,
   freightPage: 1,
+  leadsPage: 1,
+  tasksPage: 1,
   orderSearch: "",
   orderStatus: "",
   freightStatus: "",
+  leadSearch: "",
+  leadStatus: "",
+  taskStatus: "",
 };
 
 const can = (role) => (state.principal?.roles || []).some((owned) => roleCapabilities[owned]?.has(role));
@@ -128,6 +135,8 @@ const renderDashboard = async () => {
       <article class="metric"><span>Active orders</span><strong>${dashboard.activeOrders}</strong><small>Not closed or canceled</small></article>
       <article class="metric ${dashboard.freightExceptions ? "attention" : ""}"><span>Freight follow-up</span><strong>${dashboard.freightExceptions}</strong><small>Open customer recovery requests</small></article>
       <article class="metric ${systemExceptions ? "attention" : "good"}"><span>System exceptions</span><strong>${systemExceptions}</strong><small>Event retries and notification dead letters</small></article>
+      ${can("operations") ? `<article class="metric ${dashboard.newLeads ? "attention" : "good"}"><span>New leads</span><strong>${dashboard.newLeads}</strong><small>${dashboard.unassignedLeads} currently unassigned</small></article>
+      <article class="metric ${dashboard.overdueTasks ? "attention" : "good"}"><span>Overdue tasks</span><strong>${dashboard.overdueTasks}</strong><small>${dashboard.tasksDue24h} due in the next 24 hours</small></article>` : ""}
     </section>
     <div class="section-heading"><div><h2>Current workload</h2><p>Orders requiring payment, fitment, fulfillment or core activity.</p></div></div>
     <div class="split-grid">
@@ -144,6 +153,35 @@ const renderDashboard = async () => {
     </div>
     ${freight ? `<div class="section-heading"><div><h2>Freight recovery</h2><p>Customers waiting for a verified delivery rate.</p></div><a class="button button-small" href="#freight">Open queue</a></div><section class="panel">${freightTable(freight.items)}</section>` : ""}
   `;
+};
+
+const leadTable = (items) => {
+  if (!items.length) return emptyState("No leads match this view.", "Website, phone, text and manually entered inquiries will appear here after lead ingestion is activated.");
+  return `<div class="data-table-wrap"><table class="data-table"><thead><tr><th>Lead</th><th>Contact</th><th>Interest</th><th>Source</th><th>Status</th><th>Owner</th><th>Follow-up</th></tr></thead><tbody>${items.map((item) => `<tr><td><button class="row-button" type="button" data-lead-id="${escapeHtml(item.id)}">${escapeHtml(item.reference)}</button><small>${escapeHtml(formatDate(item.createdAt))}</small></td><td><strong>${escapeHtml(item.contact.name)}</strong><small>${escapeHtml(item.contact.organization || item.contact.email || item.contact.phone || "—")}</small></td><td><strong>${escapeHtml(label(item.productInterest))}</strong><small>${escapeHtml(Object.values(item.vehicleSummary || {}).filter(Boolean).join(" · ") || "Application not recorded")}</small></td><td>${escapeHtml(item.source)}</td><td>${badge(item.state)} ${badge(item.priority)}</td><td>${escapeHtml(item.assigneeName || "Unassigned")}</td><td>${escapeHtml(formatDate(item.nextFollowUpAt))}</td></tr>`).join("")}</tbody></table></div>`;
+};
+
+const renderLeads = async (search = state.leadSearch, status = state.leadStatus) => {
+  state.leadSearch = String(search || "");
+  state.leadStatus = String(status || "");
+  const qs = new URLSearchParams({ page: state.leadsPage, pageSize: 25, ...(search ? { search } : {}), ...(status ? { status } : {}) });
+  const [data, assignees] = await Promise.all([api(`/leads?${qs}`), api("/staff/assignees")]);
+  state.leadItems = data.items;
+  state.workAssignees = assignees;
+  $("#content").innerHTML = `<div class="page-actions"><p>Track every inquiry from first contact through quote, order or a documented lost reason.</p><button class="button button-primary" id="new-lead" type="button">Add lead</button></div><form class="filter-bar" id="leads-filter"><div class="filter-fields"><div class="field"><label for="lead-search">Search</label><input id="lead-search" name="search" type="search" maxlength="120" value="${escapeHtml(state.leadSearch)}" placeholder="Reference, name, email or phone"></div><div class="field"><label for="lead-status">Status</label><select id="lead-status" name="status"><option value="">All statuses</option>${["new", "assigned", "contacted", "qualified", "quoted", "won", "lost", "closed"].map((value) => `<option value="${value}" ${state.leadStatus === value ? "selected" : ""}>${escapeHtml(label(value))}</option>`).join("")}</select></div></div><button class="button" type="submit">Apply filters</button></form><section class="panel">${leadTable(data.items)}</section><div class="pagination"><span>Page ${data.page} · ${data.total} leads</span><button class="button button-small" data-leads-page="${data.page - 1}" ${data.page <= 1 ? "disabled" : ""}>Previous</button><button class="button button-small" data-leads-page="${data.page + 1}" ${(data.page * data.pageSize) >= data.total ? "disabled" : ""}>Next</button></div>`;
+};
+
+const taskTable = (items) => {
+  if (!items.length) return emptyState("No tasks match this view.", "Automated and manually created work will appear here with an owner, priority and due date.");
+  return `<div class="data-table-wrap"><table class="data-table"><thead><tr><th>Task</th><th>Related record</th><th>Status</th><th>Priority</th><th>Owner</th><th>Due</th></tr></thead><tbody>${items.map((item) => `<tr><td><button class="row-button" type="button" data-task-id="${escapeHtml(item.id)}">${escapeHtml(item.title)}</button><small>${escapeHtml(label(item.taskType))}</small></td><td><strong>${escapeHtml(label(item.entityType))}</strong><small>${escapeHtml(item.entityId || "General queue")}</small></td><td>${badge(item.state)}</td><td>${badge(item.priority)}</td><td>${escapeHtml(item.assigneeName || "Unassigned")}</td><td>${escapeHtml(formatDate(item.dueAt))}</td></tr>`).join("")}</tbody></table></div>`;
+};
+
+const renderTasks = async (status = state.taskStatus) => {
+  state.taskStatus = String(status || "");
+  const qs = new URLSearchParams({ page: state.tasksPage, pageSize: 25, ...(status ? { status } : {}) });
+  const [data, assignees] = await Promise.all([api(`/tasks?${qs}`), api("/staff/assignees")]);
+  state.taskItems = data.items;
+  state.workAssignees = assignees;
+  $("#content").innerHTML = `<div class="page-actions"><p>Use one queue for sales follow-up, order gates, purchasing, logistics, cores, warranties and system work.</p><button class="button button-primary" id="new-task" type="button">Create task</button></div><form class="filter-bar" id="tasks-filter"><div class="field"><label for="task-status">Status</label><select id="task-status" name="status"><option value="">All statuses</option>${["open", "in_progress", "blocked", "completed", "canceled"].map((value) => `<option value="${value}" ${state.taskStatus === value ? "selected" : ""}>${escapeHtml(label(value))}</option>`).join("")}</select></div><button class="button" type="submit">Apply filter</button></form><section class="panel">${taskTable(data.items)}</section><div class="pagination"><span>Page ${data.page} · ${data.total} tasks</span><button class="button button-small" data-tasks-page="${data.page - 1}" ${data.page <= 1 ? "disabled" : ""}>Previous</button><button class="button button-small" data-tasks-page="${data.page + 1}" ${(data.page * data.pageSize) >= data.total ? "disabled" : ""}>Next</button></div>`;
 };
 
 const ordersFilters = () => `<form class="filter-bar" id="orders-filter">
@@ -230,7 +268,7 @@ const renderSystem = async () => {
   $("#content").innerHTML = `<div class="page-actions"><p>Only redacted delivery metadata is shown. A manual recovery resets the retry counter and creates a permanent audit event.</p></div><section class="panel">${table}</section>`;
 };
 
-const renderers = { dashboard: renderDashboard, orders: renderOrders, freight: renderFreight, promotions: renderPromotions, finance: renderFinance, staff: renderStaff, system: renderSystem, audit: renderAudit };
+const renderers = { dashboard: renderDashboard, leads: renderLeads, tasks: renderTasks, orders: renderOrders, freight: renderFreight, promotions: renderPromotions, finance: renderFinance, staff: renderStaff, system: renderSystem, audit: renderAudit };
 
 const routeAllowed = (route) => {
   const node = $(`[data-route="${route}"]`);
@@ -274,9 +312,9 @@ const fulfillmentControl = (order) => {
   const id = escapeHtml(order.id);
   let requiredRecord = "";
   if (order.fulfillmentStatus === "fitment_review") {
-    requiredRecord = `<form id="fitment-review-form" data-order-id="${id}" data-order-version="${version}"><div class="form-grid"><div class="field"><label for="fitment-decision">Decision</label><select id="fitment-decision" name="decision"><option value="approved">Approve exact fitment</option><option value="rejected">Reject and cancel fulfillment</option></select></div><div class="field"><label for="supplier-part-uid">ACE part UID</label><input id="supplier-part-uid" name="supplierPartUid" maxlength="160" required></div><div class="field wide"><label for="fitment-reason">Verification record</label><input id="fitment-reason" name="reason" maxlength="1000" required placeholder="Document VIN, application and catalog evidence reviewed"></div></div><div class="form-actions"><button class="button button-primary" type="submit">Record fitment decision</button></div></form>`;
+    requiredRecord = `<form id="fitment-review-form" data-order-id="${id}" data-order-version="${version}"><div class="form-grid"><div class="field"><label for="fitment-decision">Decision</label><select id="fitment-decision" name="decision"><option value="approved">Approve exact fitment</option><option value="rejected">Reject and cancel fulfillment</option></select></div><div class="field"><label for="supplier-part-uid">Supplier part reference</label><input id="supplier-part-uid" name="supplierPartUid" maxlength="160" required></div><div class="field wide"><label for="fitment-reason">Verification record</label><input id="fitment-reason" name="reason" maxlength="1000" required placeholder="Document VIN, application and catalog evidence reviewed"></div></div><div class="form-actions"><button class="button button-primary" type="submit">Record fitment decision</button></div></form>`;
   } else if (order.fulfillmentStatus === "ready_for_supplier") {
-    requiredRecord = `<form id="supplier-order-form" data-order-id="${id}" data-order-version="${version}"><div class="form-grid"><div class="field"><label for="supplier-name">Supplier</label><input id="supplier-name" name="supplierName" maxlength="160" value="ACE Transmission" required></div><div class="field"><label for="supplier-order-reference">Supplier order reference</label><input id="supplier-order-reference" name="supplierOrderReference" maxlength="160" required></div><div class="field"><label for="estimated-ship-at">Estimated ship date</label><input id="estimated-ship-at" name="estimatedShipAt" type="datetime-local"></div><div class="field wide"><label for="supplier-order-reason">Ordering record</label><input id="supplier-order-reason" name="reason" maxlength="1000" required placeholder="Document supplier confirmation and ordering context"></div></div><div class="form-actions"><button class="button button-primary" type="submit">Record supplier order</button></div></form>`;
+    requiredRecord = `<form id="supplier-order-form" data-order-id="${id}" data-order-version="${version}"><div class="form-grid"><div class="field"><label for="supplier-name">Supplier</label><input id="supplier-name" name="supplierName" maxlength="160" autocomplete="organization" placeholder="Select or enter the verified supplier" required></div><div class="field"><label for="supplier-order-reference">Supplier order reference</label><input id="supplier-order-reference" name="supplierOrderReference" maxlength="160" required></div><div class="field"><label for="estimated-ship-at">Estimated ship date</label><input id="estimated-ship-at" name="estimatedShipAt" type="datetime-local"></div><div class="field wide"><label for="supplier-order-reason">Ordering record</label><input id="supplier-order-reason" name="reason" maxlength="1000" required placeholder="Document supplier confirmation and ordering context"></div></div><div class="form-actions"><button class="button button-primary" type="submit">Record supplier order</button></div></form>`;
   } else if (["supplier_ordered", "building"].includes(order.fulfillmentStatus) && !order.supplier?.shippedAt) {
     requiredRecord = `<form id="shipment-form" data-order-id="${id}" data-order-version="${version}"><div class="form-grid"><div class="field"><label for="shipment-carrier">Carrier</label><input id="shipment-carrier" name="carrier" maxlength="120" required></div><div class="field"><label for="tracking-number">Tracking or PRO number</label><input id="tracking-number" name="trackingNumber" maxlength="200" required></div><div class="field wide"><label for="shipment-reason">Shipment record</label><input id="shipment-reason" name="reason" maxlength="1000" required placeholder="Document supplier shipment confirmation"></div></div><div class="form-actions"><button class="button button-primary" type="submit">Record shipment</button></div></form>`;
   }
@@ -336,6 +374,32 @@ const openPromotionForm = () => openDialog({
   html: `<form id="promotion-form"><div class="form-grid"><div class="field"><label for="promotion-code">Code</label><input id="promotion-code" name="code" maxlength="32" pattern="[A-Za-z0-9][A-Za-z0-9_-]{2,31}" required></div><div class="field"><label for="promotion-kind">Discount type</label><select id="promotion-kind" name="kind"><option value="amount">Fixed amount</option><option value="percent">Percentage</option></select></div><div class="field"><label for="promotion-value">Discount value</label><input id="promotion-value" name="value" type="number" min="0.01" step="0.01" required></div><div class="field"><label for="promotion-margin">Minimum margin after discount</label><input id="promotion-margin" name="minimumMargin" type="number" min="0" step="0.01" value="350.00" required></div><div class="field"><label for="promotion-start">Starts</label><input id="promotion-start" name="startsAt" type="datetime-local" required></div><div class="field"><label for="promotion-end">Ends (optional)</label><input id="promotion-end" name="endsAt" type="datetime-local"></div><div class="field"><label for="promotion-total-limit">Total use limit</label><input id="promotion-total-limit" name="maxRedemptions" type="number" min="1" step="1"></div><div class="field"><label for="promotion-customer-limit">Per-customer limit</label><input id="promotion-customer-limit" name="maxRedemptionsPerCustomer" type="number" min="1" max="100" step="1" value="1" required></div><div class="field wide"><label for="promotion-reason">Business reason</label><input id="promotion-reason" name="reason" maxlength="500" required></div></div><div class="form-actions"><button class="button button-primary" type="submit">Create for approval</button></div></form>`,
 });
 
+const assigneeOptions = (selected = null) => `<option value="">Unassigned</option>${(state.workAssignees || []).map((staff) => `<option value="${escapeHtml(staff.id)}" ${selected === staff.id ? "selected" : ""}>${escapeHtml(staff.displayName)}</option>`).join("")}`;
+
+const openLeadForm = () => openDialog({
+  kicker: "Sales pipeline",
+  title: "Add lead",
+  html: `<form id="lead-create-form"><div class="form-grid"><div class="field"><label for="lead-name">Contact name</label><input id="lead-name" name="contactName" maxlength="160" autocomplete="name" required></div><div class="field"><label for="lead-organization">Organization (optional)</label><input id="lead-organization" name="organizationName" maxlength="160" autocomplete="organization"></div><div class="field"><label for="lead-email">Email</label><input id="lead-email" name="contactEmail" type="email" maxlength="320" autocomplete="email"></div><div class="field"><label for="lead-phone">Phone</label><input id="lead-phone" name="contactPhone" type="tel" maxlength="40" autocomplete="tel"></div><div class="field"><label for="lead-product">Product interest</label><select id="lead-product" name="productInterest"><option value="">Not confirmed</option>${["transmission", "engine", "transfer_case", "differential", "accessory", "service"].map((value) => `<option value="${value}">${escapeHtml(label(value))}</option>`).join("")}</select></div><div class="field"><label for="lead-source">Source</label><input id="lead-source" name="source" maxlength="120" value="manual" required></div><div class="field"><label for="lead-priority">Priority</label><select id="lead-priority" name="priority">${["normal", "high", "urgent", "low"].map((value) => `<option value="${value}">${escapeHtml(label(value))}</option>`).join("")}</select></div><div class="field"><label for="lead-owner">Owner</label><select id="lead-owner" name="assignedTo">${assigneeOptions()}</select></div><div class="field"><label for="lead-year">Vehicle year</label><input id="lead-year" name="year" type="number" min="1900" max="2100"></div><div class="field"><label for="lead-make">Vehicle make</label><input id="lead-make" name="make" maxlength="80"></div><div class="field"><label for="lead-model">Vehicle model</label><input id="lead-model" name="model" maxlength="120"></div><div class="field"><label for="lead-follow-up">Next follow-up</label><input id="lead-follow-up" name="nextFollowUpAt" type="datetime-local"></div><div class="field wide"><label for="lead-reason">Intake record</label><input id="lead-reason" name="reason" maxlength="500" required placeholder="How the inquiry arrived and what the customer needs"></div></div><div class="form-actions"><button class="button button-primary" type="submit">Create lead</button></div></form>`,
+});
+
+const openLeadUpdate = (item) => openDialog({
+  kicker: "Sales pipeline",
+  title: item.reference,
+  html: `<div class="detail-grid"><div class="detail-item"><span>Contact</span><strong>${escapeHtml(item.contact.name)}</strong><small>${escapeHtml(item.contact.email || item.contact.phone || "—")}</small></div><div class="detail-item"><span>Interest</span><strong>${escapeHtml(label(item.productInterest))}</strong><small>${escapeHtml(item.source)}</small></div></div><form id="lead-update-form" data-lead-id="${escapeHtml(item.id)}" data-lead-version="${escapeHtml(item.version)}"><div class="form-grid"><div class="field"><label for="lead-update-state">Status</label><select id="lead-update-state" name="state">${["new", "assigned", "contacted", "qualified", "quoted", "won", "lost", "closed"].map((value) => `<option value="${value}" ${item.state === value ? "selected" : ""}>${escapeHtml(label(value))}</option>`).join("")}</select></div><div class="field"><label for="lead-update-priority">Priority</label><select id="lead-update-priority" name="priority">${["low", "normal", "high", "urgent"].map((value) => `<option value="${value}" ${item.priority === value ? "selected" : ""}>${escapeHtml(label(value))}</option>`).join("")}</select></div><div class="field"><label for="lead-update-owner">Owner</label><select id="lead-update-owner" name="assignedTo">${assigneeOptions(item.assignedTo)}</select></div><div class="field"><label for="lead-update-follow-up">Next follow-up</label><input id="lead-update-follow-up" name="nextFollowUpAt" type="datetime-local" value="${escapeHtml(inputDateTime(item.nextFollowUpAt))}"></div><div class="field"><label for="lead-lost-reason">Lost reason (required when lost)</label><input id="lead-lost-reason" name="lostReason" maxlength="500" value="${escapeHtml(item.lostReason || "")}"></div><div class="field"><label for="lead-won-order">Order ID (required when won)</label><input id="lead-won-order" name="wonOrderId" maxlength="36" value="${escapeHtml(item.wonOrderId || "")}"></div><div class="field wide"><label for="lead-update-reason">Change reason</label><input id="lead-update-reason" name="reason" maxlength="500" required></div></div><div class="form-actions"><button class="button button-primary" type="submit">Save lead</button></div></form>`,
+});
+
+const openTaskForm = () => openDialog({
+  kicker: "Work management",
+  title: "Create task",
+  html: `<form id="task-create-form"><div class="form-grid"><div class="field"><label for="task-type">Task type</label><input id="task-type" name="taskType" maxlength="80" placeholder="lead_follow_up" required></div><div class="field wide"><label for="task-title">Title</label><input id="task-title" name="title" maxlength="240" required></div><div class="field"><label for="task-entity-type">Related record type</label><select id="task-entity-type" name="entityType">${["lead", "quote", "order", "customer", "purchase_order", "shipment", "core_return", "warranty_claim", "dispute", "system"].map((value) => `<option value="${value}">${escapeHtml(label(value))}</option>`).join("")}</select></div><div class="field"><label for="task-entity-id">Related record ID (optional)</label><input id="task-entity-id" name="entityId" maxlength="36"></div><div class="field"><label for="task-priority">Priority</label><select id="task-priority" name="priority">${["normal", "high", "urgent", "low"].map((value) => `<option value="${value}">${escapeHtml(label(value))}</option>`).join("")}</select></div><div class="field"><label for="task-owner">Owner</label><select id="task-owner" name="assignedTo">${assigneeOptions()}</select></div><div class="field"><label for="task-due">Due</label><input id="task-due" name="dueAt" type="datetime-local"></div><div class="field wide"><label for="task-reason">Creation reason</label><input id="task-reason" name="reason" maxlength="500" required></div></div><div class="form-actions"><button class="button button-primary" type="submit">Create task</button></div></form>`,
+});
+
+const openTaskUpdate = (item) => openDialog({
+  kicker: "Work management",
+  title: item.title,
+  html: `<div class="record-summary"><strong>${escapeHtml(label(item.taskType))} · ${escapeHtml(label(item.entityType))}</strong><span>${escapeHtml(item.entityId || "General queue")}</span></div><form id="task-update-form" data-task-id="${escapeHtml(item.id)}" data-task-version="${escapeHtml(item.version)}"><div class="form-grid"><div class="field"><label for="task-update-state">Status</label><select id="task-update-state" name="state">${["open", "in_progress", "blocked", "completed", "canceled"].map((value) => `<option value="${value}" ${item.state === value ? "selected" : ""}>${escapeHtml(label(value))}</option>`).join("")}</select></div><div class="field"><label for="task-update-priority">Priority</label><select id="task-update-priority" name="priority">${["low", "normal", "high", "urgent"].map((value) => `<option value="${value}" ${item.priority === value ? "selected" : ""}>${escapeHtml(label(value))}</option>`).join("")}</select></div><div class="field"><label for="task-update-owner">Owner</label><select id="task-update-owner" name="assignedTo">${assigneeOptions(item.assignedTo)}</select></div><div class="field"><label for="task-update-due">Due</label><input id="task-update-due" name="dueAt" type="datetime-local" value="${escapeHtml(inputDateTime(item.dueAt))}"></div><div class="field wide"><label for="task-blocked-reason">Blocked reason (required when blocked)</label><input id="task-blocked-reason" name="blockedReason" maxlength="500" value="${escapeHtml(item.blockedReason || "")}"></div><div class="field wide"><label for="task-completion">Completion evidence (required when completed)</label><textarea id="task-completion" name="completionEvidence" maxlength="1000">${escapeHtml(item.completionEvidence || "")}</textarea></div><div class="field wide"><label for="task-update-reason">Change reason</label><input id="task-update-reason" name="reason" maxlength="500" required></div></div><div class="form-actions"><button class="button button-primary" type="submit">Save task</button></div></form>`,
+});
+
 const openStaffForm = () => openDialog({
   kicker: "Identity & access",
   title: "Add staff member",
@@ -374,6 +438,46 @@ document.addEventListener("submit", async (event) => {
     } else if (form.id === "freight-filter") {
       state.freightPage = 1;
       await renderFreight(new FormData(form).get("status"));
+    } else if (form.id === "leads-filter") {
+      state.leadsPage = 1;
+      const data = new FormData(form);
+      await renderLeads(data.get("search"), data.get("status"));
+    } else if (form.id === "tasks-filter") {
+      state.tasksPage = 1;
+      await renderTasks(new FormData(form).get("status"));
+    } else if (form.id === "lead-create-form") {
+      await submitWithButton(form, async (data) => {
+        const followUp = data.get("nextFollowUpAt");
+        const vehicleSummary = Object.fromEntries(["year", "make", "model"].map((key) => [key, String(data.get(key) || "").trim()]).filter(([, value]) => value));
+        await api("/leads", mutationOptions({ contactName: data.get("contactName"), contactEmail: data.get("contactEmail") || null, contactPhone: data.get("contactPhone") || null, organizationName: data.get("organizationName") || null, productInterest: data.get("productInterest") || null, source: data.get("source"), priority: data.get("priority"), assignedTo: data.get("assignedTo") || null, nextFollowUpAt: followUp ? new Date(followUp).toISOString() : null, vehicleSummary, reason: data.get("reason") }));
+        $("#record-dialog").close();
+        setNotice("Lead created with a permanent intake record.");
+        await renderLeads();
+      });
+    } else if (form.id === "lead-update-form") {
+      await submitWithButton(form, async (data) => {
+        const followUp = data.get("nextFollowUpAt");
+        await api(`/leads/${form.dataset.leadId}`, mutationOptions({ version: Number(form.dataset.leadVersion), state: data.get("state"), priority: data.get("priority"), assignedTo: data.get("assignedTo") || null, nextFollowUpAt: followUp ? new Date(followUp).toISOString() : null, lostReason: data.get("lostReason") || null, wonOrderId: data.get("wonOrderId") || null, reason: data.get("reason") }));
+        $("#record-dialog").close();
+        setNotice("Lead status and ownership updated.");
+        await renderLeads();
+      });
+    } else if (form.id === "task-create-form") {
+      await submitWithButton(form, async (data) => {
+        const dueAt = data.get("dueAt");
+        await api("/tasks", mutationOptions({ taskType: data.get("taskType"), title: data.get("title"), entityType: data.get("entityType"), entityId: data.get("entityId") || null, priority: data.get("priority"), assignedTo: data.get("assignedTo") || null, dueAt: dueAt ? new Date(dueAt).toISOString() : null, reason: data.get("reason") }));
+        $("#record-dialog").close();
+        setNotice("Task created and added to the team queue.");
+        await renderTasks();
+      });
+    } else if (form.id === "task-update-form") {
+      await submitWithButton(form, async (data) => {
+        const dueAt = data.get("dueAt");
+        await api(`/tasks/${form.dataset.taskId}`, mutationOptions({ version: Number(form.dataset.taskVersion), state: data.get("state"), priority: data.get("priority"), assignedTo: data.get("assignedTo") || null, dueAt: dueAt ? new Date(dueAt).toISOString() : null, blockedReason: data.get("blockedReason") || null, completionEvidence: data.get("completionEvidence") || null, reason: data.get("reason") }));
+        $("#record-dialog").close();
+        setNotice("Task updated and recorded in the audit trail.");
+        await renderTasks();
+      });
     } else if (form.id === "promotion-form") {
       await submitWithButton(form, async (data) => {
         const kind = data.get("kind");
@@ -465,8 +569,10 @@ document.addEventListener("submit", async (event) => {
 
 document.addEventListener("click", async (event) => {
   const orderButton = event.target.closest("[data-order-id]");
+  const leadButton = event.target.closest("[data-lead-id]");
+  const taskButton = event.target.closest("[data-task-id]");
   const freightButton = event.target.closest("[data-freight-id]");
-  const pageButton = event.target.closest("[data-orders-page], [data-freight-page]");
+  const pageButton = event.target.closest("[data-orders-page], [data-freight-page], [data-leads-page], [data-tasks-page]");
   const promotionAction = event.target.closest("[data-promotion-action]");
   const staffButton = event.target.closest("[data-staff-id]");
   const systemButton = event.target.closest("[data-system-exception-id]");
@@ -486,6 +592,12 @@ document.addEventListener("click", async (event) => {
   } else if (systemButton) {
     const item = state.systemExceptions?.find((candidate) => candidate.kind === systemButton.dataset.systemExceptionKind && candidate.id === systemButton.dataset.systemExceptionId);
     if (item) openSystemRecovery(item);
+  } else if (leadButton) {
+    const item = state.leadItems?.find((candidate) => candidate.id === leadButton.dataset.leadId);
+    if (item) openLeadUpdate(item);
+  } else if (taskButton) {
+    const item = state.taskItems?.find((candidate) => candidate.id === taskButton.dataset.taskId);
+    if (item) openTaskUpdate(item);
   } else if (orderButton) await openOrder(orderButton.dataset.orderId);
   else if (freightButton) {
     const item = state.freightItems?.find((candidate) => candidate.id === freightButton.dataset.freightId);
@@ -496,6 +608,8 @@ document.addEventListener("click", async (event) => {
   } else if (pageButton && !pageButton.disabled) {
     if (pageButton.dataset.ordersPage) { state.ordersPage = Number(pageButton.dataset.ordersPage); await renderOrders(state.orderSearch, state.orderStatus); }
     if (pageButton.dataset.freightPage) { state.freightPage = Number(pageButton.dataset.freightPage); await renderFreight(state.freightStatus); }
+    if (pageButton.dataset.leadsPage) { state.leadsPage = Number(pageButton.dataset.leadsPage); await renderLeads(state.leadSearch, state.leadStatus); }
+    if (pageButton.dataset.tasksPage) { state.tasksPage = Number(pageButton.dataset.tasksPage); await renderTasks(state.taskStatus); }
   } else if (promotionAction) {
     const reason = promotionAction.dataset.promotionAction === "approve" ? "Reviewed and approved for customer use" : "Disabled by administrator";
     try {
@@ -560,5 +674,7 @@ $("#dialog-close").addEventListener("click", () => $("#record-dialog").close());
 $("#record-dialog").addEventListener("click", (event) => { if (event.target === $("#record-dialog")) $("#record-dialog").close(); });
 document.addEventListener("click", (event) => { if (event.target.closest("#new-promotion")) openPromotionForm(); });
 document.addEventListener("click", (event) => { if (event.target.closest("#new-staff")) openStaffForm(); });
+document.addEventListener("click", (event) => { if (event.target.closest("#new-lead")) openLeadForm(); });
+document.addEventListener("click", (event) => { if (event.target.closest("#new-task")) openTaskForm(); });
 
 initialize();

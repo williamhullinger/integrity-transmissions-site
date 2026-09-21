@@ -36,6 +36,7 @@ const requiredFiles = [
   "reman-order-terms.html",
   "legal/reman-policy-bundle-2026-09-04.html",
   "customer-policies.html",
+  "shipping-returns.html",
   "integrity-limited-warranty.html",
   "service-policies.html",
   "website-terms.html",
@@ -50,6 +51,10 @@ const requiredFiles = [
   "images/reman-engine-assembly.webp",
   "images/reman-transfer-case-assembly.webp",
   "images/upgrade-selection-guide.webp",
+  "guides/delayed-engagement-drive-reverse.html",
+  "guides/no-reverse-transmission.html",
+  "guides/transmission-shudder-vs-engine-misfire.html",
+  "guides/transmission-slipping.html",
 ];
 
 for (const file of requiredFiles) {

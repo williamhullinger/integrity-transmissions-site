@@ -1,6 +1,6 @@
 # Integrity Backlink Campaign
 
-Updated: September 2, 2026
+Updated: September 21, 2026
 
 ## Goal
 
@@ -14,23 +14,27 @@ Google Search Console's Links report was still processing when reviewed Septembe
 |---|---|
 | `/reman-transmissions` | A VIN-first path for customers or repair shops sourcing a verified reman unit nationwide |
 | `/guides/transmission-problems` | A plain-language warning-sign and stop-driving guide |
+| `/guides/transmission-slipping` | A focused symptom-triage resource that separates evidence from diagnosis |
+| `/guides/transmission-shudder-vs-engine-misfire` | A practical cross-system diagnostic explainer useful to general repair partners |
 | `/guides/cvt-transmission-problems` | A demand-backed CVT symptom, fluid, safety, and repair-versus-replacement guide with manufacturer references |
-| `/warranty` | A clear explanation of coverage categories and why written terms control |
-| Future installer checklist | Helps shops and customers prepare for cooler, programming, fluid, documentation, freight, and core requirements |
-| Future core-return guide | Reduces shipping mistakes, missed deadlines, and avoidable core charges |
+| `/guides/how-to-identify-transmission` | A VIN, tag, connector, production-split and calibration identification checklist |
+| `/guides/shipping-transmission` | A freight receiving, inspection, documentation and unloading checklist |
+| `/guides/transmission-core-return` | A complete core eligibility, packaging, deadline and refund checklist |
+| `/guides/transmission-warranty-coverage` | A checklist for comparing written coverage, labor, installation, exclusions and claim steps |
+| `/shipping-returns` | A seller-specific explainer separating outbound freight, damage, cancellation, returns and refundable core obligations |
 | Real case studies | Original diagnostic and teardown evidence that associations, suppliers, shops, and owners can reference |
 
 ## Opportunity Queue
 
 | Priority | Opportunity | Relevant link or proof | Next action | Status |
 |---:|---|---|---|---|
-| 1 | ACE Transmission relationship | Reman page, CVT guide, or a joint customer/installer resource | Send the approved integration/dealer-link request to the verified ACE Sales Support address | Recipient verified; message awaiting action-time approval |
+| 1 | Current and new supplier relationships | Reman pages, technical guides, or a joint installer resource | Confirm each supplier's reseller, trademark, image and directory rules before requesting a legitimate listing | Current supplier contact known; new supplier onboarding pending |
 | 2 | ATRA | Member profile and Shop Finder listing if Integrity qualifies | Decide whether the training, warranty, referrals, and directory value justify paid membership; confirm private-address handling before applying | Eligible category identified; paid application needs approval |
 | 3 | MWACA | Legitimate member directory/profile if Integrity joins | Decide whether the member benefits and directory justify paid shop membership; confirm private-address handling before applying | Missouri shop eligibility identified; paid application needs approval |
 | 4 | Springfield, Ozark, or Nixa chamber | Accurate business directory/profile | Choose at most the chamber that best matches real customers and business participation; confirm private-address handling and total dues before applying | Directory and application options verified; paid choice needed |
 | 5 | Installer and repair-shop partners | Reman page, installer checklist, or a co-authored case study | Identify partners that actually install, diagnose, program, tow, tune, or serve fleets; ask for a useful resource link | Partner list needed |
 | 6 | Towing, fleet, diesel, performance, body-shop, and used-car relationships | Symptom guide, reman sourcing, or case study | Build one-to-one referral/resource pages only where a real relationship exists | Partner list needed |
-| 7 | Core business citations | Homepage/service-area page | Audit Google Business Profile, Bing Places, Apple Business Connect, Yelp, BBB, and other relevant profiles for consistent service-area details | Audit after deployment |
+| 7 | Core business citations | Homepage/service-area page | Audit Google Business Profile, Bing Places, Apple Business Connect, Yelp, BBB and relevant profiles only after the public identity record below is approved | Blocked on canonical address/service-area decision |
 | 8 | Hullinger Digital portfolio | A transparent web/SEO case study crediting the real project | Publish a substantive project case study and link to Integrity naturally; avoid sitewide footer links | Draft after results exist |
 | 9 | Local automotive education | Symptom guide or a safety/diagnostic checklist | Offer a genuinely useful resource to schools, clubs, fleet groups, and community organizations when relevant | Prospect research needed |
 
@@ -95,6 +99,21 @@ Integrity Transmission & Drivetrain
 - Record login owner, submission date, approval status, profile URL, and next review date.
 - Do not create duplicate listings.
 
+## Public Identity Gate
+
+Before any profile creation or correction, record one approved master identity and use it everywhere:
+
+- exact public business name;
+- public phone number;
+- canonical website URL;
+- whether the business is displayed as a storefront or a service-area business;
+- publishable street address, if any;
+- primary category and supported secondary categories;
+- regular customer-contact hours; and
+- short and long business descriptions.
+
+Do not reuse an old, borrowed, residential or former-business address to obtain a directory listing. A profile that requires a public address remains blocked until Integrity has a legitimate publishable location or the platform supports address hiding for the actual operating model.
+
 ## Verified Membership Opportunities
 
 Reviewed September 2, 2026. These are legitimate paid relationship opportunities, not free-link submissions. Join only when the training, referrals, community access, or business benefits justify the cost without counting on a ranking increase.
@@ -135,13 +154,14 @@ Maintain one row per opportunity with:
 
 ## 90-Day Execution Order
 
-1. Deploy and index the reman and symptom pages.
-2. Confirm ACE relationship language and fulfillment details.
-3. Audit core business profiles and remove inconsistencies.
-4. Contact five real suppliers/partners individually with a relevant asset.
-5. Confirm ATRA, MWACA, and chamber eligibility before applying.
-6. Capture and publish the first evidence-backed case study.
-7. Use that case study for a second, more specific supplier/partner outreach round.
-8. Review referring domains, referral traffic, quote submissions, and responses during the monthly SEO check.
+1. Deploy and request indexing for the expanded reman, symptom and buyer-operations pages.
+2. Approve the master public identity record before changing business profiles.
+3. Confirm supplier relationship language, media rights and directory eligibility privately.
+4. Audit core business profiles and correct only verified inconsistencies.
+5. Contact five real suppliers or partners individually with the most relevant live guide.
+6. Confirm ATRA, MWACA and chamber eligibility before applying or paying.
+7. Capture and publish the first evidence-backed case study.
+8. Use that case study for a second, more specific partner or publication outreach round.
+9. Review referring domains, referral traffic, quote submissions and responses during the monthly SEO check.
 
 External submissions, applications, profile edits, and outreach messages must be reviewed immediately before they are sent.

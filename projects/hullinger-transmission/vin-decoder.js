@@ -62,6 +62,29 @@ function initVinDecoder() {
     if (typeof pushConversionEvent === "function") pushConversionEvent(eventName, details);
   };
 
+  const itemId = (value) => String(value || "reman-transmission")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "")
+    .slice(0, 80);
+  const commerceItems = (candidate, upgrade, packageData) => [
+    {
+      item_id: itemId(candidate.application),
+      item_name: `${candidate.application} remanufactured transmission`,
+      item_category: "reman_transmission",
+      item_variant: `${upgrade.name} • ${packageData.warranty}`,
+      price: packageData.customerPrice,
+      quantity: 1,
+    },
+    ...(packageData.coreDeposit > 0 ? [{
+      item_id: "refundable_core_deposit",
+      item_name: "Refundable transmission core deposit",
+      item_category: "core_deposit",
+      price: packageData.coreDeposit,
+      quantity: 1,
+    }] : []),
+  ];
+
   const normalizeVin = (value) => value.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 17);
   const phoneDigits = (value) => String(value || "").replace(/\D/g, "");
   const validPhone = (value) => phoneDigits(value).length >= 10;
@@ -218,7 +241,14 @@ function initVinDecoder() {
     if (checkedAtInput) checkedAtInput.value = lookupData.checkedAt;
     if (transmissionInput) transmissionInput.value = candidate.application;
     if (freightButton) freightButton.disabled = false;
+    const items = commerceItems(candidate, upgrade, packageData);
     track("package_select", { transmission_family: candidate.application, upgrade_level: upgrade.name, warranty: packageData.warranty });
+    track("select_item", { currency: "USD", items });
+    track("view_item", {
+      currency: "USD",
+      value: packageData.customerPrice + packageData.coreDeposit,
+      items,
+    });
 
     const summary = node("section", "selected-reman-summary");
     summary.dataset.selectedSummary = "";
@@ -345,6 +375,12 @@ function initVinDecoder() {
       catalog.append(candidateCard);
     });
 
+    const visibleItems = data.candidates.flatMap((candidate) => (candidate.upgrades || [])
+      .flatMap((upgrade) => (upgrade.packages || [])
+        .filter((packageData) => packageData.orderable)
+        .flatMap((packageData) => commerceItems(candidate, upgrade, packageData))));
+    if (visibleItems.length) track("view_item_list", { currency: "USD", items: visibleItems });
+
     catalog.append(node("p", "reman-catalog__checked", `Price and availability checked ${new Date(data.checkedAt).toLocaleString()}. We confirm both again before payment.`));
   };
 
@@ -368,6 +404,15 @@ function initVinDecoder() {
       summary.querySelector("div")?.append(totalLine);
     }
     setCheckoutStatus("ready", "Your package and delivery option are ready. Continue to Stripe to see applicable tax and the complete total.");
+    if (selectedOption) {
+      track("add_shipping_info", {
+        currency: "USD",
+        value: selectedOption.packageData.customerPrice + selectedOption.packageData.coreDeposit,
+        shipping: rate.customerFreightTotal,
+        delivery_type: deliveryInput?.value || "",
+        items: commerceItems(selectedOption.candidate, selectedOption.upgrade, selectedOption.packageData),
+      });
+    }
     updateCheckoutButton();
   };
 
@@ -759,6 +804,11 @@ function initVinDecoder() {
       if (!response.ok && !officeQueued) throw new Error("Your request could not be sent online.");
       assistanceSubmitted = true;
       track("assisted_quote_submit");
+      track("generate_lead", {
+        page_path: window.location.pathname,
+        form_name: "reman-transmission-quote",
+        unit_type: "reman-transmission",
+      });
       const callbackNumber = validPhone(phoneInput?.value) ? ` at ${displayPhone(phoneInput.value)}` : "";
       setCheckoutStatus("success", `Your request was sent. A team member will contact you${callbackNumber} to finish the delivery quote. No payment was taken.`);
       setTimeout(() => window.location.assign("/thank-you?request=reman-freight"), 900);
@@ -854,6 +904,10 @@ function initVinDecoder() {
     track("begin_checkout", {
       transmission_family: selectedOption.candidate.application,
       upgrade_level: selectedOption.upgrade.name,
+      currency: "USD",
+      value: selectedOption.packageData.customerPrice + selectedOption.packageData.coreDeposit,
+      shipping: Number(freightTotalInput?.value || 0),
+      items: commerceItems(selectedOption.candidate, selectedOption.upgrade, selectedOption.packageData),
     });
 
     try {

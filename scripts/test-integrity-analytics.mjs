@@ -37,6 +37,26 @@ assert(script.includes("integrity_attribution_v1"), "Session attribution key is 
 assert(script.includes("buying_guide_link_click"), "Buying-guide navigation tracking is missing");
 assert(script.includes("/api/analytics-config"), "Analytics configuration endpoint is not used");
 assert(script.includes("data-privacy-choices"), "Privacy choices control is not wired");
+assert(script.includes("integrity_pending_lead_v1"), "Successful lead confirmation state is missing");
+assert(script.includes('allowedItemKeys = new Set(["item_id", "item_name", "item_category", "item_variant", "price", "quantity"])'), "Commerce item analytics allowlist is missing");
+assert(script.includes('"transaction_id", "shipping", "tax"'), "Purchase analytics fields are missing");
+assert(
+  /\["\/thank-you", "\/thank-you\.html"\][\s\S]*?sessionStorage\.removeItem\(leadConfirmationKey\)[\s\S]*?pushConversionEvent\("generate_lead"/.test(script),
+  "Lead confirmation must be emitted only from the one-time thank-you path",
+);
+const submitHandler = script.match(/form\.addEventListener\("submit"[\s\S]*?\n    \}\);/)?.[0] || "";
+assert(submitHandler.includes("quote_form_submit"), "Form-submit intent event is missing");
+assert(!submitHandler.includes('pushConversionEvent("generate_lead"'), "A submission attempt must not count as a confirmed lead");
+assert(submitHandler.includes("Date.now()"), "Pending lead state must include a freshness timestamp");
+assert(script.includes('form[action="/thank-you"]'), "Lead analytics must be limited to customer inquiry forms");
+assert(!script.includes('document.querySelectorAll("form").forEach((form) => {\n    let started'), "Non-lead forms must not emit lead-funnel analytics");
+const vinDecoder = await readFile(path.join(repositoryRoot, "projects/hullinger-transmission/vin-decoder.js"), "utf8");
+for (const eventName of ["view_item_list", "select_item", "view_item", "add_shipping_info", "begin_checkout", "generate_lead"]) {
+  assert(vinDecoder.includes(`track("${eventName}"`), `VIN commerce flow is missing ${eventName}`);
+}
+const orderSuccess = await readFile(path.join(repositoryRoot, "projects/hullinger-transmission/reman-order-success.js"), "utf8");
+assert(orderSuccess.includes('pushConversionEvent("purchase"'), "Stripe-confirmed purchase event is missing");
+assert(orderSuccess.includes("data.analyticsTransactionId"), "Purchase tracking must use the server-derived transaction identifier");
 assert(
   /\.footer-privacy-button\[hidden\]\s*\{[^}]*display:\s*none;/s.test(styles),
   "Hidden privacy controls must not be restored by footer button styling",

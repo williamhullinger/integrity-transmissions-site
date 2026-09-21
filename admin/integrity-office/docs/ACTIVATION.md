@@ -6,7 +6,7 @@ Create separate staging and production Netlify sites from the same repository. I
 
 Provision separate managed PostgreSQL databases with encrypted connections, automated daily backups and point-in-time recovery. The production database must not share credentials or a schema owner with staging.
 
-Use a migration identity to apply `db/001_initial.sql`, `db/002_office_runtime.sql`, `db/003_operational_controls.sql`, and `db/004_policy_acceptance.sql` in order. Create a different runtime identity with only the table, sequence and function permissions required by the application. The runtime identity must not own the database or schema.
+Use a migration identity to apply `db/001_initial.sql`, `db/002_office_runtime.sql`, `db/003_operational_controls.sql`, `db/004_policy_acceptance.sql`, and `db/005_nationwide_operations.sql` in order. Create a different runtime identity with only the table, sequence and function permissions required by the application. The runtime identity must not own the database or schema.
 
 ## 2. Configure Auth0
 
@@ -77,7 +77,7 @@ Store its signing secret as `OFFICE_STRIPE_WEBHOOK_SECRET`. Keep the existing st
 
 ## 5. Stage and verify
 
-1. Apply all four migrations to staging and verify the runtime identity cannot alter the schema.
+1. Apply all five migrations to staging and verify the runtime identity cannot alter the schema.
 2. Add one staging administrator and confirm that an unlisted Auth0 user is rejected.
 3. Confirm login fails without MFA and succeeds with a passkey or authenticator app.
 4. Run a test-mode VIN-to-freight-to-Checkout flow and complete payment with a Stripe test card.
@@ -91,6 +91,7 @@ Store its signing secret as `OFFICE_STRIPE_WEBHOOK_SECRET`. Keep the existing st
 12. Create a test-mode dispute, confirm its evidence deadline appears, and verify the withdrawal posts to dispute expense and Stripe clearing. Close the dispute in the merchant's favor and verify the reinstatement reverses that entry. Replay the events out of order and confirm the resolved state does not regress.
 13. Configure the receiver to persist and deduplicate each notification `id`, then force a delivery failure, confirm bounded retry scheduling and redacted system-health visibility, requeue it with a reason, and verify a signed successful delivery plus audit event.
 14. Restore staging from a backup into a temporary database and document the recovery time.
+15. Create a staging sales lead and assigned task, confirm the activity history is append-only, verify optimistic version conflicts are rejected, and confirm task completion requires evidence.
 
 ## 6. Production cutover
 

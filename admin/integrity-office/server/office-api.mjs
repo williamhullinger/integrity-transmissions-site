@@ -16,6 +16,8 @@ import {
   fitmentReviewInput,
   freightStatusInput,
   instant,
+  leadInput,
+  leadUpdateInput,
   pageOptions,
   positiveInteger,
   promotionInput,
@@ -24,6 +26,8 @@ import {
   staffAccessInput,
   staffInput,
   supplierOrderInput,
+  taskInput,
+  taskUpdateInput,
   uuid,
 } from "./validation.mjs";
 import { reconcileStripe as reconcileStripePayments } from "./reconciliation.mjs";
@@ -91,6 +95,62 @@ export const createOfficeApi = ({
     if (method === "GET" && path === "/staff/assignees") {
       requireRole(principal, "operations");
       return response(200, { data: await repository.listAssignableStaff(), meta: { requestId: id } }, id);
+    }
+    if (method === "GET" && path === "/leads") {
+      requireRole(principal, "operations");
+      const paging = pageOptions(params);
+      const data = await repository.listLeads({
+        ...paging,
+        search: boundedText(params.search, "search", 120, { required: false }) || "",
+        status: boundedText(params.status, "status", 32, { required: false }) || "",
+      });
+      return response(200, { data, meta: { requestId: id } }, id);
+    }
+    if (method === "POST" && path === "/leads") {
+      requireRole(principal, "operations");
+      return await mutation({ event, env, repository, principal, id, scope: "lead:create", action: async (client, body) => {
+        const input = leadInput(body);
+        const created = await repository.createLead(client, input, principal);
+        return { statusCode: 201, body: created, audit: { action: "lead.created", entityType: "lead", entityId: created.id, reason: input.reason, afterValue: created } };
+      } });
+    }
+    const leadMatch = /^\/leads\/([0-9a-f-]+)$/.exec(path);
+    if (method === "POST" && leadMatch) {
+      requireRole(principal, "operations");
+      const leadId = uuid(leadMatch[1], "lead id");
+      return await mutation({ event, env, repository, principal, id, scope: `lead:update:${leadId}`, action: async (client, body) => {
+        const input = leadUpdateInput(body);
+        const updated = await repository.updateLead(client, leadId, input, principal);
+        return { statusCode: 200, body: updated, audit: { action: "lead.updated", entityType: "lead", entityId: leadId, reason: input.reason, afterValue: updated } };
+      } });
+    }
+    if (method === "GET" && path === "/tasks") {
+      requireRole(principal, "operations");
+      const paging = pageOptions(params);
+      const data = await repository.listTasks({
+        ...paging,
+        status: boundedText(params.status, "status", 32, { required: false }) || "",
+        assignedTo: params.assignedTo ? uuid(params.assignedTo, "assignedTo") : null,
+      });
+      return response(200, { data, meta: { requestId: id } }, id);
+    }
+    if (method === "POST" && path === "/tasks") {
+      requireRole(principal, "operations");
+      return await mutation({ event, env, repository, principal, id, scope: "task:create", action: async (client, body) => {
+        const input = taskInput(body);
+        const created = await repository.createTask(client, input, principal);
+        return { statusCode: 201, body: created, audit: { action: "task.created", entityType: "task", entityId: created.id, reason: input.reason, afterValue: created } };
+      } });
+    }
+    const taskMatch = /^\/tasks\/([0-9a-f-]+)$/.exec(path);
+    if (method === "POST" && taskMatch) {
+      requireRole(principal, "operations");
+      const taskId = uuid(taskMatch[1], "task id");
+      return await mutation({ event, env, repository, principal, id, scope: `task:update:${taskId}`, action: async (client, body) => {
+        const input = taskUpdateInput(body);
+        const updated = await repository.updateTask(client, taskId, input, principal);
+        return { statusCode: 200, body: updated, audit: { action: "task.updated", entityType: "task", entityId: taskId, reason: input.reason, afterValue: updated } };
+      } });
     }
     if (method === "POST" && path === "/staff") {
       requireRole(principal, "administrator");

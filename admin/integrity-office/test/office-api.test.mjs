@@ -23,6 +23,8 @@ const repositoryFor = (roles, overrides = {}) => ({
   listPromotions: async () => [],
   listFreightExceptions: async () => ({ items: [], page: 1, pageSize: 25, total: 0 }),
   listAssignableStaff: async () => [],
+  listLeads: async (options) => ({ items: [], page: options.page, pageSize: options.pageSize, total: 0 }),
+  listTasks: async (options) => ({ items: [], page: options.page, pageSize: options.pageSize, total: 0 }),
   listSystemExceptions: async () => ({ items: [], page: 1, pageSize: 25, total: 0 }),
   financeReport: async ({ startAt, endAt }) => ({ startAt, endAt, accounts: [] }),
   getReconciliationByKey: async () => null,
@@ -70,6 +72,41 @@ test("requires idempotency and creates unapproved margin-protected promotions", 
   assert.equal(created.statusCode, 201, created.body);
   assert.equal(JSON.parse(created.body).data.code, "FALL-500");
   assert.equal(JSON.parse(created.body).data.minimumMarginCents, 50000);
+});
+
+test("protects nationwide lead and task queues and validates durable manual records", async () => {
+  const leadId = "68dcb2ea-a9a7-4ad0-a8cb-e477cd421299";
+  const taskId = "d28c5ae6-6d2e-4d98-947f-34ac176ad06d";
+  const operations = createOfficeApi({ authenticate: async () => identity, repository: repositoryFor(["operations"], {
+    createLead: async (_client, input) => ({ id: leadId, reference: "LD-CONTROLTEST", version: 1, ...input }),
+    createTask: async (_client, input) => ({ id: taskId, state: "open", version: 1, ...input }),
+    updateTask: async (_client, id, input) => ({ id, ...input }),
+  }) });
+  assert.equal((await operations(event("/leads"))).statusCode, 200);
+  assert.equal((await operations(event("/tasks"))).statusCode, 200);
+  const lead = await operations(event("/leads", {
+    method: "POST",
+    headers: mutationHeaders,
+    body: { contactName: "Commercial caller", contactPhone: "417-555-0100", productInterest: "engine", source: "phone", priority: "high", vehicleSummary: { year: 2018, make: "Ford" }, reason: "Manual inbound inquiry" },
+  }));
+  assert.equal(lead.statusCode, 201, lead.body);
+  assert.equal(JSON.parse(lead.body).data.productInterest, "engine");
+  const task = await operations(event("/tasks", {
+    method: "POST",
+    headers: mutationHeaders,
+    body: { taskType: "lead_follow_up", title: "Call about engine quote", entityType: "lead", entityId: leadId, priority: "high", reason: "Lead requires application details" },
+  }));
+  assert.equal(task.statusCode, 201, task.body);
+  const incomplete = await operations(event(`/tasks/${taskId}`, {
+    method: "POST",
+    headers: mutationHeaders,
+    body: { version: 1, state: "completed", priority: "high", reason: "Attempted completion" },
+  }));
+  assert.equal(incomplete.statusCode, 400);
+
+  const viewer = createOfficeApi({ authenticate: async () => identity, repository: repositoryFor(["viewer"]) });
+  assert.equal((await viewer(event("/leads"))).statusCode, 403);
+  assert.equal((await viewer(event("/tasks"))).statusCode, 403);
 });
 
 test("requires operations access and structured evidence for fulfillment commands", async () => {

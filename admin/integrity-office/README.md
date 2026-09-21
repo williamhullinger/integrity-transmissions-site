@@ -9,6 +9,8 @@ The implemented staff application includes:
 - Auth0 access-token validation with an exact issuer and audience, RS256-only signatures, short token age, required MFA evidence, and a database allowlist
 - PostgreSQL-backed staff provisioning, disable controls, revocable role history, last-administrator protection, and viewer, operations, finance, and administrator access
 - Current operating metrics and workload totals
+- Searchable sales leads with source attribution, qualification state, ownership, loss reasons and append-only activity history
+- Assigned tasks with due dates, priority, linked business records, blocking reasons and completion evidence
 - Searchable and paginated orders with customer, vehicle, payment, fulfillment, and core-return status
 - Structured fitment decisions, supplier-order references and shipment evidence with atomic state changes and optimistic version checks
 - Core-return deadlines, inspection outcomes, verified-refund gates and forfeiture accounting
@@ -42,6 +44,7 @@ The public Netlify build uses the repository-root `netlify.toml` and never inclu
 - `db/002_office_runtime.sql` — promotion reservations, immutable retail discount snapshots, freight-recovery queue, reconciliation history and runtime indexes
 - `db/003_operational_controls.sql` — separation of duties, supplier-record integrity, Stripe session timestamps, refund allocations, payment-dispute tracking, access-revocation history, retry recovery counters and accounting controls
 - `db/004_policy_acceptance.sql` — immutable clickwrap version, SHA-256 fingerprint, accepted URL, timestamp and separate purchase/core-warranty/electronic-consent evidence
+- `db/005_nationwide_operations.sql` — supplier-neutral products, order items, leads, versioned sales quotes, tasks, risk review, multiple purchase orders and shipments, expanded core evidence, warranty claims, communications, private document metadata and supplier invoices
 - `domain/order-state.mjs` — enforceable payment, fulfillment, core, promotion, margin and journal rules
 - `server/` — authentication, authorization, HTTP validation, database repositories, Office APIs, checkout ingestion, Stripe reconciliation and event processing
 - `functions/` — isolated Netlify entry points for the staff API, signed internal intake, Stripe webhooks, scheduled event processing and signed notification delivery
@@ -71,6 +74,10 @@ The public Netlify build uses the repository-root `netlify.toml` and never inclu
 `npm run test:office` validates domain rules, schema controls, authentication, origin checks, API roles, idempotency, signed checkout ingestion, webhook handling, reconciliation and private bundle policies.
 
 The root `npm test` includes the Office suite while continuing to validate the public storefront independently.
+
+## Nationwide expansion
+
+The original operational workflow is intentionally focused on the current paid reman-transmission checkout. The additive nationwide model and interface plan are documented in `docs/NATIONWIDE_OPERATIONS.md`. Sales Leads, Tasks and their dashboard workload metrics are implemented. Supplier catalog, purchasing, multi-shipment, warranty and unified customer screens remain modeled but must not be treated as active until their interfaces, tests and external services are complete.
 
 ## Activation
 

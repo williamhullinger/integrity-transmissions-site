@@ -170,12 +170,20 @@ function pushConversionEvent(eventName, details = {}) {
     "page_path", "destination", "destination_path", "form_name", "unit_type", "category",
     "transmission_family", "upgrade_level", "warranty", "candidate_count",
     "rate_count", "round_trip", "delivery_type", "scroll_percent", "link_host",
-    "value", "currency", "item_category",
+    "value", "currency", "item_category", "transaction_id", "shipping", "tax",
   ]);
   const safeDetails = Object.fromEntries(Object.entries(details)
     .filter(([key]) => allowedKeys.has(key))
     .map(([key, value]) => [key, typeof value === "string" ? value.slice(0, 120) : value])
     .filter(([, value]) => ["string", "number", "boolean"].includes(typeof value)));
+  if (Array.isArray(details.items)) {
+    const allowedItemKeys = new Set(["item_id", "item_name", "item_category", "item_variant", "price", "quantity"]);
+    safeDetails.items = details.items.slice(0, 20).map((item) => Object.fromEntries(Object.entries(item || {})
+      .filter(([key]) => allowedItemKeys.has(key))
+      .map(([key, value]) => [key, typeof value === "string" ? value.slice(0, 120) : value])
+      .filter(([, value]) => ["string", "number"].includes(typeof value))))
+      .filter((item) => item.item_id || item.item_name);
+  }
   const safeEventName = String(eventName || "").toLowerCase().replace(/[^a-z0-9_]/g, "_").slice(0, 40);
 
   if (!safeEventName) return;
@@ -188,6 +196,28 @@ function pushConversionEvent(eventName, details = {}) {
 }
 
 function initConversionTracking() {
+  const leadConfirmationKey = "integrity_pending_lead_v1";
+  const leadFormContext = (form) => ({
+    form_name: form.getAttribute("name") || form.id || "unknown",
+    unit_type: form.querySelector('[name="unit-type"]')?.value || (form.getAttribute("name") === "reman-transmission-quote" ? "reman-transmission" : "service"),
+  });
+
+  if (["/thank-you", "/thank-you.html"].includes(window.location.pathname.replace(/\/+$/, ""))) {
+    try {
+      const pending = JSON.parse(sessionStorage.getItem(leadConfirmationKey) || "null");
+      sessionStorage.removeItem(leadConfirmationKey);
+      if (pending && Number.isFinite(pending.submitted_at) && Date.now() - pending.submitted_at <= 30 * 60 * 1000) {
+        pushConversionEvent("generate_lead", {
+          page_path: window.location.pathname,
+          form_name: pending.form_name,
+          unit_type: pending.unit_type,
+        });
+      }
+    } catch {
+      try { sessionStorage.removeItem(leadConfirmationKey); } catch { /* Storage is optional. */ }
+    }
+  }
+
   document.addEventListener("click", (event) => {
     const link = event.target.closest("a[href]");
 
@@ -207,7 +237,7 @@ function initConversionTracking() {
     }
   });
 
-  document.querySelectorAll("form").forEach((form) => {
+  document.querySelectorAll('form[action="/thank-you"], form[action="/thank-you.html"]').forEach((form) => {
     let started = false;
     form.addEventListener("input", () => {
       if (started) return;
@@ -223,16 +253,21 @@ function initConversionTracking() {
       queueMicrotask(() => {
         if (event.defaultPrevented) return;
 
+        const formContext = leadFormContext(form);
+
         pushConversionEvent("quote_form_submit", {
           page_path: window.location.pathname,
-          form_name: form.getAttribute("name") || form.id || "unknown",
-          unit_type: form.querySelector('[name="unit-type"]')?.value || "service",
+          ...formContext,
         });
-        pushConversionEvent("generate_lead", {
-          page_path: window.location.pathname,
-          form_name: form.getAttribute("name") || form.id || "unknown",
-          unit_type: form.querySelector('[name="unit-type"]')?.value || "service",
-        });
+
+        const action = new URL(form.getAttribute("action") || window.location.href, window.location.href);
+        if (action.origin === window.location.origin && ["/thank-you", "/thank-you.html"].includes(action.pathname.replace(/\/+$/, ""))) {
+          try {
+            sessionStorage.setItem(leadConfirmationKey, JSON.stringify({ ...formContext, submitted_at: Date.now() }));
+          } catch {
+            // The submission remains usable when session storage is unavailable; only confirmation analytics are skipped.
+          }
+        }
       });
     });
   });

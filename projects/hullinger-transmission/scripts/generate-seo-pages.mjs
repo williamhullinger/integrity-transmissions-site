@@ -307,7 +307,7 @@ ${page.faqs.map(([question, answer]) => `          <article class="seo-faq-item"
   <!-- SITE_FOOTER_START -->
 ${footer}
   <!-- SITE_FOOTER_END -->
-  <script src="/script.js?v=20260920.3" defer></script>
+  <script src="/script.js?v=20260921.1" defer></script>
 </body>
 </html>
 `;
