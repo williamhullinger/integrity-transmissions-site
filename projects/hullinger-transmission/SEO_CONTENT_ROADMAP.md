@@ -29,7 +29,7 @@ The site gained substantially more impressions and improved from an average posi
 - 22 pages indexed in the September 17 Page indexing report.
 - 9 recently discovered pages and 1 crawled page were waiting for indexing.
 - 6 intentional `noindex` policy/utility pages and 6 permanent redirects were excluded as expected.
-- The submitted sitemap was successful with 32 discovered pages on its September 12 read. The September 20 release expands the sitemap to 48 canonical pages and must be resubmitted after deployment.
+- Search Console reports the sitemap as successfully submitted with 32 discovered pages on its September 12 read. The live September 21 sitemap now contains 53 canonical pages; keep the same sitemap URL submitted and monitor until Google's discovered-page count catches up.
 - HTTPS reports 0 non-HTTPS URLs and no critical issues.
 - Breadcrumb enhancement reports 11 valid items and 0 invalid items.
 - Core Web Vitals has insufficient real-user volume for a 90-day field report; continue lab and browser testing until field data appears.

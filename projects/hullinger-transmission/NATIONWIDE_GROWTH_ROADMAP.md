@@ -33,7 +33,8 @@ No public page, case study, testimonial, inventory statement, warranty claim, pr
 - [x] Consent-controlled GA4 implementation with customer identifiers excluded
 - [x] Paid-order and quote-form notification routing
 - [x] Customer terms, privacy, core, warranty and electronic-consent records
-- [ ] Mark `generate_lead`, `freight_quote_success`, `checkout_redirect` and `order_payment_confirmed` as GA4 key events
+- [x] Confirm GA4 receives production activity and treats `purchase` as a key event
+- [ ] After genuine activity first emits them, mark `generate_lead`, `freight_quote_success`, `checkout_redirect` and `order_payment_confirmed` as GA4 key events
 - [ ] Confirm the first genuine paid-order email and accounting path with a controlled live transaction
 
 ### 2. Convert existing search visibility into qualified traffic
@@ -43,7 +44,8 @@ No public page, case study, testimonial, inventory statement, warranty claim, pr
 - [x] Thirteen transmission-family sales pages
 - [x] Seven-page transmission buying-guide cluster
 - [x] National engine and transfer-case quote pages
-- [ ] Resubmit and monitor the expanded sitemap in Google Search Console
+- [x] Confirm the canonical sitemap URL is successfully submitted in Google Search Console
+- [ ] Monitor Search Console until its discovered-page count catches up to the 53-URL live sitemap
 - [ ] Improve titles and snippets for queries already ranking in positions 5–20 with low CTR
 - [ ] Add only validated product/offer structured data when price, availability and landing-page claims are current
 - [ ] Create additional family pages only from verified, currently supported catalog applications
