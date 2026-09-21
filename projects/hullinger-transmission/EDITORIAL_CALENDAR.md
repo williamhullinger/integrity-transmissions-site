@@ -14,10 +14,10 @@ Statuses move in this order:
 
 | Priority | Working title | Category | Evidence level | Status | Public destination | Next action |
 |---:|---|---|---|---|---|---|
-| 1 | Transmission Slipping: Symptoms, Evidence & Next Steps | Symptoms and diagnosis | General technical education | Ready to Publish | `/guides/transmission-slipping` | Deploy, request indexing, review performance after 8–12 weeks |
-| 2 | Delayed Engagement Into Drive or Reverse | Symptoms and diagnosis | General technical education | Ready to Publish | `/guides/delayed-engagement-drive-reverse` | Deploy, request indexing, review performance after 8–12 weeks |
-| 3 | Transmission Shudder vs. Engine Misfire | Symptoms and diagnosis | General technical education | Ready to Publish | `/guides/transmission-shudder-vs-engine-misfire` | Deploy, request indexing, review performance after 8–12 weeks |
-| 4 | No Reverse but Forward Gears Work | Symptoms and diagnosis | General technical education | Ready to Publish | `/guides/no-reverse-transmission` | Deploy, request indexing, review performance after 8–12 weeks |
+| 1 | Transmission Slipping: Symptoms, Evidence & Next Steps | Symptoms and diagnosis | General technical education | Published | `/guides/transmission-slipping` | Request indexing; review performance after 8–12 weeks |
+| 2 | Delayed Engagement Into Drive or Reverse | Symptoms and diagnosis | General technical education | Published | `/guides/delayed-engagement-drive-reverse` | Request indexing; review performance after 8–12 weeks |
+| 3 | Transmission Shudder vs. Engine Misfire | Symptoms and diagnosis | General technical education | Published | `/guides/transmission-shudder-vs-engine-misfire` | Request indexing; review performance after 8–12 weeks |
+| 4 | No Reverse but Forward Gears Work | Symptoms and diagnosis | General technical education | Published | `/guides/no-reverse-transmission` | Request indexing; review performance after 8–12 weeks |
 | 5 | P0741/P0742: What the Codes Prove and What They Do Not | Symptoms and diagnosis | Authoritative service information required | Evidence Needed | `/guides/p0741-p0742-torque-converter-codes` | Verify application-independent language and collect source list |
 | 6 | Cooler Flush vs. Cooler Replacement After Failure | Installation and warranty | General guide plus written supplier rules | Evidence Needed | `/guides/transmission-cooler-flush-vs-replacement` | Collect current written warranty/installation requirements |
 | 7 | Programming, Strategy Setup and Adaptive Relearn | Installation and warranty | General education; procedures remain application-specific | Ready to Draft | `/guides/transmission-programming-relearn` | Draft with clear application boundaries |
