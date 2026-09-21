@@ -4,7 +4,7 @@ Updated: September 21, 2026
 
 ## Scope
 
-Integrity Office is the private system of record for sales and fulfillment work that is not safely handled by a public storefront or by Stripe alone. The first implementation supports the current paid reman-transmission flow. Migration `005_nationwide_operations.sql` adds the durable data foundation for engines, transmissions, transfer cases, differentials, leads, quotes, tasks, multiple suppliers, purchasing, shipments, core adjustments, warranty claims, communications, documents and supplier invoices.
+Integrity Office is the private system of record for sales and fulfillment work that is not safely handled by a public storefront or by Stripe alone. The first implementation supports the current paid reman-transmission flow. Migration `005_nationwide_operations.sql` adds the durable data foundation for engines, transmissions, transfer cases, differentials, leads, quotes, tasks, multiple suppliers, purchasing, shipments, core adjustments, warranty claims, communications, documents and supplier invoices. Migration `006_operational_workflows.sql` turns those records into concurrency-safe staff workflows without modifying the published migration history.
 
 The new records are additive. Existing production activation remains blocked until the infrastructure and acceptance checklist in `ACTIVATION.md` is complete.
 
@@ -105,12 +105,12 @@ Staging may use clearly labeled fixture companies, products, customers, quotes a
 
 ## Remaining implementation sequence
 
-1. Apply migrations to a disposable PostgreSQL staging database and add repository integration/concurrency tests.
-2. Wire lead intake for all public quote forms and safe manual entry.
+1. Keep the disposable PostgreSQL migration and concurrency suite green in hosted CI; repeat it against the managed staging database before activation.
+2. Wire the remaining public quote forms and safe manual entry into the implemented lead intake contract.
 3. ~~Build Today, Sales and Tasks APIs and interface.~~ Completed September 21, 2026: lead and task APIs, role controls, audit history, dashboard workload metrics and staff screens are implemented.
-4. Migrate the current single-product checkout into `order_items` without changing the public checkout contract.
-5. Build supplier catalog, purchase orders, multi-shipment and actual-cost workflows.
-6. Complete partial core-credit and warranty-claim workflows.
+4. ~~Migrate the current single-product checkout into `order_items` without changing the public checkout contract.~~ Completed September 21, 2026: migration `006_operational_workflows.sql` backfills existing orders and checkout ingestion dual-writes item and core-obligation records without changing the customer checkout contract.
+5. ~~Build supplier catalog, purchase orders and multi-shipment workflows.~~ Completed September 21, 2026: protected APIs and staff screens now cover suppliers, private catalog versions, purchase orders, line-level quantity controls, shipments and append-only state history.
+6. ~~Complete item-level core obligations and warranty-claim workflows.~~ Completed September 21, 2026: item-level core obligations and supplier-traceable warranty intake, authorization and status history are implemented. Supplier invoice approval and actual-cost posting remain in step 9.
 7. Add the signed customer/staff communication receiver and templates.
 8. Provision private object storage with signed access and malware scanning.
 9. Add supplier invoices, actual COGS, payout/bank reconciliation and accounting export.

@@ -12,6 +12,11 @@ The implemented staff application includes:
 - Searchable sales leads with source attribution, qualification state, ownership, loss reasons and append-only activity history
 - Assigned tasks with due dates, priority, linked business records, blocking reasons and completion evidence
 - Searchable and paginated orders with customer, vehicle, payment, fulfillment, and core-return status
+- Unified customer records with vehicle, order, core-obligation and warranty history
+- Private multi-supplier catalog with immutable price versions and finance-only wholesale visibility
+- Purchase-order drafting, independent finance approval, submission, cancellation, line-level allocation controls and append-only state history
+- Multi-shipment planning and tracking with exact purchase-order-line provenance, quantity controls and delivery-driven order transitions
+- Supplier-traceable warranty intake, authorization, remedy, recovery and append-only claim history
 - Structured fitment decisions, supplier-order references and shipment evidence with atomic state changes and optimistic version checks
 - Core-return deadlines, inspection outcomes, verified-refund gates and forfeiture accounting
 - Append-only operational notes and audit events
@@ -45,6 +50,7 @@ The public Netlify build uses the repository-root `netlify.toml` and never inclu
 - `db/003_operational_controls.sql` — separation of duties, supplier-record integrity, Stripe session timestamps, refund allocations, payment-dispute tracking, access-revocation history, retry recovery counters and accounting controls
 - `db/004_policy_acceptance.sql` — immutable clickwrap version, SHA-256 fingerprint, accepted URL, timestamp and separate purchase/core-warranty/electronic-consent evidence
 - `db/005_nationwide_operations.sql` — supplier-neutral products, order items, leads, versioned sales quotes, tasks, risk review, multiple purchase orders and shipments, expanded core evidence, warranty claims, communications, private document metadata and supplier invoices
+- `db/006_operational_workflows.sql` — immutable order-item backfill and checkout dual-write support, scoped purchasing/shipment/warranty relationships, concurrent quantity controls, per-item core obligations, workflow history, optimistic versions and capability-scoped tasks
 - `domain/order-state.mjs` — enforceable payment, fulfillment, core, promotion, margin and journal rules
 - `server/` — authentication, authorization, HTTP validation, database repositories, Office APIs, checkout ingestion, Stripe reconciliation and event processing
 - `functions/` — isolated Netlify entry points for the staff API, signed internal intake, Stripe webhooks, scheduled event processing and signed notification delivery
@@ -77,7 +83,7 @@ The root `npm test` includes the Office suite while continuing to validate the p
 
 ## Nationwide expansion
 
-The original operational workflow is intentionally focused on the current paid reman-transmission checkout. The additive nationwide model and interface plan are documented in `docs/NATIONWIDE_OPERATIONS.md`. Sales Leads, Tasks and their dashboard workload metrics are implemented. Supplier catalog, purchasing, multi-shipment, warranty and unified customer screens remain modeled but must not be treated as active until their interfaces, tests and external services are complete.
+The original operational workflow is intentionally focused on the current paid reman-transmission checkout. The additive nationwide model and interface plan are documented in `docs/NATIONWIDE_OPERATIONS.md`. Sales Leads, Tasks, Customers, Supplier Catalog, Purchasing, Logistics and Warranty are implemented in the private application and covered by unit, schema and disposable-PostgreSQL tests. They remain intentionally unavailable to staff until the infrastructure and acceptance requirements in `docs/ACTIVATION.md` are complete.
 
 ## Activation
 

@@ -25,6 +25,14 @@ const repositoryFor = (roles, overrides = {}) => ({
   listAssignableStaff: async () => [],
   listLeads: async (options) => ({ items: [], page: options.page, pageSize: options.pageSize, total: 0 }),
   listTasks: async (options) => ({ items: [], page: options.page, pageSize: options.pageSize, total: 0 }),
+  listCustomers: async (options) => ({ items: [], page: options.page, pageSize: options.pageSize, total: 0 }),
+  getCustomer: async (id) => ({ id }),
+  listSuppliers: async (options) => ({ items: [], page: options.page, pageSize: options.pageSize, total: 0 }),
+  listCatalogProducts: async (options) => ({ items: [], page: options.page, pageSize: options.pageSize, total: 0 }),
+  listPurchaseOrders: async (options) => ({ items: [], page: options.page, pageSize: options.pageSize, total: 0 }),
+  getPurchaseOrder: async (id, options) => ({ id, includeFinancials: options.includeFinancials }),
+  listShipments: async (options) => ({ items: [], page: options.page, pageSize: options.pageSize, total: 0 }),
+  listWarrantyClaims: async (options) => ({ items: [], page: options.page, pageSize: options.pageSize, total: 0 }),
   listSystemExceptions: async () => ({ items: [], page: 1, pageSize: 25, total: 0 }),
   financeReport: async ({ startAt, endAt }) => ({ startAt, endAt, accounts: [] }),
   getReconciliationByKey: async () => null,
@@ -106,7 +114,7 @@ test("protects nationwide lead and task queues and validates durable manual reco
 
   const viewer = createOfficeApi({ authenticate: async () => identity, repository: repositoryFor(["viewer"]) });
   assert.equal((await viewer(event("/leads"))).statusCode, 403);
-  assert.equal((await viewer(event("/tasks"))).statusCode, 403);
+  assert.equal((await viewer(event("/tasks"))).statusCode, 200);
 });
 
 test("requires operations access and structured evidence for fulfillment commands", async () => {
@@ -134,6 +142,48 @@ test("requires operations access and structured evidence for fulfillment command
     method: "POST", headers: mutationHeaders, body: { version: 3, carrier: "Carrier", reason: "Shipped" },
   }));
   assert.equal(incomplete.statusCode, 400);
+});
+
+test("protects nationwide catalog, purchasing, logistics and warranty roles", async () => {
+  const viewer = createOfficeApi({ authenticate: async () => identity, repository: repositoryFor(["viewer"]) });
+  assert.equal((await viewer(event("/customers"))).statusCode, 200);
+  assert.equal((await viewer(event("/catalog-products"))).statusCode, 403);
+  assert.equal((await viewer(event("/purchase-orders"))).statusCode, 403);
+  assert.equal((await viewer(event("/shipments"))).statusCode, 403);
+  assert.equal((await viewer(event("/warranty-claims"))).statusCode, 403);
+
+  let financeOptions;
+  const finance = createOfficeApi({ authenticate: async () => identity, repository: repositoryFor(["finance"], {
+    listPurchaseOrders: async (options) => { financeOptions = options; return { items: [], page: 1, pageSize: 25, total: 0 }; },
+  }) });
+  assert.equal((await finance(event("/purchase-orders"))).statusCode, 200);
+  assert.equal(financeOptions.includeFinancials, true);
+  const purchaseOrder = await finance(event("/purchase-orders/a1c342f6-0dd5-4e1a-a839-560bf0e11a21"));
+  assert.equal(purchaseOrder.statusCode, 200);
+  assert.equal(JSON.parse(purchaseOrder.body).data.includeFinancials, true);
+  assert.equal((await finance(event("/warranty-claims"))).statusCode, 200);
+  assert.equal((await finance(event("/shipments"))).statusCode, 403);
+
+  let operationsOptions;
+  const operations = createOfficeApi({ authenticate: async () => identity, repository: repositoryFor(["operations"], {
+    listCatalogProducts: async (options) => { operationsOptions = options; return { items: [], page: 1, pageSize: 25, total: 0 }; },
+  }) });
+  assert.equal((await operations(event("/catalog-products"))).statusCode, 200);
+  assert.equal(operationsOptions.includeFinancials, false);
+  assert.equal((await operations(event("/shipments"))).statusCode, 200);
+});
+
+test("redacts dashboard and order financials for non-finance roles at the repository boundary", async () => {
+  let dashboardOptions;
+  let orderOptions;
+  const viewer = createOfficeApi({ authenticate: async () => identity, repository: repositoryFor(["viewer"], {
+    dashboard: async (options) => { dashboardOptions = options; return { activeOrders: 0 }; },
+    listOrders: async (options) => { orderOptions = options; return { items: [], page: 1, pageSize: 25, total: 0 }; },
+  }) });
+  assert.equal((await viewer(event("/dashboard"))).statusCode, 200);
+  assert.equal((await viewer(event("/orders"))).statusCode, 200);
+  assert.equal(dashboardOptions.includeFinancials, false);
+  assert.equal(orderOptions.includeFinancials, false);
 });
 
 test("separates finance refund classification from operations access", async () => {
@@ -366,6 +416,7 @@ test("maps every order-detail result set to the correct controlled record", asyn
     if (statement.includes("FROM core_returns")) return { rows: [{ due_at: "2026-10-01T00:00:00Z", received_at: null, accepted_at: null, rejected_at: null, rejection_reason: null, refund_due_cents: "150000", stripe_refund_id: null }] };
     if (statement.includes("FROM fitment_reviews")) return { rows: [{ supplier_part_uid: "ACE-10R80-001", decision: "approved", reason: "VIN verified", reviewed_at: "2026-09-01T12:00:00Z" }] };
     if (statement.includes("FROM payment_transactions pt")) return { rows: [{ id: "refund-row", stripe_object_id: "re_detail", amount_cents: "2500", currency: "usd", occurred_at: "2026-09-04T00:00:00Z", allocations: [{ category: "other", amountCents: 2500 }] }] };
+    if (statement.includes("FROM order_items oi")) return { rows: [{ id: "item-1", line_number: 1, kind: "transmission", integrity_sku_snapshot: "10R80", supplier_sku_snapshot: "ACE-10R80-001", title_snapshot: "10R80 · Base", quantity: 1, unit_retail_cents: "405000", unit_supplier_cost_cents: "360000", core_deposit_cents: "150000", fitment_snapshot: {}, warranty_snapshot: {}, supplier_id: "supplier-1", supplier_name: "Supplier", purchase_order_line_id: "line-1", purchase_order_id: "po-1" }] };
     throw new Error(`Unexpected order-detail query: ${statement}`);
   } };
   const order = await new PostgresOfficeRepository(pool).getOrder("order-detail", { includeFinancials: true });
@@ -376,4 +427,5 @@ test("maps every order-detail result set to the correct controlled record", asyn
   assert.equal(order.core.refundDueCents, 150000);
   assert.equal(order.fitment.supplierPartUid, "ACE-10R80-001");
   assert.equal(order.refunds[0].stripeRefundId, "re_detail");
+  assert.equal(order.items[0].title, "10R80 · Base");
 });

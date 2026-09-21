@@ -6,7 +6,7 @@ Create separate staging and production Netlify sites from the same repository. I
 
 Provision separate managed PostgreSQL databases with encrypted connections, automated daily backups and point-in-time recovery. The production database must not share credentials or a schema owner with staging.
 
-Use a migration identity to apply `db/001_initial.sql`, `db/002_office_runtime.sql`, `db/003_operational_controls.sql`, `db/004_policy_acceptance.sql`, and `db/005_nationwide_operations.sql` in order. Create a different runtime identity with only the table, sequence and function permissions required by the application. The runtime identity must not own the database or schema.
+Use a migration identity to apply `db/001_initial.sql` through `db/006_operational_workflows.sql` in numeric order. Create a different runtime identity with only the table, sequence and function permissions required by the application. The runtime identity must not own the database or schema.
 
 ## 2. Configure Auth0
 
@@ -77,7 +77,7 @@ Store its signing secret as `OFFICE_STRIPE_WEBHOOK_SECRET`. Keep the existing st
 
 ## 5. Stage and verify
 
-1. Apply all five migrations to staging and verify the runtime identity cannot alter the schema.
+1. Apply all six migrations to staging and verify the runtime identity cannot alter the schema. CI applies the same sequence to a disposable PostgreSQL service and exercises the line-level backfill, checkout dual-write, concurrent purchase allocation, canceled-PO capacity reuse, shipment provenance and cross-order warranty controls.
 2. Add one staging administrator and confirm that an unlisted Auth0 user is rejected.
 3. Confirm login fails without MFA and succeeds with a passkey or authenticator app.
 4. Run a test-mode VIN-to-freight-to-Checkout flow and complete payment with a Stripe test card.

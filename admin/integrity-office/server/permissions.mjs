@@ -22,4 +22,12 @@ export const requireRole = (principal, requiredRole) => {
   return principal;
 };
 
+export const requireAnyRole = (principal, requiredRoles) => {
+  if (!Array.isArray(requiredRoles) || !requiredRoles.length || requiredRoles.some((role) => !STAFF_ROLES.includes(role))) {
+    throw new TypeError("At least one known staff role is required");
+  }
+  if (!requiredRoles.some((role) => can(principal, role))) throw forbidden();
+  return principal;
+};
+
 export const mayViewFinancials = (principal) => can(principal, "finance");

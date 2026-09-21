@@ -93,7 +93,7 @@ No public page, case study, testimonial, inventory statement, warranty claim, pr
 - [x] Notification outbox, audit history and staff administration
 - [x] Additive nationwide data model for supplier-neutral products, multi-item orders, leads, versioned quotes, tasks, risk review, multiple purchase orders/shipments, warranty claims, communications, private documents and supplier invoices
 - [x] Build and connect Sales Leads and Tasks, including Today-dashboard workload metrics, to the nationwide data model
-- [ ] Build and connect Purchasing, Logistics, Warranty and unified Customer screens to the nationwide data model
+- [x] Build and connect Purchasing, Logistics, Warranty and unified Customer screens to the nationwide data model, with scoped relationships, concurrency controls, separation of duties and financial redaction
 - [ ] Provision separate staging and production PostgreSQL databases with backup and restore testing
 - [ ] Configure separate Auth0 applications/APIs with enforced MFA
 - [ ] Create private Netlify Office sites, domain and protected environment values

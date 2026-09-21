@@ -4,7 +4,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const testRoot = path.dirname(fileURLToPath(import.meta.url));
-const sql = `${await readFile(path.resolve(testRoot, "../db/001_initial.sql"), "utf8")}\n${await readFile(path.resolve(testRoot, "../db/002_office_runtime.sql"), "utf8")}\n${await readFile(path.resolve(testRoot, "../db/003_operational_controls.sql"), "utf8")}\n${await readFile(path.resolve(testRoot, "../db/004_policy_acceptance.sql"), "utf8")}\n${await readFile(path.resolve(testRoot, "../db/005_nationwide_operations.sql"), "utf8")}`;
+const sql = `${await readFile(path.resolve(testRoot, "../db/001_initial.sql"), "utf8")}\n${await readFile(path.resolve(testRoot, "../db/002_office_runtime.sql"), "utf8")}\n${await readFile(path.resolve(testRoot, "../db/003_operational_controls.sql"), "utf8")}\n${await readFile(path.resolve(testRoot, "../db/004_policy_acceptance.sql"), "utf8")}\n${await readFile(path.resolve(testRoot, "../db/005_nationwide_operations.sql"), "utf8")}\n${await readFile(path.resolve(testRoot, "../db/006_operational_workflows.sql"), "utf8")}`;
 const repository = await readFile(path.resolve(testRoot, "../server/repository.mjs"), "utf8");
 
 for (const requiredControl of [
@@ -57,6 +57,16 @@ for (const requiredControl of [
   "CREATE TABLE document_assets",
   "CREATE TABLE document_links",
   "CREATE TABLE supplier_invoices",
+  "CREATE TABLE order_item_core_obligations",
+  "CREATE TABLE purchase_order_state_history",
+  "CREATE TABLE shipment_state_history",
+  "CREATE TABLE warranty_claim_state_history",
+  "CREATE TABLE office_task_history",
+  "enforce_purchase_order_line_quantity",
+  "enforce_shipment_item_integrity",
+  "enforce_warranty_provenance",
+  "order_item_core_obligations_set_updated_at",
+  "office_tasks_active_deduplication_idx",
   "office_task_completion",
   "sales_quotes_current_version_fk",
   "active_catalog_product_verified",

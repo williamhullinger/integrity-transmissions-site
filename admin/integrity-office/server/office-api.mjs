@@ -10,25 +10,32 @@ import {
   routePath,
   stableJsonHash,
 } from "./http.mjs";
-import { mayViewFinancials, requireRole } from "./permissions.mjs";
+import { mayViewFinancials, requireAnyRole, requireRole } from "./permissions.mjs";
 import {
   boundedText,
+  catalogPriceInput,
+  catalogProductInput,
   fitmentReviewInput,
+  fulfillmentShipmentInput,
   freightStatusInput,
   instant,
   leadInput,
   leadUpdateInput,
   pageOptions,
   positiveInteger,
+  purchaseOrderInput,
+  purchaseOrderUpdateInput,
   promotionInput,
   refundClassificationInput,
   shipmentInput,
   staffAccessInput,
   staffInput,
+  supplierInput,
   supplierOrderInput,
   taskInput,
   taskUpdateInput,
   uuid,
+  warrantyClaimInput,
 } from "./validation.mjs";
 import { reconcileStripe as reconcileStripePayments } from "./reconciliation.mjs";
 import { createStripeClient } from "./stripe-client.mjs";
@@ -86,15 +93,17 @@ export const createOfficeApi = ({
     }
     if (method === "GET" && path === "/dashboard") {
       requireRole(principal, "viewer");
-      return response(200, { data: await repository.dashboard(), meta: { requestId: id, generatedAt: new Date().toISOString() } }, id);
+      const capabilities = principal.roles.includes("administrator") ? ["viewer", "operations", "finance", "administrator"] : principal.roles;
+      return response(200, { data: await repository.dashboard({ includeFinancials: mayViewFinancials(principal), capabilities }), meta: { requestId: id, generatedAt: new Date().toISOString() } }, id);
     }
     if (method === "GET" && path === "/staff") {
       requireRole(principal, "administrator");
       return response(200, { data: await repository.listStaff(), meta: { requestId: id } }, id);
     }
     if (method === "GET" && path === "/staff/assignees") {
-      requireRole(principal, "operations");
-      return response(200, { data: await repository.listAssignableStaff(), meta: { requestId: id } }, id);
+      requireAnyRole(principal, ["operations", "finance"]);
+      const capabilities = principal.roles.includes("administrator") ? ["operations", "finance", "administrator"] : principal.roles;
+      return response(200, { data: await repository.listAssignableStaff(capabilities), meta: { requestId: id } }, id);
     }
     if (method === "GET" && path === "/leads") {
       requireRole(principal, "operations");
@@ -125,31 +134,201 @@ export const createOfficeApi = ({
       } });
     }
     if (method === "GET" && path === "/tasks") {
-      requireRole(principal, "operations");
+      requireRole(principal, "viewer");
       const paging = pageOptions(params);
       const data = await repository.listTasks({
         ...paging,
         status: boundedText(params.status, "status", 32, { required: false }) || "",
         assignedTo: params.assignedTo ? uuid(params.assignedTo, "assignedTo") : null,
+        capabilities: principal.roles.includes("administrator") ? ["operations", "finance", "administrator"] : principal.roles,
       });
       return response(200, { data, meta: { requestId: id } }, id);
     }
     if (method === "POST" && path === "/tasks") {
-      requireRole(principal, "operations");
+      requireAnyRole(principal, ["operations", "finance"]);
       return await mutation({ event, env, repository, principal, id, scope: "task:create", action: async (client, body) => {
         const input = taskInput(body);
+        requireRole(principal, input.requiredCapability);
         const created = await repository.createTask(client, input, principal);
         return { statusCode: 201, body: created, audit: { action: "task.created", entityType: "task", entityId: created.id, reason: input.reason, afterValue: created } };
       } });
     }
     const taskMatch = /^\/tasks\/([0-9a-f-]+)$/.exec(path);
     if (method === "POST" && taskMatch) {
-      requireRole(principal, "operations");
+      requireAnyRole(principal, ["operations", "finance"]);
       const taskId = uuid(taskMatch[1], "task id");
       return await mutation({ event, env, repository, principal, id, scope: `task:update:${taskId}`, action: async (client, body) => {
         const input = taskUpdateInput(body);
         const updated = await repository.updateTask(client, taskId, input, principal);
         return { statusCode: 200, body: updated, audit: { action: "task.updated", entityType: "task", entityId: taskId, reason: input.reason, afterValue: updated } };
+      } });
+    }
+    if (method === "GET" && path === "/customers") {
+      requireRole(principal, "viewer");
+      const paging = pageOptions(params);
+      return response(200, { data: await repository.listCustomers({
+        ...paging,
+        search: boundedText(params.search, "search", 120, { required: false }) || "",
+      }), meta: { requestId: id } }, id);
+    }
+    const customerMatch = /^\/customers\/([0-9a-f-]+)$/.exec(path);
+    if (method === "GET" && customerMatch) {
+      requireRole(principal, "viewer");
+      return response(200, { data: await repository.getCustomer(uuid(customerMatch[1], "customer id")), meta: { requestId: id } }, id);
+    }
+    if (method === "GET" && path === "/suppliers") {
+      requireAnyRole(principal, ["operations", "finance"]);
+      const paging = pageOptions(params);
+      return response(200, { data: await repository.listSuppliers({
+        ...paging,
+        search: boundedText(params.search, "search", 120, { required: false }) || "",
+      }), meta: { requestId: id } }, id);
+    }
+    if (method === "POST" && path === "/suppliers") {
+      requireRole(principal, "administrator");
+      return await mutation({ event, env, repository, principal, id, scope: "supplier:create", action: async (client, body) => {
+        const input = supplierInput(body);
+        const created = await repository.createSupplier(client, input, principal);
+        return { statusCode: 201, body: created, audit: { action: "supplier.created", entityType: "supplier", entityId: created.id, reason: input.reason, afterValue: created } };
+      } });
+    }
+    const supplierMatch = /^\/suppliers\/([0-9a-f-]+)$/.exec(path);
+    if (method === "POST" && supplierMatch) {
+      requireRole(principal, "administrator");
+      const supplierId = uuid(supplierMatch[1], "supplier id");
+      return await mutation({ event, env, repository, principal, id, scope: `supplier:update:${supplierId}`, action: async (client, body) => {
+        const input = supplierInput(body, { update: true });
+        const updated = await repository.updateSupplier(client, supplierId, input, principal);
+        return { statusCode: 200, body: updated, audit: { action: "supplier.updated", entityType: "supplier", entityId: supplierId, reason: input.reason, afterValue: updated } };
+      } });
+    }
+    if (method === "GET" && path === "/catalog-products") {
+      requireAnyRole(principal, ["operations", "finance"]);
+      const paging = pageOptions(params);
+      return response(200, { data: await repository.listCatalogProducts({
+        ...paging,
+        search: boundedText(params.search, "search", 120, { required: false }) || "",
+        status: boundedText(params.status, "status", 32, { required: false }) || "",
+        kind: boundedText(params.kind, "kind", 32, { required: false }) || "",
+        includeFinancials: mayViewFinancials(principal),
+      }), meta: { requestId: id } }, id);
+    }
+    if (method === "POST" && path === "/catalog-products") {
+      requireRole(principal, "operations");
+      return await mutation({ event, env, repository, principal, id, scope: "catalog-product:create", action: async (client, body) => {
+        const input = catalogProductInput(body);
+        const created = await repository.createCatalogProduct(client, input, principal);
+        return { statusCode: 201, body: created, audit: { action: "catalog_product.created", entityType: "catalog_product", entityId: created.id, reason: input.reason, afterValue: created } };
+      } });
+    }
+    const catalogMatch = /^\/catalog-products\/([0-9a-f-]+)$/.exec(path);
+    if (method === "POST" && catalogMatch) {
+      requireRole(principal, "operations");
+      const productId = uuid(catalogMatch[1], "catalog product id");
+      return await mutation({ event, env, repository, principal, id, scope: `catalog-product:update:${productId}`, action: async (client, body) => {
+        const input = catalogProductInput(body, { update: true });
+        if (input.status !== "draft") requireRole(principal, "administrator");
+        const updated = await repository.updateCatalogProduct(client, productId, input, { includeFinancials: mayViewFinancials(principal) });
+        return { statusCode: 200, body: updated, audit: { action: "catalog_product.updated", entityType: "catalog_product", entityId: productId, reason: input.reason, afterValue: updated } };
+      } });
+    }
+    const catalogPriceMatch = /^\/catalog-products\/([0-9a-f-]+)\/prices$/.exec(path);
+    if (method === "POST" && catalogPriceMatch) {
+      requireRole(principal, "finance");
+      const productId = uuid(catalogPriceMatch[1], "catalog product id");
+      return await mutation({ event, env, repository, principal, id, scope: `catalog-price:create:${productId}`, action: async (client, body) => {
+        const input = catalogPriceInput(body);
+        const created = await repository.appendCatalogPrice(client, productId, input, principal);
+        return { statusCode: 201, body: created, audit: { action: "catalog_price.recorded", entityType: "catalog_product", entityId: productId, reason: input.reason, afterValue: created } };
+      } });
+    }
+    if (method === "GET" && path === "/purchase-orders") {
+      requireAnyRole(principal, ["operations", "finance"]);
+      const paging = pageOptions(params);
+      return response(200, { data: await repository.listPurchaseOrders({
+        ...paging,
+        status: boundedText(params.status, "status", 32, { required: false }) || "",
+        includeFinancials: mayViewFinancials(principal),
+      }), meta: { requestId: id } }, id);
+    }
+    if (method === "POST" && path === "/purchase-orders") {
+      requireRole(principal, "finance");
+      return await mutation({ event, env, repository, principal, id, scope: "purchase-order:create", action: async (client, body) => {
+        const input = purchaseOrderInput(body);
+        const created = await repository.createPurchaseOrder(client, input, principal);
+        return { statusCode: 201, body: created, audit: { action: "purchase_order.created", entityType: "purchase_order", entityId: created.id, reason: input.reason, afterValue: created } };
+      } });
+    }
+    const purchaseOrderMatch = /^\/purchase-orders\/([0-9a-f-]+)$/.exec(path);
+    if (method === "GET" && purchaseOrderMatch) {
+      requireAnyRole(principal, ["operations", "finance"]);
+      const purchaseOrderId = uuid(purchaseOrderMatch[1], "purchase order id");
+      return response(200, { data: await repository.getPurchaseOrder(purchaseOrderId, { includeFinancials: mayViewFinancials(principal) }), meta: { requestId: id } }, id);
+    }
+    if (method === "POST" && purchaseOrderMatch) {
+      requireAnyRole(principal, ["operations", "finance"]);
+      const purchaseOrderId = uuid(purchaseOrderMatch[1], "purchase order id");
+      return await mutation({ event, env, repository, principal, id, scope: `purchase-order:update:${purchaseOrderId}`, action: async (client, body) => {
+        const input = purchaseOrderUpdateInput(body);
+        if (["approved", "submitted", "canceled"].includes(input.state)) requireRole(principal, "finance");
+        else requireRole(principal, "operations");
+        const updated = await repository.updatePurchaseOrder(client, purchaseOrderId, input, principal, { includeFinancials: mayViewFinancials(principal) });
+        return { statusCode: 200, body: updated, audit: { action: "purchase_order.transitioned", entityType: "purchase_order", entityId: purchaseOrderId, reason: input.reason, afterValue: updated } };
+      } });
+    }
+    if (method === "GET" && path === "/shipments") {
+      requireRole(principal, "operations");
+      const paging = pageOptions(params);
+      return response(200, { data: await repository.listShipments({
+        ...paging,
+        status: boundedText(params.status, "status", 32, { required: false }) || "",
+      }), meta: { requestId: id } }, id);
+    }
+    if (method === "POST" && path === "/shipments") {
+      requireRole(principal, "operations");
+      return await mutation({ event, env, repository, principal, id, scope: "shipment:create", action: async (client, body) => {
+        const input = fulfillmentShipmentInput(body);
+        const created = await repository.createShipment(client, input, principal);
+        return { statusCode: 201, body: created, audit: { action: "shipment.created", entityType: "shipment", entityId: created.id, reason: input.reason, afterValue: created } };
+      } });
+    }
+    const shipmentRecordMatch = /^\/shipments\/([0-9a-f-]+)$/.exec(path);
+    if (method === "POST" && shipmentRecordMatch) {
+      requireRole(principal, "operations");
+      const shipmentId = uuid(shipmentRecordMatch[1], "shipment id");
+      return await mutation({ event, env, repository, principal, id, scope: `shipment:update:${shipmentId}`, action: async (client, body) => {
+        const input = fulfillmentShipmentInput(body, { update: true });
+        const updated = await repository.updateShipment(client, shipmentId, input, principal);
+        return { statusCode: 200, body: updated, audit: { action: "shipment.transitioned", entityType: "shipment", entityId: shipmentId, reason: input.reason, afterValue: updated } };
+      } });
+    }
+    if (method === "GET" && path === "/warranty-claims") {
+      requireAnyRole(principal, ["operations", "finance"]);
+      const paging = pageOptions(params);
+      return response(200, { data: await repository.listWarrantyClaims({
+        ...paging,
+        status: boundedText(params.status, "status", 32, { required: false }) || "",
+        includeFinancials: mayViewFinancials(principal),
+      }), meta: { requestId: id } }, id);
+    }
+    if (method === "POST" && path === "/warranty-claims") {
+      requireRole(principal, "operations");
+      return await mutation({ event, env, repository, principal, id, scope: "warranty-claim:create", action: async (client, body) => {
+        const input = warrantyClaimInput(body);
+        const created = await repository.createWarrantyClaim(client, input, principal);
+        return { statusCode: 201, body: created, audit: { action: "warranty_claim.created", entityType: "warranty_claim", entityId: created.id, reason: input.reason, afterValue: created } };
+      } });
+    }
+    const warrantyMatch = /^\/warranty-claims\/([0-9a-f-]+)$/.exec(path);
+    if (method === "POST" && warrantyMatch) {
+      requireAnyRole(principal, ["operations", "finance"]);
+      const claimId = uuid(warrantyMatch[1], "warranty claim id");
+      return await mutation({ event, env, repository, principal, id, scope: `warranty-claim:update:${claimId}`, action: async (client, body) => {
+        const input = warrantyClaimInput(body, { update: true });
+        const hasFinancialDecision = [input.approvedPartsCents, input.approvedLaborCents, input.approvedFreightCents].some((value) => value !== null);
+        requireRole(principal, hasFinancialDecision ? "finance" : "operations");
+        const updated = await repository.updateWarrantyClaim(client, claimId, input, principal, { includeFinancials: mayViewFinancials(principal) });
+        return { statusCode: 200, body: updated, audit: { action: "warranty_claim.transitioned", entityType: "warranty_claim", entityId: claimId, reason: input.reason, afterValue: updated } };
       } });
     }
     if (method === "POST" && path === "/staff") {

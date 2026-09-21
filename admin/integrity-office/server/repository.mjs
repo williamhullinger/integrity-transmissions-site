@@ -1,5 +1,5 @@
 import { conflict, forbidden, notFound } from "./errors.mjs";
-import { normalizeRoles } from "./permissions.mjs";
+import { can, normalizeRoles } from "./permissions.mjs";
 import { withTransaction } from "./db.mjs";
 import { assertOperationalTransition, calculatePromotionDiscount } from "../domain/order-state.mjs";
 
@@ -81,6 +81,9 @@ const taskDto = (row) => ({
   title: row.title,
   entityType: row.entity_type,
   entityId: row.entity_id,
+  customerId: row.customer_id,
+  orderId: row.order_id,
+  requiredCapability: row.required_capability,
   state: row.state,
   priority: row.priority,
   assignedTo: row.assigned_to,
@@ -90,6 +93,134 @@ const taskDto = (row) => ({
   completionEvidence: row.completion_evidence,
   completedAt: row.completed_at,
   version: row.version,
+  createdAt: row.created_at,
+  updatedAt: row.updated_at,
+});
+
+const supplierDto = (row) => ({
+  id: row.id,
+  code: row.code,
+  displayName: row.display_name,
+  orderingMethod: row.ordering_method,
+  warrantyTermsReference: row.warranty_terms_reference,
+  coreTermsReference: row.core_terms_reference,
+  active: row.active,
+  productCount: asInteger(row.product_count || 0),
+  version: row.version,
+  createdAt: row.created_at,
+  updatedAt: row.updated_at,
+});
+
+const catalogProductDto = (row, includeFinancials = false) => ({
+  id: row.id,
+  integritySku: row.integrity_sku,
+  supplier: { id: row.supplier_id, name: row.supplier_name, active: row.supplier_active },
+  supplierSku: row.supplier_sku,
+  kind: row.kind,
+  title: row.title,
+  manufacturerBrand: row.manufacturer_brand,
+  manufacturerPartNumber: row.manufacturer_part_number,
+  gtin: row.gtin,
+  condition: row.condition,
+  applicationData: row.application_data || {},
+  packageContents: row.package_contents || [],
+  warrantyData: row.warranty_data || {},
+  shippingData: row.shipping_data || {},
+  imageProvenance: row.image_provenance || [],
+  status: row.status,
+  lastVerifiedAt: row.last_verified_at,
+  version: row.version,
+  latestPrice: row.price_version_id ? {
+    id: row.price_version_id,
+    suggestedRetailCents: row.suggested_retail_cents === null ? null : asInteger(row.suggested_retail_cents),
+    availabilityCode: row.availability_code,
+    availabilityText: row.availability_text,
+    verifiedAt: row.price_verified_at,
+    validThrough: row.valid_through,
+    ...(includeFinancials ? {
+      supplierUnitCostCents: asInteger(row.supplier_unit_cost_cents),
+      supplierCoreDepositCents: asInteger(row.supplier_core_deposit_cents),
+      sourceReference: row.source_reference,
+    } : {}),
+  } : null,
+  createdAt: row.created_at,
+  updatedAt: row.updated_at,
+});
+
+const purchaseOrderDto = (row, includeFinancials = false) => ({
+  id: row.id,
+  orderId: row.order_id,
+  orderNumber: row.public_order_number ? String(row.public_order_number) : null,
+  supplier: { id: row.supplier_id, name: row.supplier_name },
+  purchaseOrderNumber: row.purchase_order_number,
+  supplierOrderReference: row.supplier_order_reference,
+  state: row.state,
+  estimatedShipAt: row.estimated_ship_at,
+  approvedAt: row.approved_at,
+  submittedAt: row.submitted_at,
+  acknowledgedAt: row.acknowledged_at,
+  canceledAt: row.canceled_at,
+  cancellationReason: row.cancellation_reason,
+  lineCount: asInteger(row.line_count || 0),
+  version: row.version,
+  ...(includeFinancials ? {
+    merchandiseCents: asInteger(row.merchandise_cents),
+    freightCents: asInteger(row.freight_cents),
+    taxCents: asInteger(row.tax_cents),
+    totalCents: asInteger(row.merchandise_cents) + asInteger(row.freight_cents) + asInteger(row.tax_cents),
+  } : {}),
+  createdAt: row.created_at,
+  updatedAt: row.updated_at,
+});
+
+const shipmentDto = (row) => ({
+  id: row.id,
+  orderId: row.order_id,
+  orderNumber: row.public_order_number ? String(row.public_order_number) : null,
+  purchaseOrderId: row.purchase_order_id,
+  warrantyClaimId: row.warranty_claim_id,
+  direction: row.direction,
+  carrier: row.carrier,
+  serviceLevel: row.service_level,
+  trackingNumber: row.tracking_number,
+  bolOrProNumber: row.bol_or_pro_number,
+  status: row.status,
+  shippedAt: row.shipped_at,
+  deliveredAt: row.delivered_at,
+  exceptionReason: row.exception_reason,
+  itemCount: asInteger(row.item_count || 0),
+  version: row.version,
+  createdAt: row.created_at,
+  updatedAt: row.updated_at,
+});
+
+const warrantyClaimDto = (row, includeFinancials = false) => ({
+  id: row.id,
+  claimNumber: String(row.public_claim_number),
+  orderId: row.order_id,
+  orderNumber: row.public_order_number ? String(row.public_order_number) : null,
+  orderItemId: row.order_item_id,
+  itemTitle: row.item_title,
+  supplier: row.supplier_id ? { id: row.supplier_id, name: row.supplier_name } : null,
+  supplierClaimReference: row.supplier_claim_reference,
+  state: row.state,
+  installedAt: row.installed_at,
+  mileageAtInstall: row.mileage_at_install,
+  mileageAtClaim: row.mileage_at_claim,
+  installerName: row.installer_name,
+  complaint: row.complaint,
+  evidenceDeadline: row.evidence_deadline,
+  decisionReason: row.decision_reason,
+  assignedTo: row.assigned_to,
+  assigneeName: row.assignee_name,
+  authorizedReplacementQuantity: row.authorized_replacement_quantity,
+  resolvedAt: row.resolved_at,
+  version: row.version,
+  ...(includeFinancials ? {
+    approvedPartsCents: row.approved_parts_cents === null ? null : asInteger(row.approved_parts_cents),
+    approvedLaborCents: row.approved_labor_cents === null ? null : asInteger(row.approved_labor_cents),
+    approvedFreightCents: row.approved_freight_cents === null ? null : asInteger(row.approved_freight_cents),
+  } : {}),
   createdAt: row.created_at,
   updatedAt: row.updated_at,
 });
@@ -119,10 +250,10 @@ const orderDto = (row, includeFinancials) => ({
   promotionDiscountCents: asInteger(row.promotion_discount_cents || 0),
   freightCents: asInteger(row.freight_charged_cents),
   coreDepositCents: asInteger(row.core_deposit_cents),
-  collectedCents: asInteger(row.collected_cents),
   createdAt: row.created_at,
   updatedAt: row.updated_at,
   ...(includeFinancials ? {
+    collectedCents: asInteger(row.collected_cents),
     supplierUnitCostCents: asInteger(row.supplier_unit_cost_cents),
     supplierFreightCostCents: asInteger(row.supplier_freight_cost_cents),
     grossProfitBeforeFeesCents: asInteger(row.customer_unit_price_cents)
@@ -156,7 +287,7 @@ export class PostgresOfficeRepository {
     });
   }
 
-  async dashboard() {
+  async dashboard({ includeFinancials = false, capabilities = ["viewer"] } = {}) {
     const { rows } = await this.pool.query(`
       SELECT
         (SELECT count(*) FROM orders WHERE created_at >= now() - interval '30 days') AS orders_30d,
@@ -167,15 +298,15 @@ export class PostgresOfficeRepository {
         (SELECT count(*) FROM freight_quote_requests WHERE status IN ('open', 'contacted', 'quoted')) AS freight_exceptions,
         (SELECT count(*) FROM leads WHERE state = 'new') AS new_leads,
         (SELECT count(*) FROM leads WHERE state NOT IN ('won', 'lost', 'closed') AND assigned_to IS NULL) AS unassigned_leads,
-        (SELECT count(*) FROM office_tasks WHERE state NOT IN ('completed', 'canceled') AND due_at < now()) AS overdue_tasks,
-        (SELECT count(*) FROM office_tasks WHERE state NOT IN ('completed', 'canceled') AND due_at >= now() AND due_at < now() + interval '24 hours') AS tasks_due_24h,
+        (SELECT count(*) FROM office_tasks WHERE state NOT IN ('completed', 'canceled') AND due_at < now() AND required_capability=ANY($1::staff_role[])) AS overdue_tasks,
+        (SELECT count(*) FROM office_tasks WHERE state NOT IN ('completed', 'canceled') AND due_at >= now() AND due_at < now() + interval '24 hours' AND required_capability=ANY($1::staff_role[])) AS tasks_due_24h,
         (SELECT count(*) FROM webhook_events WHERE processing_status IN ('retry', 'dead_letter')) AS webhook_exceptions,
         (SELECT count(*) FROM notification_outbox
           WHERE delivered_at IS NULL AND attempts >= 10
             AND (locked_until IS NULL OR locked_until < now())) AS notification_exceptions,
         (SELECT COALESCE(sum(amount_cents), 0) FROM payment_transactions WHERE transaction_type IN ('charge', 'payment') AND status IN ('paid', 'succeeded') AND occurred_at >= now() - interval '30 days') AS collected_30d,
         (SELECT COALESCE(sum(amount_cents), 0) FROM payment_transactions WHERE transaction_type = 'refund' AND status IN ('paid', 'succeeded') AND occurred_at >= now() - interval '30 days') AS refunds_30d
-    `);
+    `, [capabilities]);
     const row = rows[0];
     return {
       orders30d: asInteger(row.orders_30d),
@@ -190,8 +321,10 @@ export class PostgresOfficeRepository {
       tasksDue24h: asInteger(row.tasks_due_24h),
       webhookExceptions: asInteger(row.webhook_exceptions),
       notificationExceptions: asInteger(row.notification_exceptions),
-      collected30dCents: asInteger(row.collected_30d),
-      refunds30dCents: asInteger(row.refunds_30d),
+      ...(includeFinancials ? {
+        collected30dCents: asInteger(row.collected_30d),
+        refunds30dCents: asInteger(row.refunds_30d),
+      } : {}),
     };
   }
 
@@ -213,6 +346,14 @@ export class PostgresOfficeRepository {
   }
 
   async createLead(client, input, principal) {
+    if (input.assignedTo) {
+      const assignee = await client.query(`
+        SELECT 1 FROM staff_users su JOIN user_roles ur ON ur.staff_user_id=su.id
+        WHERE su.id=$1 AND su.disabled_at IS NULL AND ur.revoked_at IS NULL
+          AND ur.role IN ('operations','administrator')
+      `, [input.assignedTo]);
+      if (!assignee.rows[0]) throw conflict("The lead assignee is not an active operations staff member.");
+    }
     const { rows } = await client.query(`
       INSERT INTO leads (
         public_reference, contact_name, contact_email, contact_phone, organization_name,
@@ -238,13 +379,39 @@ export class PostgresOfficeRepository {
     const existing = await client.query("SELECT * FROM leads WHERE id = $1 FOR UPDATE", [id]);
     if (!existing.rows[0]) throw notFound("Lead not found.");
     if (existing.rows[0].version !== input.version) throw conflict("This lead changed after it was opened. Refresh and try again.");
+    const allowed = {
+      new: ["assigned", "contacted", "qualified", "lost", "closed"],
+      assigned: ["contacted", "qualified", "lost", "closed"],
+      contacted: ["qualified", "quoted", "lost", "closed"],
+      qualified: ["quoted", "lost", "closed"], quoted: ["won", "lost", "closed"],
+      lost: ["contacted", "closed"], won: ["closed"], closed: [],
+    };
+    if (input.state !== existing.rows[0].state && !allowed[existing.rows[0].state]?.includes(input.state)) {
+      throw conflict("That lead transition is not allowed.");
+    }
     const assignedTo = input.assignedTo === undefined ? existing.rows[0].assigned_to : input.assignedTo;
+    if (assignedTo) {
+      const assignee = await client.query(`
+        SELECT 1 FROM staff_users su JOIN user_roles ur ON ur.staff_user_id=su.id
+        WHERE su.id=$1 AND su.disabled_at IS NULL AND ur.revoked_at IS NULL
+          AND ur.role IN ('operations','administrator')
+      `, [assignedTo]);
+      if (!assignee.rows[0]) throw conflict("The lead assignee is not an active operations staff member.");
+    }
+    let wonCustomerId = existing.rows[0].customer_id;
+    if (input.state === "won") {
+      const wonOrder = await client.query("SELECT customer_id FROM orders WHERE id=$1 FOR UPDATE", [input.wonOrderId]);
+      if (!wonOrder.rows[0] || (wonCustomerId && wonCustomerId !== wonOrder.rows[0].customer_id)) {
+        throw conflict("The won order must belong to the lead customer.");
+      }
+      wonCustomerId = wonOrder.rows[0].customer_id;
+    }
     const { rows } = await client.query(`
       UPDATE leads SET state = $2, priority = $3, assigned_to = $4, next_follow_up_at = $5,
-        lost_reason = $6, won_order_id = $7, version = version + 1
+        lost_reason = $6, won_order_id = $7, customer_id=$8, version = version + 1
       WHERE id = $1
       RETURNING *
-    `, [id, input.state, input.priority, assignedTo, input.nextFollowUpAt, input.lostReason, input.wonOrderId]);
+    `, [id, input.state, input.priority, assignedTo, input.nextFollowUpAt, input.lostReason, input.wonOrderId, wonCustomerId]);
     await client.query(`
       INSERT INTO lead_activities (lead_id, activity_type, summary, metadata, created_by)
       VALUES ($1, 'status_change', $2, $3::jsonb, $4)
@@ -253,7 +420,7 @@ export class PostgresOfficeRepository {
     return leadDto({ ...rows[0], assignee_name: assignee.rows[0]?.display_name || null });
   }
 
-  async listTasks({ page, pageSize, status = "", assignedTo = null }) {
+  async listTasks({ page, pageSize, status = "", assignedTo = null, capabilities = ["operations"] }) {
     const offset = (page - 1) * pageSize;
     const { rows } = await this.pool.query(`
       SELECT t.*, su.display_name AS assignee_name, count(*) OVER() AS total_count
@@ -261,22 +428,47 @@ export class PostgresOfficeRepository {
       LEFT JOIN staff_users su ON su.id = t.assigned_to
       WHERE ($3 = '' OR t.state::text = $3)
         AND ($4::uuid IS NULL OR t.assigned_to = $4)
+        AND t.required_capability = ANY($5::staff_role[])
       ORDER BY
         CASE WHEN t.state NOT IN ('completed', 'canceled') AND t.due_at < now() THEN 0 ELSE 1 END,
         CASE t.priority WHEN 'urgent' THEN 1 WHEN 'high' THEN 2 WHEN 'normal' THEN 3 ELSE 4 END,
         t.due_at NULLS LAST, t.created_at DESC
       LIMIT $1 OFFSET $2
-    `, [pageSize, offset, status.trim(), assignedTo]);
+    `, [pageSize, offset, status.trim(), assignedTo, capabilities]);
     return { items: rows.map(taskDto), page, pageSize, total: rows[0] ? asInteger(rows[0].total_count) : 0 };
   }
 
   async createTask(client, input, principal) {
+    const entityTables = { lead: "leads", quote: "sales_quotes", order: "orders", customer: "customers",
+      purchase_order: "supplier_purchase_orders", shipment: "fulfillment_shipments", core_return: "core_returns",
+      warranty_claim: "warranty_claims", dispute: "payment_disputes" };
+    if (input.entityId && input.entityType !== "system") {
+      const table = entityTables[input.entityType];
+      const entity = table ? await client.query(`SELECT 1 FROM ${table} WHERE id=$1`, [input.entityId]) : { rows: [] };
+      if (!entity.rows[0]) throw conflict("The related record does not exist.");
+    }
+    if (input.customerId && !(await client.query("SELECT 1 FROM customers WHERE id=$1", [input.customerId])).rows[0]) throw conflict("The task customer does not exist.");
+    if (input.orderId && !(await client.query("SELECT 1 FROM orders WHERE id=$1", [input.orderId])).rows[0]) throw conflict("The task order does not exist.");
+    if (input.assignedTo) {
+      const assigneeAccess = await client.query(`
+        SELECT 1 FROM staff_users su JOIN user_roles ur ON ur.staff_user_id=su.id
+        WHERE su.id=$1 AND su.disabled_at IS NULL AND ur.revoked_at IS NULL
+          AND (ur.role=$2::staff_role OR ur.role='administrator')
+      `, [input.assignedTo, input.requiredCapability]);
+      if (!assigneeAccess.rows[0]) throw conflict("The assignee is not active with the required capability.");
+    }
     const { rows } = await client.query(`
       INSERT INTO office_tasks (
-        task_type, title, entity_type, entity_id, priority, assigned_to, due_at, created_by
-      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
+        task_type, title, entity_type, entity_id, priority, assigned_to, due_at, created_by,
+        customer_id, order_id, required_capability, deduplication_key
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
       RETURNING *
-    `, [input.taskType, input.title, input.entityType, input.entityId, input.priority, input.assignedTo, input.dueAt, principal.id]);
+    `, [input.taskType, input.title, input.entityType, input.entityId, input.priority, input.assignedTo,
+      input.dueAt, principal.id, input.customerId, input.orderId, input.requiredCapability, input.deduplicationKey]);
+    await client.query(`
+      INSERT INTO office_task_history (office_task_id, to_state, reason, created_by)
+      VALUES ($1,'open',$2,$3)
+    `, [rows[0].id, input.reason, principal.id]);
     const assignee = input.assignedTo ? await client.query("SELECT display_name FROM staff_users WHERE id = $1", [input.assignedTo]) : { rows: [] };
     return taskDto({ ...rows[0], assignee_name: assignee.rows[0]?.display_name || null });
   }
@@ -284,8 +476,17 @@ export class PostgresOfficeRepository {
   async updateTask(client, id, input, principal) {
     const existing = await client.query("SELECT * FROM office_tasks WHERE id = $1 FOR UPDATE", [id]);
     if (!existing.rows[0]) throw notFound("Task not found.");
+    if (!can(principal, existing.rows[0].required_capability)) throw forbidden();
     if (existing.rows[0].version !== input.version) throw conflict("This task changed after it was opened. Refresh and try again.");
     const assignedTo = input.assignedTo === undefined ? existing.rows[0].assigned_to : input.assignedTo;
+    if (assignedTo) {
+      const assigneeAccess = await client.query(`
+        SELECT 1 FROM staff_users su JOIN user_roles ur ON ur.staff_user_id=su.id
+        WHERE su.id=$1 AND su.disabled_at IS NULL AND ur.revoked_at IS NULL
+          AND (ur.role=$2::staff_role OR ur.role='administrator')
+      `, [assignedTo, existing.rows[0].required_capability]);
+      if (!assigneeAccess.rows[0]) throw conflict("The assignee is not active with the required capability.");
+    }
     const completed = input.state === "completed";
     const { rows } = await client.query(`
       UPDATE office_tasks SET state = $2, priority = $3, assigned_to = $4, due_at = $5,
@@ -297,8 +498,485 @@ export class PostgresOfficeRepository {
       RETURNING *
     `, [id, input.state, input.priority, assignedTo, input.dueAt, input.blockedReason,
       input.completionEvidence, completed, principal.id]);
+    await client.query(`
+      INSERT INTO office_task_history (office_task_id, from_state, to_state, reason, created_by)
+      VALUES ($1,$2,$3,$4,$5)
+    `, [id, existing.rows[0].state, input.state, input.reason, principal.id]);
     const assignee = assignedTo ? await client.query("SELECT display_name FROM staff_users WHERE id = $1", [assignedTo]) : { rows: [] };
     return taskDto({ ...rows[0], assignee_name: assignee.rows[0]?.display_name || null });
+  }
+
+  async listCustomers({ page, pageSize, search = "" }) {
+    const offset = (page - 1) * pageSize;
+    const { rows } = await this.pool.query(`
+      SELECT c.*,
+        (SELECT count(*) FROM vehicles v WHERE v.customer_id = c.id) AS vehicle_count,
+        (SELECT count(*) FROM orders o WHERE o.customer_id = c.id) AS order_count,
+        (SELECT count(*) FROM office_tasks t WHERE t.customer_id = c.id AND t.state NOT IN ('completed', 'canceled')) AS open_task_count,
+        count(*) OVER() AS total_count
+      FROM customers c
+      WHERE $3 = '' OR c.name ILIKE '%' || $3 || '%' OR c.email ILIKE '%' || $3 || '%' OR c.phone ILIKE '%' || $3 || '%'
+      ORDER BY c.updated_at DESC, c.id
+      LIMIT $1 OFFSET $2
+    `, [pageSize, offset, search.trim()]);
+    return {
+      items: rows.map((row) => ({
+        id: row.id, name: row.name, email: row.email, phone: row.phone,
+        vehicleCount: asInteger(row.vehicle_count), orderCount: asInteger(row.order_count),
+        openTaskCount: asInteger(row.open_task_count), createdAt: row.created_at, updatedAt: row.updated_at,
+      })),
+      page, pageSize, total: rows[0] ? asInteger(rows[0].total_count) : 0,
+    };
+  }
+
+  async getCustomer(id) {
+    const customer = await this.pool.query("SELECT id, name, email, phone, created_at, updated_at FROM customers WHERE id = $1", [id]);
+    if (!customer.rows[0]) throw notFound("Customer not found.");
+    const [vehicles, orders, leads, tasks, communications, claims] = await Promise.all([
+      this.pool.query("SELECT id, vin, year, make, model, engine, drive_type, mileage, created_at FROM vehicles WHERE customer_id = $1 ORDER BY created_at DESC", [id]),
+      this.pool.query("SELECT id, public_order_number, payment_status, fulfillment_status, core_status, created_at FROM orders WHERE customer_id = $1 ORDER BY created_at DESC", [id]),
+      this.pool.query("SELECT id, public_reference, product_interest, state, priority, next_follow_up_at, created_at FROM leads WHERE customer_id = $1 ORDER BY created_at DESC", [id]),
+      this.pool.query("SELECT id, title, state, priority, due_at, entity_type, entity_id FROM office_tasks WHERE customer_id = $1 ORDER BY created_at DESC", [id]),
+      this.pool.query("SELECT id, channel, direction, purpose, subject, summary, delivery_status, occurred_at FROM communication_events WHERE customer_id = $1 ORDER BY occurred_at DESC LIMIT 100", [id]),
+      this.pool.query(`
+        SELECT wc.id, wc.public_claim_number, wc.state, wc.complaint, wc.evidence_deadline, wc.created_at
+        FROM warranty_claims wc JOIN orders o ON o.id = wc.order_id
+        WHERE o.customer_id = $1 ORDER BY wc.created_at DESC
+      `, [id]),
+    ]);
+    const row = customer.rows[0];
+    return {
+      id: row.id, name: row.name, email: row.email, phone: row.phone,
+      createdAt: row.created_at, updatedAt: row.updated_at,
+      vehicles: vehicles.rows.map((item) => ({ id: item.id, vin: item.vin, year: item.year, make: item.make, model: item.model, engine: item.engine, driveType: item.drive_type, mileage: item.mileage, createdAt: item.created_at })),
+      orders: orders.rows.map((item) => ({ id: item.id, orderNumber: String(item.public_order_number), paymentStatus: item.payment_status, fulfillmentStatus: item.fulfillment_status, coreStatus: item.core_status, createdAt: item.created_at })),
+      leads: leads.rows.map((item) => ({ id: item.id, reference: item.public_reference, productInterest: item.product_interest, state: item.state, priority: item.priority, nextFollowUpAt: item.next_follow_up_at, createdAt: item.created_at })),
+      tasks: tasks.rows.map((item) => ({ id: item.id, title: item.title, state: item.state, priority: item.priority, dueAt: item.due_at, entityType: item.entity_type, entityId: item.entity_id })),
+      communications: communications.rows.map((item) => ({ id: item.id, channel: item.channel, direction: item.direction, purpose: item.purpose, subject: item.subject, summary: item.summary, deliveryStatus: item.delivery_status, occurredAt: item.occurred_at })),
+      warrantyClaims: claims.rows.map((item) => ({ id: item.id, claimNumber: String(item.public_claim_number), state: item.state, complaint: item.complaint, evidenceDeadline: item.evidence_deadline, createdAt: item.created_at })),
+    };
+  }
+
+  async listSuppliers({ page, pageSize, search = "" }) {
+    const offset = (page - 1) * pageSize;
+    const { rows } = await this.pool.query(`
+      SELECT s.*, count(cp.id) AS product_count, count(*) OVER() AS total_count
+      FROM suppliers s LEFT JOIN catalog_products cp ON cp.supplier_id = s.id
+      WHERE $3 = '' OR s.code::text ILIKE '%' || $3 || '%' OR s.display_name ILIKE '%' || $3 || '%'
+      GROUP BY s.id ORDER BY s.active DESC, s.display_name, s.id LIMIT $1 OFFSET $2
+    `, [pageSize, offset, search.trim()]);
+    return { items: rows.map(supplierDto), page, pageSize, total: rows[0] ? asInteger(rows[0].total_count) : 0 };
+  }
+
+  async createSupplier(client, input) {
+    const { rows } = await client.query(`
+      INSERT INTO suppliers (code, display_name, ordering_method, warranty_terms_reference, core_terms_reference, active)
+      VALUES ($1,$2,$3,$4,$5,$6) RETURNING *, 0 AS product_count
+    `, [input.code, input.displayName, input.orderingMethod, input.warrantyTermsReference, input.coreTermsReference, input.active]);
+    return supplierDto(rows[0]);
+  }
+
+  async updateSupplier(client, id, input) {
+    const existing = await client.query("SELECT * FROM suppliers WHERE id = $1 FOR UPDATE", [id]);
+    if (!existing.rows[0]) throw notFound("Supplier not found.");
+    if (existing.rows[0].version !== input.version) throw conflict("This supplier changed after it was opened. Refresh and try again.");
+    const { rows } = await client.query(`
+      UPDATE suppliers SET display_name=$2, ordering_method=$3, warranty_terms_reference=$4,
+        core_terms_reference=$5, active=$6, version=version+1 WHERE id=$1
+      RETURNING *, (SELECT count(*) FROM catalog_products WHERE supplier_id=$1) AS product_count
+    `, [id, input.displayName, input.orderingMethod, input.warrantyTermsReference, input.coreTermsReference, input.active]);
+    return supplierDto(rows[0]);
+  }
+
+  async listCatalogProducts({ page, pageSize, search = "", status = "", kind = "", includeFinancials = false }) {
+    const offset = (page - 1) * pageSize;
+    const { rows } = await this.pool.query(`
+      SELECT cp.*, s.display_name AS supplier_name, s.active AS supplier_active,
+        price.id AS price_version_id, price.supplier_unit_cost_cents, price.supplier_core_deposit_cents,
+        price.suggested_retail_cents, price.availability_code, price.availability_text,
+        price.source_reference, price.verified_at AS price_verified_at, price.valid_through,
+        count(*) OVER() AS total_count
+      FROM catalog_products cp JOIN suppliers s ON s.id = cp.supplier_id
+      LEFT JOIN LATERAL (
+        SELECT * FROM catalog_price_versions cpv
+        WHERE cpv.catalog_product_id = cp.id ORDER BY cpv.verified_at DESC, cpv.created_at DESC LIMIT 1
+      ) price ON true
+      WHERE ($3 = '' OR cp.integrity_sku::text ILIKE '%' || $3 || '%' OR cp.supplier_sku ILIKE '%' || $3 || '%' OR cp.title ILIKE '%' || $3 || '%')
+        AND ($4 = '' OR cp.status::text = $4) AND ($5 = '' OR cp.kind::text = $5)
+      ORDER BY cp.updated_at DESC, cp.id LIMIT $1 OFFSET $2
+    `, [pageSize, offset, search.trim(), status.trim(), kind.trim()]);
+    return { items: rows.map((row) => catalogProductDto(row, includeFinancials)), page, pageSize, total: rows[0] ? asInteger(rows[0].total_count) : 0 };
+  }
+
+  async createCatalogProduct(client, input) {
+    if (input.status !== "draft") throw conflict("New catalog products must begin as drafts and be activated after price verification.");
+    const { rows } = await client.query(`
+      INSERT INTO catalog_products (
+        integrity_sku, supplier_id, supplier_sku, kind, title, manufacturer_brand,
+        manufacturer_part_number, gtin, condition, application_data, package_contents,
+        warranty_data, shipping_data, image_provenance, status, last_verified_at
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10::jsonb,$11::jsonb,$12::jsonb,$13::jsonb,$14::jsonb,$15,$16)
+      RETURNING *
+    `, [input.integritySku, input.supplierId, input.supplierSku, input.kind, input.title,
+      input.manufacturerBrand, input.manufacturerPartNumber, input.gtin, input.condition,
+      JSON.stringify(input.applicationData), JSON.stringify(input.packageContents), JSON.stringify(input.warrantyData),
+      JSON.stringify(input.shippingData), JSON.stringify(input.imageProvenance), input.status, input.lastVerifiedAt]);
+    const supplier = await client.query("SELECT display_name, active FROM suppliers WHERE id=$1", [input.supplierId]);
+    return catalogProductDto({ ...rows[0], supplier_name: supplier.rows[0]?.display_name, supplier_active: supplier.rows[0]?.active }, false);
+  }
+
+  async updateCatalogProduct(client, id, input, { includeFinancials = false } = {}) {
+    const existing = await client.query("SELECT * FROM catalog_products WHERE id=$1 FOR UPDATE", [id]);
+    if (!existing.rows[0]) throw notFound("Catalog product not found.");
+    if (existing.rows[0].version !== input.version) throw conflict("This catalog product changed after it was opened. Refresh and try again.");
+    if (input.status === "active") {
+      const eligible = await client.query(`
+        SELECT 1 FROM suppliers s
+        WHERE s.id=$1 AND s.active AND EXISTS (
+          SELECT 1 FROM catalog_price_versions p WHERE p.catalog_product_id=$2
+            AND p.verified_at <= now() AND (p.valid_through IS NULL OR p.valid_through > now())
+        )
+      `, [existing.rows[0].supplier_id, id]);
+      if (!eligible.rows[0]) throw conflict("An active supplier and a currently valid verified price are required before activation.");
+    }
+    const { rows } = await client.query(`
+      UPDATE catalog_products SET supplier_sku=$2, kind=$3, title=$4, manufacturer_brand=$5,
+        manufacturer_part_number=$6, gtin=$7, condition=$8, application_data=$9::jsonb,
+        package_contents=$10::jsonb, warranty_data=$11::jsonb, shipping_data=$12::jsonb,
+        image_provenance=$13::jsonb, status=$14, last_verified_at=$15, version=version+1
+      WHERE id=$1 RETURNING *
+    `, [id, input.supplierSku, input.kind, input.title, input.manufacturerBrand,
+      input.manufacturerPartNumber, input.gtin, input.condition, JSON.stringify(input.applicationData),
+      JSON.stringify(input.packageContents), JSON.stringify(input.warrantyData), JSON.stringify(input.shippingData),
+      JSON.stringify(input.imageProvenance), input.status, input.lastVerifiedAt]);
+    const detail = await client.query(`
+      SELECT s.display_name AS supplier_name, s.active AS supplier_active,
+        p.id AS price_version_id, p.supplier_unit_cost_cents, p.supplier_core_deposit_cents,
+        p.suggested_retail_cents, p.availability_code, p.availability_text, p.source_reference,
+        p.verified_at AS price_verified_at, p.valid_through
+      FROM suppliers s LEFT JOIN LATERAL (
+        SELECT * FROM catalog_price_versions WHERE catalog_product_id=$1 ORDER BY verified_at DESC, created_at DESC LIMIT 1
+      ) p ON true WHERE s.id=$2
+    `, [id, rows[0].supplier_id]);
+    return catalogProductDto({ ...rows[0], ...detail.rows[0] }, includeFinancials);
+  }
+
+  async appendCatalogPrice(client, id, input, principal) {
+    const product = await client.query("SELECT id FROM catalog_products WHERE id=$1 FOR UPDATE", [id]);
+    if (!product.rows[0]) throw notFound("Catalog product not found.");
+    const { rows } = await client.query(`
+      INSERT INTO catalog_price_versions (
+        catalog_product_id, supplier_unit_cost_cents, supplier_core_deposit_cents,
+        suggested_retail_cents, availability_code, availability_text, source_reference,
+        verified_at, valid_through, recorded_by
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING *
+    `, [id, input.supplierUnitCostCents, input.supplierCoreDepositCents, input.suggestedRetailCents,
+      input.availabilityCode, input.availabilityText, input.sourceReference, input.verifiedAt,
+      input.validThrough, principal.id]);
+    return { id: rows[0].id, supplierUnitCostCents: asInteger(rows[0].supplier_unit_cost_cents),
+      supplierCoreDepositCents: asInteger(rows[0].supplier_core_deposit_cents),
+      suggestedRetailCents: rows[0].suggested_retail_cents === null ? null : asInteger(rows[0].suggested_retail_cents),
+      availabilityCode: rows[0].availability_code, availabilityText: rows[0].availability_text,
+      sourceReference: rows[0].source_reference, verifiedAt: rows[0].verified_at, validThrough: rows[0].valid_through };
+  }
+
+  async listPurchaseOrders({ page, pageSize, status = "", includeFinancials = false }) {
+    const offset = (page - 1) * pageSize;
+    const { rows } = await this.pool.query(`
+      SELECT po.*, o.public_order_number, s.display_name AS supplier_name,
+        count(pol.id) AS line_count, count(*) OVER() AS total_count
+      FROM supplier_purchase_orders po
+      JOIN orders o ON o.id=po.order_id JOIN suppliers s ON s.id=po.supplier_id
+      LEFT JOIN supplier_purchase_order_lines pol ON pol.purchase_order_id=po.id
+      WHERE $3='' OR po.state::text=$3
+      GROUP BY po.id, o.public_order_number, s.display_name
+      ORDER BY CASE po.state WHEN 'draft' THEN 1 WHEN 'approved' THEN 2 WHEN 'backordered' THEN 3 ELSE 4 END,
+        po.estimated_ship_at NULLS LAST, po.created_at DESC LIMIT $1 OFFSET $2
+    `, [pageSize, offset, status.trim()]);
+    return { items: rows.map((row) => purchaseOrderDto(row, includeFinancials)), page, pageSize, total: rows[0] ? asInteger(rows[0].total_count) : 0 };
+  }
+
+  async getPurchaseOrder(id, { includeFinancials = false } = {}) {
+    const header = await this.pool.query(`
+      SELECT po.*, o.public_order_number, s.display_name AS supplier_name,
+        (SELECT count(*) FROM supplier_purchase_order_lines WHERE purchase_order_id=po.id) AS line_count
+      FROM supplier_purchase_orders po JOIN orders o ON o.id=po.order_id
+      JOIN suppliers s ON s.id=po.supplier_id WHERE po.id=$1
+    `, [id]);
+    if (!header.rows[0]) throw notFound("Purchase order not found.");
+    const [lines, history] = await Promise.all([
+      this.pool.query(`
+        SELECT pol.id, pol.order_item_id, pol.line_number, pol.supplier_sku_snapshot,
+          pol.description, pol.quantity, pol.unit_cost_cents, pol.core_charge_cents,
+          oi.title_snapshot
+        FROM supplier_purchase_order_lines pol JOIN order_items oi ON oi.id=pol.order_item_id
+        WHERE pol.purchase_order_id=$1 ORDER BY pol.line_number
+      `, [id]),
+      this.pool.query(`
+        SELECT from_state, to_state, reason, created_at
+        FROM purchase_order_state_history WHERE purchase_order_id=$1 ORDER BY created_at DESC
+      `, [id]),
+    ]);
+    return {
+      ...purchaseOrderDto(header.rows[0], includeFinancials),
+      lines: lines.rows.map((row) => ({
+        id: row.id, orderItemId: row.order_item_id, lineNumber: row.line_number,
+        supplierSku: row.supplier_sku_snapshot, description: row.description,
+        title: row.title_snapshot, quantity: row.quantity,
+        ...(includeFinancials ? { unitCostCents: asInteger(row.unit_cost_cents), coreChargeCents: asInteger(row.core_charge_cents) } : {}),
+      })),
+      history: history.rows.map((row) => ({ from: row.from_state, to: row.to_state, reason: row.reason, createdAt: row.created_at })),
+    };
+  }
+
+  async createPurchaseOrder(client, input, principal) {
+    const itemIds = input.lines.map((line) => line.orderItemId);
+    const items = await client.query("SELECT id FROM order_items WHERE order_id=$1 AND id=ANY($2::uuid[]) FOR UPDATE", [input.orderId, itemIds]);
+    if (items.rows.length !== itemIds.length) throw conflict("Every purchase order line must belong to the selected order.");
+    const merchandiseCents = input.lines.reduce((sum, line) => sum + line.quantity * (line.unitCostCents + line.coreChargeCents), 0);
+    const { rows } = await client.query(`
+      INSERT INTO supplier_purchase_orders (
+        order_id, supplier_id, purchase_order_number, supplier_order_reference, state,
+        merchandise_cents, freight_cents, tax_cents, estimated_ship_at, created_by
+      ) VALUES ($1,$2,$3,$4,'draft',$5,$6,$7,$8,$9) RETURNING *
+    `, [input.orderId, input.supplierId, input.purchaseOrderNumber, input.supplierOrderReference,
+      merchandiseCents, input.freightCents, input.taxCents, input.estimatedShipAt, principal.id]);
+    for (const [index, line] of input.lines.entries()) {
+      await client.query(`
+        INSERT INTO supplier_purchase_order_lines (
+          purchase_order_id, order_id, supplier_id, order_item_id, line_number,
+          supplier_sku_snapshot, description, quantity, unit_cost_cents, core_charge_cents
+        ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
+      `, [rows[0].id, input.orderId, input.supplierId, line.orderItemId, index + 1,
+        line.supplierSku, line.description, line.quantity, line.unitCostCents, line.coreChargeCents]);
+    }
+    await client.query(`
+      INSERT INTO purchase_order_state_history (purchase_order_id, to_state, reason, created_by)
+      VALUES ($1,'draft',$2,$3)
+    `, [rows[0].id, input.reason, principal.id]);
+    const detail = await client.query("SELECT public_order_number FROM orders WHERE id=$1", [input.orderId]);
+    const supplier = await client.query("SELECT display_name FROM suppliers WHERE id=$1", [input.supplierId]);
+    return purchaseOrderDto({ ...rows[0], public_order_number: detail.rows[0]?.public_order_number,
+      supplier_name: supplier.rows[0]?.display_name, line_count: input.lines.length }, true);
+  }
+
+  async updatePurchaseOrder(client, id, input, principal, { includeFinancials = false } = {}) {
+    const existing = await client.query("SELECT * FROM supplier_purchase_orders WHERE id=$1 FOR UPDATE", [id]);
+    if (!existing.rows[0]) throw notFound("Purchase order not found.");
+    if (existing.rows[0].version !== input.version) throw conflict("This purchase order changed after it was opened. Refresh and try again.");
+    const allowed = {
+      draft: ["approved", "canceled"], approved: ["submitted", "canceled"],
+      submitted: ["acknowledged", "backordered", "canceled"],
+      acknowledged: ["backordered", "partially_shipped", "shipped", "received", "canceled"],
+      backordered: ["acknowledged", "partially_shipped", "shipped", "canceled"],
+      partially_shipped: ["shipped", "received", "canceled"], shipped: ["received"],
+      received: ["closed"], canceled: [], closed: [],
+    };
+    if (!allowed[existing.rows[0].state]?.includes(input.state)) throw conflict("That purchase order transition is not allowed.");
+    if (input.state === "approved" && existing.rows[0].created_by === principal.id) {
+      throw conflict("A different finance-capable staff member must approve this purchase order.");
+    }
+    const { rows } = await client.query(`
+      UPDATE supplier_purchase_orders SET state=$2, supplier_order_reference=$3, estimated_ship_at=$4,
+        approved_by=CASE WHEN $2='approved' THEN $5 ELSE approved_by END,
+        approved_at=CASE WHEN $2='approved' THEN now() ELSE approved_at END,
+        submitted_at=CASE WHEN $2='submitted' THEN now() ELSE submitted_at END,
+        acknowledged_at=CASE WHEN $2='acknowledged' THEN now() ELSE acknowledged_at END,
+        canceled_at=CASE WHEN $2='canceled' THEN now() ELSE NULL END,
+        cancellation_reason=CASE WHEN $2='canceled' THEN $6 ELSE NULL END,
+        version=version+1 WHERE id=$1 RETURNING *
+    `, [id, input.state, input.supplierOrderReference, input.estimatedShipAt, principal.id, input.cancellationReason]);
+    await client.query(`
+      INSERT INTO purchase_order_state_history (purchase_order_id, from_state, to_state, reason, created_by)
+      VALUES ($1,$2,$3,$4,$5)
+    `, [id, existing.rows[0].state, input.state, input.reason, principal.id]);
+    if (input.state === "submitted") {
+      const advanced = await client.query(`
+        UPDATE orders SET fulfillment_status='supplier_ordered', version=version+1
+        WHERE id=$1 AND fulfillment_status='ready_for_supplier'
+        RETURNING id
+      `, [rows[0].order_id]);
+      if (advanced.rows[0]) {
+        await client.query(`
+          INSERT INTO status_history (order_id,workflow,from_state,to_state,reason,actor_staff_user_id)
+          VALUES ($1,'fulfillment','ready_for_supplier','supplier_ordered',$2,$3)
+        `, [rows[0].order_id, `Purchase order ${rows[0].purchase_order_number} submitted`, principal.id]);
+      }
+    }
+    const detail = await client.query(`
+      SELECT o.public_order_number, s.display_name AS supplier_name,
+        (SELECT count(*) FROM supplier_purchase_order_lines WHERE purchase_order_id=$1) AS line_count
+      FROM orders o JOIN suppliers s ON s.id=$2 WHERE o.id=$3
+    `, [id, rows[0].supplier_id, rows[0].order_id]);
+    return purchaseOrderDto({ ...rows[0], ...detail.rows[0] }, includeFinancials);
+  }
+
+  async listShipments({ page, pageSize, status = "" }) {
+    const offset = (page - 1) * pageSize;
+    const { rows } = await this.pool.query(`
+      SELECT fs.*, o.public_order_number, count(si.order_item_id) AS item_count, count(*) OVER() AS total_count
+      FROM fulfillment_shipments fs JOIN orders o ON o.id=fs.order_id
+      LEFT JOIN shipment_items si ON si.shipment_id=fs.id
+      WHERE $3='' OR fs.status=$3
+      GROUP BY fs.id, o.public_order_number
+      ORDER BY CASE fs.status WHEN 'exception' THEN 1 WHEN 'planned' THEN 2 WHEN 'booked' THEN 3 ELSE 4 END,
+        fs.created_at DESC LIMIT $1 OFFSET $2
+    `, [pageSize, offset, status.trim()]);
+    return { items: rows.map(shipmentDto), page, pageSize, total: rows[0] ? asInteger(rows[0].total_count) : 0 };
+  }
+
+  async createShipment(client, input, principal) {
+    const { rows } = await client.query(`
+      INSERT INTO fulfillment_shipments (
+        order_id, purchase_order_id, warranty_claim_id, direction, carrier, service_level,
+        tracking_number, bol_or_pro_number, status, shipped_at, delivered_at, exception_reason
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) RETURNING *
+    `, [input.orderId, input.purchaseOrderId, input.warrantyClaimId || null, input.direction,
+      input.carrier, input.serviceLevel, input.trackingNumber, input.bolOrProNumber,
+      input.status, input.shippedAt, input.deliveredAt, input.exceptionReason]);
+    for (const item of input.items) {
+      await client.query(`
+        INSERT INTO shipment_items (
+          shipment_id, order_id, purchase_order_id, purchase_order_line_id,
+          order_item_id, quantity, unit_serial_number
+        ) VALUES ($1,$2,$3,$4,$5,$6,$7)
+      `, [rows[0].id, input.orderId, input.purchaseOrderId, item.purchaseOrderLineId || null,
+        item.orderItemId, item.quantity, item.unitSerialNumber]);
+    }
+    await client.query(`
+      INSERT INTO shipment_state_history (shipment_id, to_state, reason, created_by)
+      VALUES ($1,$2,$3,$4)
+    `, [rows[0].id, input.status, input.reason, principal.id]);
+    const order = await client.query("SELECT public_order_number FROM orders WHERE id=$1", [input.orderId]);
+    return shipmentDto({ ...rows[0], public_order_number: order.rows[0]?.public_order_number, item_count: input.items.length });
+  }
+
+  async updateShipment(client, id, input, principal) {
+    const existing = await client.query("SELECT * FROM fulfillment_shipments WHERE id=$1 FOR UPDATE", [id]);
+    if (!existing.rows[0]) throw notFound("Shipment not found.");
+    if (existing.rows[0].version !== input.version) throw conflict("This shipment changed after it was opened. Refresh and try again.");
+    const allowed = { planned: ["booked", "canceled"], booked: ["in_transit", "exception", "canceled"],
+      in_transit: ["delivered", "exception"], exception: ["booked", "in_transit", "canceled"], delivered: [], canceled: [] };
+    if (!allowed[existing.rows[0].status]?.includes(input.status)) throw conflict("That shipment transition is not allowed.");
+    if (input.status === "in_transit" && (!input.shippedAt || (!input.trackingNumber && !input.bolOrProNumber))) {
+      throw conflict("In-transit shipments require a shipped time and tracking or PRO evidence.");
+    }
+    if (input.status === "delivered" && !input.deliveredAt) throw conflict("Delivered shipments require a delivery time.");
+    const { rows } = await client.query(`
+      UPDATE fulfillment_shipments SET carrier=$2, service_level=$3, tracking_number=$4,
+        bol_or_pro_number=$5, status=$6, shipped_at=$7, delivered_at=$8,
+        exception_reason=$9, version=version+1 WHERE id=$1 RETURNING *
+    `, [id, input.carrier, input.serviceLevel, input.trackingNumber, input.bolOrProNumber,
+      input.status, input.shippedAt, input.deliveredAt, input.exceptionReason]);
+    await client.query(`
+      INSERT INTO shipment_state_history (shipment_id, from_state, to_state, reason, created_by)
+      VALUES ($1,$2,$3,$4,$5)
+    `, [id, existing.rows[0].status, input.status, input.reason, principal.id]);
+    if (input.status === "in_transit") {
+      const orderState = await client.query("SELECT fulfillment_status FROM orders WHERE id=$1 FOR UPDATE", [rows[0].order_id]);
+      const fromState = orderState.rows[0]?.fulfillment_status;
+      const advanced = await client.query(`
+        UPDATE orders SET fulfillment_status='shipped', version=version+1
+        WHERE id=$1 AND fulfillment_status IN ('supplier_ordered','building') RETURNING id
+      `, [rows[0].order_id]);
+      if (advanced.rows[0]) {
+        await client.query(`
+          INSERT INTO status_history (order_id,workflow,from_state,to_state,reason,actor_staff_user_id)
+          VALUES ($1,'fulfillment',$2,'shipped',$3,$4)
+        `, [rows[0].order_id, fromState, `Shipment ${id} entered transit`, principal.id]);
+      }
+    } else if (input.status === "delivered") {
+      const advanced = await client.query(`
+        UPDATE orders SET fulfillment_status='delivered', version=version+1
+        WHERE id=$1 AND fulfillment_status='shipped' RETURNING id
+      `, [rows[0].order_id]);
+      if (advanced.rows[0]) {
+        await client.query(`
+          INSERT INTO status_history (order_id,workflow,from_state,to_state,reason,actor_staff_user_id)
+          VALUES ($1,'fulfillment','shipped','delivered',$2,$3)
+        `, [rows[0].order_id, `Shipment ${id} delivered`, principal.id]);
+      }
+    }
+    const detail = await client.query(`
+      SELECT o.public_order_number, (SELECT count(*) FROM shipment_items WHERE shipment_id=$1) AS item_count
+      FROM orders o WHERE o.id=$2
+    `, [id, rows[0].order_id]);
+    return shipmentDto({ ...rows[0], ...detail.rows[0] });
+  }
+
+  async listWarrantyClaims({ page, pageSize, status = "", includeFinancials = false }) {
+    const offset = (page - 1) * pageSize;
+    const { rows } = await this.pool.query(`
+      SELECT wc.*, o.public_order_number, oi.title_snapshot AS item_title,
+        s.display_name AS supplier_name, su.display_name AS assignee_name, count(*) OVER() AS total_count
+      FROM warranty_claims wc JOIN orders o ON o.id=wc.order_id
+      LEFT JOIN order_items oi ON oi.id=wc.order_item_id
+      LEFT JOIN suppliers s ON s.id=wc.supplier_id LEFT JOIN staff_users su ON su.id=wc.assigned_to
+      WHERE $3='' OR wc.state::text=$3
+      ORDER BY CASE WHEN wc.evidence_deadline < now() AND wc.state IN ('intake','evidence_needed') THEN 0 ELSE 1 END,
+        wc.evidence_deadline NULLS LAST, wc.created_at DESC LIMIT $1 OFFSET $2
+    `, [pageSize, offset, status.trim()]);
+    return { items: rows.map((row) => warrantyClaimDto(row, includeFinancials)), page, pageSize, total: rows[0] ? asInteger(rows[0].total_count) : 0 };
+  }
+
+  async createWarrantyClaim(client, input, principal) {
+    const { rows } = await client.query(`
+      INSERT INTO warranty_claims (
+        order_id, order_item_id, supplier_id, supplier_claim_reference, state,
+        installed_at, mileage_at_install, mileage_at_claim, installer_name, complaint,
+        evidence_deadline, decision_reason, assigned_to
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13) RETURNING *
+    `, [input.orderId, input.orderItemId, input.supplierId, input.supplierClaimReference,
+      input.state, input.installedAt, input.mileageAtInstall, input.mileageAtClaim,
+      input.installerName, input.complaint, input.evidenceDeadline, input.decisionReason,
+      input.assignedTo === undefined ? null : input.assignedTo]);
+    await client.query(`
+      INSERT INTO warranty_claim_state_history (warranty_claim_id, to_state, reason, created_by)
+      VALUES ($1,$2,$3,$4)
+    `, [rows[0].id, input.state, input.reason, principal.id]);
+    const detail = await client.query(`
+      SELECT o.public_order_number, oi.title_snapshot AS item_title, s.display_name AS supplier_name,
+        su.display_name AS assignee_name FROM orders o
+      LEFT JOIN order_items oi ON oi.id=$2 LEFT JOIN suppliers s ON s.id=$3
+      LEFT JOIN staff_users su ON su.id=$4 WHERE o.id=$1
+    `, [input.orderId, input.orderItemId, input.supplierId, input.assignedTo || null]);
+    return warrantyClaimDto({ ...rows[0], ...detail.rows[0] }, false);
+  }
+
+  async updateWarrantyClaim(client, id, input, principal, { includeFinancials = false } = {}) {
+    const existing = await client.query("SELECT * FROM warranty_claims WHERE id=$1 FOR UPDATE", [id]);
+    if (!existing.rows[0]) throw notFound("Warranty claim not found.");
+    if (existing.rows[0].version !== input.version) throw conflict("This warranty claim changed after it was opened. Refresh and try again.");
+    const allowed = { intake: ["evidence_needed", "submitted", "closed"], evidence_needed: ["submitted", "closed"],
+      submitted: ["authorized", "denied", "evidence_needed"], authorized: ["repairing", "replacement_shipping", "reimbursing", "resolved"],
+      denied: ["closed"], repairing: ["resolved"], replacement_shipping: ["resolved"], reimbursing: ["resolved"],
+      resolved: ["closed"], closed: [] };
+    if (!allowed[existing.rows[0].state]?.includes(input.state)) throw conflict("That warranty transition is not allowed.");
+    const assignedTo = input.assignedTo === undefined ? existing.rows[0].assigned_to : input.assignedTo;
+    const { rows } = await client.query(`
+      UPDATE warranty_claims SET state=$2, supplier_claim_reference=$3, installed_at=$4,
+        mileage_at_install=$5, mileage_at_claim=$6, installer_name=$7, evidence_deadline=$8,
+        decision_reason=$9, approved_parts_cents=COALESCE($10,approved_parts_cents),
+        approved_labor_cents=COALESCE($11,approved_labor_cents),
+        approved_freight_cents=COALESCE($12,approved_freight_cents),
+        authorized_replacement_quantity=COALESCE($13, authorized_replacement_quantity),
+        assigned_to=$14, resolved_at=CASE WHEN $2 IN ('resolved','closed') THEN COALESCE(resolved_at,now()) ELSE NULL END,
+        version=version+1 WHERE id=$1 RETURNING *
+    `, [id, input.state, input.supplierClaimReference, input.installedAt, input.mileageAtInstall,
+      input.mileageAtClaim, input.installerName, input.evidenceDeadline, input.decisionReason,
+      input.approvedPartsCents, input.approvedLaborCents, input.approvedFreightCents,
+      input.authorizedReplacementQuantity, assignedTo]);
+    await client.query(`
+      INSERT INTO warranty_claim_state_history (warranty_claim_id, from_state, to_state, reason, created_by)
+      VALUES ($1,$2,$3,$4,$5)
+    `, [id, existing.rows[0].state, input.state, input.reason, principal.id]);
+    const detail = await client.query(`
+      SELECT o.public_order_number, oi.title_snapshot AS item_title, s.display_name AS supplier_name,
+        su.display_name AS assignee_name FROM orders o
+      LEFT JOIN order_items oi ON oi.id=$2 LEFT JOIN suppliers s ON s.id=$3
+      LEFT JOIN staff_users su ON su.id=$4 WHERE o.id=$1
+    `, [rows[0].order_id, rows[0].order_item_id, rows[0].supplier_id, rows[0].assigned_to]);
+    return warrantyClaimDto({ ...rows[0], ...detail.rows[0] }, includeFinancials);
   }
 
   async listOrders({ page, pageSize, search = "", status = "", includeFinancials = false }) {
@@ -359,7 +1037,7 @@ export class PostgresOfficeRepository {
       WHERE o.id = $1
     `, [id]);
     if (!list.rows[0]) throw notFound("Order not found.");
-    const [history, notes, disputes, supplier, core, fitment, refunds] = await Promise.all([
+    const [history, notes, disputes, supplier, core, fitment, refunds, items] = await Promise.all([
       this.pool.query("SELECT workflow, from_state, to_state, reason, created_at FROM status_history WHERE order_id = $1 ORDER BY created_at DESC", [id]),
       this.pool.query(`
         SELECT note.id, note.note, note.created_at, staff.display_name AS author_name
@@ -388,12 +1066,39 @@ export class PostgresOfficeRepository {
         GROUP BY pt.id
         ORDER BY pt.occurred_at DESC
       `, [id]),
+      this.pool.query(`
+        SELECT oi.id, oi.line_number, oi.kind, oi.integrity_sku_snapshot, oi.supplier_sku_snapshot,
+          oi.title_snapshot, oi.quantity, oi.unit_retail_cents, oi.unit_supplier_cost_cents,
+          oi.core_deposit_cents, oi.fitment_snapshot, oi.warranty_snapshot,
+          po.supplier_id, s.display_name AS supplier_name, pol.id AS purchase_order_line_id,
+          po.id AS purchase_order_id
+        FROM order_items oi
+        LEFT JOIN LATERAL (
+          SELECT line.* FROM supplier_purchase_order_lines line
+          JOIN supplier_purchase_orders candidate ON candidate.id=line.purchase_order_id
+          WHERE line.order_item_id=oi.id AND candidate.state <> 'canceled'
+          ORDER BY candidate.created_at DESC LIMIT 1
+        ) pol ON true
+        LEFT JOIN supplier_purchase_orders po ON po.id=pol.purchase_order_id
+        LEFT JOIN suppliers s ON s.id=po.supplier_id
+        WHERE oi.order_id=$1 ORDER BY oi.line_number
+      `, [id]),
     ]);
     return {
       ...orderDto(list.rows[0], includeFinancials),
       version: list.rows[0].version,
       timeline: history.rows.map((row) => ({ workflow: row.workflow, from: row.from_state, to: row.to_state, reason: row.reason, createdAt: row.created_at })),
       notes: notes.rows.map((row) => ({ id: row.id, note: row.note, authorName: row.author_name, createdAt: row.created_at })),
+      items: items.rows.map((row) => ({
+        id: row.id, lineNumber: row.line_number, kind: row.kind,
+        integritySku: row.integrity_sku_snapshot, supplierSku: row.supplier_sku_snapshot,
+        title: row.title_snapshot, quantity: row.quantity,
+        unitRetailCents: asInteger(row.unit_retail_cents), coreDepositCents: asInteger(row.core_deposit_cents),
+        fitment: row.fitment_snapshot, warranty: row.warranty_snapshot,
+        purchaseOrderId: row.purchase_order_id, purchaseOrderLineId: row.purchase_order_line_id,
+        supplier: row.supplier_id ? { id: row.supplier_id, name: row.supplier_name } : null,
+        ...(includeFinancials ? { unitSupplierCostCents: row.unit_supplier_cost_cents === null ? null : asInteger(row.unit_supplier_cost_cents) } : {}),
+      })),
       fitment: fitment.rows[0] ? {
         supplierPartUid: fitment.rows[0].supplier_part_uid,
         decision: fitment.rows[0].decision,
@@ -629,15 +1334,15 @@ export class PostgresOfficeRepository {
     };
   }
 
-  async listAssignableStaff() {
+  async listAssignableStaff(capabilities = ["operations"]) {
     const { rows } = await this.pool.query(`
       SELECT DISTINCT su.id, su.display_name
       FROM staff_users su
       JOIN user_roles ur ON ur.staff_user_id = su.id
       WHERE su.disabled_at IS NULL AND ur.revoked_at IS NULL
-        AND ur.role IN ('operations', 'administrator')
+        AND (ur.role = ANY($1::staff_role[]) OR ur.role = 'administrator')
       ORDER BY su.display_name, su.id
-    `);
+    `, [capabilities]);
     return rows.map((row) => ({ id: row.id, displayName: row.display_name }));
   }
 
@@ -915,6 +1620,28 @@ export class PostgresOfficeRepository {
         RETURNING id, public_order_number
       `, [customerId, vehicle.rows[0].id, address.rows[0].id, quote.rows[0].id,
         snapshot.coreDepositCents > 0 ? "awaiting_return" : "not_required"]);
+      const orderItem = await client.query(`
+        INSERT INTO order_items (
+          order_id, line_number, kind, integrity_sku_snapshot, supplier_sku_snapshot,
+          title_snapshot, quantity, unit_retail_cents, unit_supplier_cost_cents,
+          core_deposit_cents, fitment_snapshot, warranty_snapshot, configuration_snapshot
+        ) VALUES (
+          $1, 1, 'transmission', $2, $3, $4, 1, $5, $6, $7,
+          $8::jsonb, $9::jsonb, $10::jsonb
+        )
+        RETURNING id
+      `, [order.rows[0].id, snapshot.selectionId, snapshot.supplierSnapshot?.partUid || null,
+        `${snapshot.application} · ${snapshot.packageName}`, snapshot.customerUnitPriceCents,
+        snapshot.supplierUnitCostCents, snapshot.coreDepositCents,
+        JSON.stringify({ vin: snapshot.vin, application: snapshot.application }),
+        JSON.stringify({ description: snapshot.warranty }), JSON.stringify(snapshot.supplierSnapshot || {})]);
+      if (snapshot.coreDepositCents > 0) {
+        await client.query(`
+          INSERT INTO order_item_core_obligations (
+            order_id, order_item_id, quantity, deposit_cents, state
+          ) VALUES ($1, $2, 1, $3, 'awaiting_return')
+        `, [order.rows[0].id, orderItem.rows[0].id, snapshot.coreDepositCents]);
+      }
       await this.consumePromotionReservation(client, snapshot, customerId, order.rows[0].id);
       await client.query(`
         INSERT INTO checkout_sessions (
