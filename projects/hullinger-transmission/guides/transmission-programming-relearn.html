@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transmission Programming &amp; Adaptive Relearn Guide</title>
+  <meta name="description" content="Learn when a transmission replacement may need module programming, configuration, strategy data, adaptive relearn, initialization, and a validation road test.">
+  <meta name="author" content="Integrity Transmission & Drivetrain">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <meta name="theme-color" content="#f47b20">
+  <meta name="format-detection" content="telephone=yes">
+  <link rel="canonical" href="https://integritydrivetrain.com/guides/transmission-programming-relearn">
+  <link rel="icon" type="image/png" href="/images/integrity-logo-ITD.png">
+  <link rel="apple-touch-icon" href="/images/integrity-logo-ITD.png">
+  <link rel="preload" as="image" href="/images/seo-transmission-replacement-hero.webp" fetchpriority="high">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=Oswald:wght@500;600;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=20260920.4">
+  <link rel="stylesheet" href="/modern-pages.css?v=20260903.1">
+  <link rel="stylesheet" href="/seo-landing.css?v=20260920.2">
+  <link rel="stylesheet" href="/commerce-guides.css?v=20260920.4">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Transmission Programming &amp; Adaptive Relearn Guide">
+  <meta property="og:description" content="Learn when a transmission replacement may need module programming, configuration, strategy data, adaptive relearn, initialization, and a validation road test.">
+  <meta property="og:url" content="https://integritydrivetrain.com/guides/transmission-programming-relearn">
+  <meta property="og:site_name" content="Integrity Transmission & Drivetrain">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:image" content="https://integritydrivetrain.com/images/seo-transmission-replacement-hero.webp">
+  <meta property="og:image:alt" content="Automatic transmission prepared for installation and vehicle-specific electronic setup">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Transmission Programming &amp; Adaptive Relearn Guide">
+  <meta name="twitter:description" content="Learn when a transmission replacement may need module programming, configuration, strategy data, adaptive relearn, initialization, and a validation road test.">
+  <meta name="twitter:image" content="https://integritydrivetrain.com/images/seo-transmission-replacement-hero.webp">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "AutoRepair",
+      "@id": "https://integritydrivetrain.com/#business",
+      "name": "Integrity Transmission & Drivetrain",
+      "url": "https://integritydrivetrain.com/",
+      "telephone": "+14178153315",
+      "email": "info@integritydrivetrain.com",
+      "logo": "https://integritydrivetrain.com/images/integrity-logo-ITD.png"
+    },
+    {
+      "@type": "Article",
+      "@id": "https://integritydrivetrain.com/guides/transmission-programming-relearn#article",
+      "headline": "Programming, setup, adaptive relearn, and road testing are not the same step.",
+      "description": "Learn when a transmission replacement may need module programming, configuration, strategy data, adaptive relearn, initialization, and a validation road test.",
+      "image": "https://integritydrivetrain.com/images/seo-transmission-replacement-hero.webp",
+      "datePublished": "2026-09-21",
+      "dateModified": "2026-09-21",
+      "author": {
+        "@id": "https://integritydrivetrain.com/#business"
+      },
+      "publisher": {
+        "@id": "https://integritydrivetrain.com/#business"
+      },
+      "mainEntityOfPage": "https://integritydrivetrain.com/guides/transmission-programming-relearn"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://integritydrivetrain.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Buying Guides",
+          "item": "https://integritydrivetrain.com/guides"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Programming & Adaptive Relearn",
+          "item": "https://integritydrivetrain.com/guides/transmission-programming-relearn"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is programming the same as a relearn?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Programming writes software or calibration, while a relearn or adaptive process establishes operating values. Configuration, component characterization, and initialization can be separate steps again."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Will disconnecting the battery reset the transmission?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Not reliably. Some values may remain in nonvolatile memory, other modules may lose useful information, and a required scan-tool procedure will not be replaced by a battery disconnect."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I drive it until it learns by itself?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Only when the exact service procedure permits normal self-learning after all required setup is complete. Driving with the wrong calibration, missing strategy data, low fluid, faults, or harsh slip can create damage."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does every replacement transmission need programming?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Requirements vary by controller design, component replaced, software level, and vehicle. Verify the exact application instead of assuming every unit does—or does not—need it."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can a relearn fix a bad shift?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It can correct learned-value or setup-related behavior in the right situation, but it cannot repair worn clutches, valve-body leakage, damaged solenoids, wiring faults, contamination, incorrect fluid, or wrong fitment."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What records should I keep?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Keep the VIN, unit and component identifiers, installer invoice, programming receipt, software or strategy reference, scan results, fluid and cooler documentation, relearn completion, and final road-test notes."
+          }
+        }
+      ]
+    }
+  ]
+}
+  </script>
+</head>
+<body class="subpage-modern seo-page transmission-guide-page buying-guide-page" data-analytics-category="transmission-buying-guide">
+  <!-- SITE_HEADER_START -->
+<!-- =========================================================
+  GLOBAL SITE HEADER
+========================================================= -->
+<a class="skip-link" href="#main-content">Skip to main content</a>
+
+<header class="site-header" data-site-header>
+  <div class="topbar">
+    <div class="container topbar__inner">
+      <p class="topbar__text">
+        Nationwide Engines • Transmissions • Transfer Cases • Local Drivetrain Service
+      </p>
+
+      <div class="topbar__links" aria-label="Quick contact links">
+        <a href="tel:14178153315">Call: (417) 815-3315</a>
+        <a href="sms:14178153315">Text the Shop</a>
+        <a href="https://www.facebook.com/share/1BafrbBeyF/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer">
+          Facebook
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-header">
+    <div class="container main-header__inner">
+      <a class="brand" href="/" aria-label="Integrity Transmission & Drivetrain home">
+        <span class="brand__logo-frame">
+          <img
+            class="brand__logo"
+            src="/images/integrity-logo-ITD.png"
+            alt="Integrity Transmission & Drivetrain logo"
+            width="454"
+            height="246"
+            decoding="async"
+          >
+        </span>
+
+        <span class="brand__copy">
+          <strong>Integrity</strong>
+          <span>Transmission & Drivetrain</span>
+        </span>
+      </a>
+
+      <button
+        class="nav-toggle"
+        type="button"
+        aria-label="Open navigation"
+        aria-controls="site-nav"
+        aria-expanded="false"
+        data-nav-toggle
+      >
+        <span class="nav-toggle__line"></span>
+        <span class="nav-toggle__line"></span>
+        <span class="nav-toggle__line"></span>
+      </button>
+
+      <nav class="site-nav" id="site-nav" aria-label="Main navigation" data-site-nav>
+        <a class="site-nav__link" href="/" data-nav-link="index">Home</a>
+        <a class="site-nav__link" href="/about" data-nav-link="about">About</a>
+        <a class="site-nav__link" href="/services" data-nav-link="services">Services</a>
+        <a class="site-nav__link" href="/transmissions" data-nav-link="transmissions">Supported Units</a>
+        <a class="site-nav__link" href="/rebuild-guide" data-nav-link="rebuild-guide">Rebuild Options</a>
+        <a class="site-nav__link" href="/reman-powertrain" data-nav-link="reman-powertrain">Shop Reman Units</a>
+        <a class="site-nav__link" href="/reviews" data-nav-link="reviews">Reviews</a>
+        <a class="site-nav__link" href="/warranty" data-nav-link="warranty">Warranty</a>
+        <a class="site-nav__link site-nav__link--button" href="/contact" data-nav-link="contact">Get Quote</a>
+      </nav>
+    </div>
+  </div>
+</header>
+  <!-- SITE_HEADER_END -->
+
+  <main id="main-content">
+    <section class="page-hero" style="--page-hero-image: url('/images/seo-transmission-replacement-hero.webp'); --page-hero-position: center;">
+      <div class="page-hero__grid"><div class="page-hero__content">
+        <ol class="seo-breadcrumb" aria-label="Breadcrumb"><li><a href="/">Home</a></li><li><a href="/guides">Buying Guides</a></li><li aria-current="page">Programming &amp; Adaptive Relearn</li></ol>
+        <p class="eyebrow">Programming &amp; Adaptive Relearn</p>
+        <h1>Programming, setup, adaptive relearn, and road testing are not the same step.</h1>
+        <p class="seo-hero__lead">A replacement transmission can be mechanically correct and still need vehicle-specific electronic setup. The exact work depends on the VIN, transmission family, controller location, installed components, calibration, and manufacturer procedure.</p>
+        <div class="page-hero__actions"><a href="#overview" class="btn btn-primary">Read the Guide</a><a href="/reman-transmissions#vin-quote" class="btn btn-secondary">Check Reman Options</a></div>
+        <nav class="section-jump-nav" aria-label="Jump to page sections"><a href="#overview">Overview</a><a href="#details">What Matters</a><a href="#process">Process</a><a href="#questions">Questions</a></nav>
+      </div></div>
+    </section>
+
+    <section class="seo-proofbar" aria-label="Buying guide principles"><div class="container seo-proofbar__inner">
+      <div class="seo-proofbar__item"><strong>Fitment First</strong><span>Verify the application before price or payment.</span></div>
+      <div class="seo-proofbar__item"><strong>Written Terms</strong><span>The quote, warranty, freight, and core policy control.</span></div>
+      <div class="seo-proofbar__item"><strong>Complete Cost</strong><span>Include delivery, core, tax, installer, and setup.</span></div>
+      <div class="seo-proofbar__item"><strong>No Guesswork</strong><span>Use current supplier and vehicle information.</span></div>
+    </div></section>
+
+    <section class="section" id="overview"><div class="container seo-intro-grid">
+      <div><p class="eyebrow">Buyer Education</p><h2>Why a successful installation can require more than bolting in the unit.</h2></div>
+      <div class="seo-intro-copy"><p>Modern transmissions may use a separate transmission control module, a controller integrated with the valve body, or powertrain controls shared with another module. Replacement can involve software programming, module configuration, solenoid or strategy data, initialization, adaptive resets, and a prescribed drive cycle.</p><p>Those terms are often used interchangeably, but they describe different operations. Programming writes approved software or calibration. Configuration tells a module how the vehicle is equipped. Setup or characterization can pair component-specific data with the controller. Adaptive learning allows the control system to refine pressure and timing after the required baseline has been established.</p><p>There is no responsible universal relearn procedure. Clearing values, disconnecting the battery, or completing a generic drive cycle can be ineffective or harmful when the application requires a scan-tool routine, component identifier, stable voltage, temperature window, or exact service sequence.</p><aside class="seo-notice"><strong>Do Not Guess the Procedure</strong><p>Use current service information for the exact VIN and installed component. A procedure from another year, controller, transmission family, or software level may not apply.</p></aside></div>
+    </div></section>
+
+    <section class="section section-soft" id="details"><div class="container">
+      <div class="seo-section-heading"><p class="eyebrow">What Matters</p><h2>The electronic work that may follow transmission replacement.</h2><p>Determine which operations apply before the vehicle is returned to service or a shift-quality concern is judged as an internal failure.</p></div>
+      <div class="seo-card-grid">          <article class="seo-card">
+            <span class="seo-card__number">01</span>
+            <h3>Software Programming</h3>
+            <p>A replaced or updated controller may require approved software written through the manufacturer process. Programming should use stable battery support and the correct communication interface.</p>
+            <ul><li>Exact VIN and module</li><li>Current approved calibration</li><li>Stable voltage and network</li></ul>
+          </article>
+          <article class="seo-card">
+            <span class="seo-card__number">02</span>
+            <h3>Vehicle Configuration</h3>
+            <p>The controller may need vehicle option, powertrain, axle, tire, emissions, or drivetrain information so its commands agree with the rest of the network.</p>
+            <ul><li>Build and option data</li><li>Network compatibility</li><li>No copied configuration guesses</li></ul>
+          </article>
+          <article class="seo-card">
+            <span class="seo-card__number">03</span>
+            <h3>Strategy or Characterization</h3>
+            <p>Some applications store identifiers or flow/characterization data for a valve body, solenoid body, mechatronic assembly, or complete unit. Preserve the supplied data and packaging.</p>
+            <ul><li>Component identifier</li><li>Strategy or data file</li><li>Correct controller pairing</li></ul>
+          </article>
+          <article class="seo-card">
+            <span class="seo-card__number">04</span>
+            <h3>Initialization &amp; Resets</h3>
+            <p>A scan tool may need to initialize a replacement component, reset specific learned values, complete a fast-learn routine, or verify prerequisites before driving.</p>
+            <ul><li>Correct scan-tool function</li><li>Fluid temperature and level</li><li>No blocking faults</li></ul>
+          </article>
+          <article class="seo-card">
+            <span class="seo-card__number">05</span>
+            <h3>Adaptive Learning</h3>
+            <p>Adaptives compensate within the control strategy for normal variation and wear. A reset does not repair a hydraulic, mechanical, electrical, fluid, cooling, or fitment problem.</p>
+            <ul><li>Baseline setup completed</li><li>Controlled operating conditions</li><li>Measured improvement, not assumption</li></ul>
+          </article>
+          <article class="seo-card">
+            <span class="seo-card__number">06</span>
+            <h3>Validation Drive</h3>
+            <p>The final drive should confirm commanded and actual gear, shift timing and feel, converter operation, temperatures, fault status, leaks, and safe behavior under the applicable load.</p>
+            <ul><li>Cold and warm operation</li><li>Scan data and fault recheck</li><li>Documented final result</li></ul>
+          </article></div>
+    </div></section>
+
+    <section class="section seo-process" id="process"><div class="container">
+      <div class="seo-section-heading"><p class="eyebrow">A Clear Path</p><h2>Plan the electronic work before installation day.</h2><p>Correct sequencing prevents a good unit from being condemned because required setup was missed.</p></div>
+      <div class="seo-process-list"><article class="seo-process-step"><span>STEP 01</span><h3>Identify the Application</h3><p>Confirm VIN, build date, engine, drivetrain, transmission and controller type, installed component identifiers, modifications, and current software information.</p></article><article class="seo-process-step"><span>STEP 02</span><h3>Read the Exact Procedure</h3><p>Use current manufacturer service information to identify programming, configuration, setup, fluid-temperature, voltage, scan-tool, and drive-cycle requirements.</p></article><article class="seo-process-step"><span>STEP 03</span><h3>Complete Setup in Order</h3><p>Correct network, voltage, fluid, wiring, cooling, fitment, and diagnostic faults before performing the required programming, initialization, reset, or learn routine.</p></article><article class="seo-process-step"><span>STEP 04</span><h3>Validate and Document</h3><p>Road test under the prescribed conditions, recheck all modules for faults, verify fluid and leaks, and retain software, strategy, scan, and final-test records for warranty support.</p></article></div>
+    </div></section>
+
+    <section class="section seo-related"><div class="container"><p class="eyebrow">Related Resources</p><h2>Continue with the next useful answer.</h2><div class="seo-related__grid"><a class="seo-related__link" href="/guides/how-to-identify-transmission"><span>Identification</span><strong>Confirm the exact unit and controller requirements →</strong></a><a class="seo-related__link" href="/guides/transmission-warranty-coverage"><span>Warranty</span><strong>Preserve the installation records a claim may require →</strong></a><a class="seo-related__link" href="/reman-transmissions"><span>Replacement</span><strong>Check VIN-matched reman options →</strong></a></div></div></section>
+
+    <section class="section" id="questions"><div class="container">
+      <div class="seo-section-heading"><p class="eyebrow">Common Questions</p><h2>Details to confirm before ordering.</h2><p>These answers are educational. The vehicle, written quote, supplier policy, carrier terms, and unit-specific warranty control the purchase.</p></div>
+      <div class="seo-faq-grid"><article class="seo-faq-item"><h3>Is programming the same as a relearn?</h3><p>No. Programming writes software or calibration, while a relearn or adaptive process establishes operating values. Configuration, component characterization, and initialization can be separate steps again.</p></article><article class="seo-faq-item"><h3>Will disconnecting the battery reset the transmission?</h3><p>Not reliably. Some values may remain in nonvolatile memory, other modules may lose useful information, and a required scan-tool procedure will not be replaced by a battery disconnect.</p></article><article class="seo-faq-item"><h3>Can I drive it until it learns by itself?</h3><p>Only when the exact service procedure permits normal self-learning after all required setup is complete. Driving with the wrong calibration, missing strategy data, low fluid, faults, or harsh slip can create damage.</p></article><article class="seo-faq-item"><h3>Does every replacement transmission need programming?</h3><p>No. Requirements vary by controller design, component replaced, software level, and vehicle. Verify the exact application instead of assuming every unit does—or does not—need it.</p></article><article class="seo-faq-item"><h3>Can a relearn fix a bad shift?</h3><p>It can correct learned-value or setup-related behavior in the right situation, but it cannot repair worn clutches, valve-body leakage, damaged solenoids, wiring faults, contamination, incorrect fluid, or wrong fitment.</p></article><article class="seo-faq-item"><h3>What records should I keep?</h3><p>Keep the VIN, unit and component identifiers, installer invoice, programming receipt, software or strategy reference, scan results, fluid and cooler documentation, relearn completion, and final road-test notes.</p></article></div>
+    </div></section>
+
+    <section class="section" id="references"><div class="container seo-intro-grid">
+      <div><p class="eyebrow">Technical References</p><h2>Official resources used to define the verification process.</h2></div>
+      <div class="seo-intro-copy"><p><a href="https://www.ford.com/support/how-tos/ford-services/parts-and-service/where-can-i-get-self-repair-and-technical-information/" target="_blank" rel="noopener noreferrer">Ford: self-repair and Motorcraft service-information resources</a></p><p><a href="https://www.gmparts.com/technical-resources/diagnostic-support-resources" target="_blank" rel="noopener noreferrer">GM Parts: Techline Connect diagnostic, programming, and service resources</a></p><p><a href="https://stellantisiop.com/" target="_blank" rel="noopener noreferrer">Stellantis Independent Operator Portal: official repair-information access</a></p><p>These resources establish the need for application-specific vehicle and service information. The current procedure for the exact VIN and installed component controls.</p></div>
+    </div></section>
+
+    <section class="section section-soft"><div class="container seo-final"><p class="eyebrow">Ready for a Verified Quote?</p><h2>Start with the VIN and delivery details.</h2><p>Send the full VIN, mileage, drivetrain, unit tag or build codes when available, delivery ZIP code and delivery type. Integrity will confirm supported fitment, current options, freight, core, and written warranty terms.</p><div class="seo-final__actions"><a href="/reman-transmissions#vin-quote" class="btn btn-primary">Check Reman Options</a><a href="/contact#quote-form" class="btn btn-dark">Request Help</a><a href="/guides" class="btn btn-secondary">All Buying Guides</a></div></div></section>
+  </main>
+
+  <!-- SITE_FOOTER_START -->
+<!-- =========================================================
+  GLOBAL SITE FOOTER
+========================================================= -->
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <a class="brand brand--footer" href="/" aria-label="Integrity Transmission & Drivetrain home">
+        <span class="brand__logo-frame">
+          <img
+            class="brand__logo"
+            src="/images/integrity-logo-ITD.png"
+            alt="Integrity Transmission & Drivetrain logo"
+            width="454"
+            height="246"
+            loading="lazy"
+            decoding="async"
+          >
+        </span>
+
+        <span class="brand__copy">
+          <strong>Integrity</strong>
+          <span>Transmission & Drivetrain</span>
+        </span>
+      </a>
+
+      <p>
+        VIN-verified remanufactured engines, transmissions and transfer cases
+        shipped nationwide, plus drivetrain service in Southwest Missouri.
+      </p>
+    </div>
+
+    <div class="footer-column">
+      <h2>Explore</h2>
+      <ul>
+        <li><a href="/about">About</a></li>
+        <li><a href="/services">Services</a></li>
+        <li><a href="/transmissions">Supported Units</a></li>
+        <li><a href="/rebuild-guide">Rebuild Options</a></li>
+        <li><a href="/reman-powertrain">Shop Reman Units</a></li>
+        <li><a href="/guides">Transmission Buying Guides</a></li>
+        <li><a href="/guides/transmission-problems">Transmission Problems Guide</a></li>
+        <li><a href="/guides/cvt-transmission-problems">CVT Problems Guide</a></li>
+        <li><a href="/reviews">Reviews</a></li>
+        <li><a href="/warranty">Warranty</a></li>
+        <li><a href="/service-area">Service Area</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-column">
+      <h2>Services</h2>
+      <ul>
+        <li><a href="/reman-engines">Reman Engines</a></li>
+        <li><a href="/reman-transmissions">Reman Transmissions</a></li>
+        <li><a href="/reman-transfer-cases">Reman Transfer Cases</a></li>
+        <li><a href="/services/transmission-replacement">Reman Replacement</a></li>
+        <li><a href="/services/transmission-rebuild">Transmission Rebuilds</a></li>
+        <li><a href="/services/bench-transmission-rebuild">Bench Builds</a></li>
+        <li><a href="/services/transfer-case">Transfer Cases</a></li>
+        <li><a href="/services/differential">Differentials</a></li>
+        <li><a href="/contact">Quote Request</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-column footer-column--cta">
+      <h2>Contact</h2>
+      <ul>
+        <li><a href="tel:14178153315">(417) 815-3315</a></li>
+        <li><a href="sms:14178153315">Text the Shop</a></li>
+        <li><a href="mailto:info@integritydrivetrain.com">info@integritydrivetrain.com</a></li>
+        <li>
+          <a href="https://www.facebook.com/share/1BafrbBeyF/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer">
+            Facebook
+          </a>
+        </li>
+      </ul>
+
+      <a href="/contact#quote-form" class="btn btn-primary">Start Quote</a>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <div class="container footer-bottom__inner">
+      <p>
+        &copy; <span id="current-year"></span> Integrity Transmission & Drivetrain.
+        All rights reserved.
+      </p>
+      <p>Serving Springfield, Ozark, Rogersville, Nixa, Republic & Southwest Missouri.</p>
+      <p><a href="/customer-policies">Customer Policies</a> • <a href="/shipping-returns">Shipping &amp; Returns</a> • <a href="/privacy">Privacy</a> • <button class="footer-privacy-button" type="button" data-privacy-choices>Privacy Choices</button> • <a href="/website-terms">Website Terms</a></p>
+      <p>Website by <a href="https://hullingerdigital.com/">Hullinger Digital</a>.</p>
+    </div>
+  </div>
+</footer>
+  <!-- SITE_FOOTER_END -->
+  <script src="/script.js?v=20260921.1" defer></script>
+</body>
+</html>

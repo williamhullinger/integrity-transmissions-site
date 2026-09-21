@@ -39,6 +39,8 @@ const pages = [
       { title: "Delayed Drive or Reverse", text: "Work through delayed engagement when selecting Drive or Reverse, including cold-versus-hot behavior, fluid clues, codes, and safe next steps.", href: "/guides/delayed-engagement-drive-reverse", link: "Review delayed engagement" },
       { title: "Shudder or Misfire?", text: "Compare torque-converter or driveline shudder with an engine misfire without replacing parts based on a sensation alone.", href: "/guides/transmission-shudder-vs-engine-misfire", link: "Compare shudder symptoms" },
       { title: "No Reverse", text: "See why a vehicle can retain forward movement while losing Reverse and which scan, fluid, pressure, electrical, and mechanical evidence matters.", href: "/guides/no-reverse-transmission", link: "Investigate loss of Reverse" },
+      { title: "Programming & Relearn", text: "Understand the difference between module programming, configuration, solenoid or strategy setup, adaptive learning, and the final validation drive.", href: "/guides/transmission-programming-relearn", link: "Plan electronic setup" },
+      { title: "Identify a Transfer Case", text: "Use the VIN, case tag, build codes, shift system, input and output details, and drivetrain configuration before ordering a replacement.", href: "/guides/identify-transfer-case", link: "Build a fitment packet" },
       { title: "All Transmission Symptoms", text: "Compare slipping, delayed engagement, harsh shifts, no movement, shudder, overheating, leaks, noises, and limp mode before choosing a repair path.", href: "/guides/transmission-problems", link: "Open the symptom guide" },
       { title: "CVT Problems", text: "Understand normal versus abnormal CVT behavior, delayed engagement, flare, judder, heat, fail-safe operation, fluid requirements, and next steps.", href: "/guides/cvt-transmission-problems", link: "Review CVT symptoms" },
       { title: "Shipping & Returns", text: "Keep outbound freight, delivery damage, cancellation, convenience returns, wrong or defective units, and refundable core returns in the correct process.", href: "/shipping-returns", link: "Review shipping and returns" },
@@ -612,6 +614,116 @@ const pages = [
     ],
     published: "2026-09-21",
   },
+  {
+    output: "guides/transmission-programming-relearn.html",
+    path: "/guides/transmission-programming-relearn",
+    title: "Transmission Programming & Adaptive Relearn Guide",
+    description: "Learn when a transmission replacement may need module programming, configuration, strategy data, adaptive relearn, initialization, and a validation road test.",
+    eyebrow: "Programming & Adaptive Relearn",
+    h1: "Programming, setup, adaptive relearn, and road testing are not the same step.",
+    lead: "A replacement transmission can be mechanically correct and still need vehicle-specific electronic setup. The exact work depends on the VIN, transmission family, controller location, installed components, calibration, and manufacturer procedure.",
+    hero: "/images/seo-transmission-replacement-hero.webp",
+    heroAlt: "Automatic transmission prepared for installation and vehicle-specific electronic setup",
+    introTitle: "Why a successful installation can require more than bolting in the unit.",
+    intro: [
+      "Modern transmissions may use a separate transmission control module, a controller integrated with the valve body, or powertrain controls shared with another module. Replacement can involve software programming, module configuration, solenoid or strategy data, initialization, adaptive resets, and a prescribed drive cycle.",
+      "Those terms are often used interchangeably, but they describe different operations. Programming writes approved software or calibration. Configuration tells a module how the vehicle is equipped. Setup or characterization can pair component-specific data with the controller. Adaptive learning allows the control system to refine pressure and timing after the required baseline has been established.",
+      "There is no responsible universal relearn procedure. Clearing values, disconnecting the battery, or completing a generic drive cycle can be ineffective or harmful when the application requires a scan-tool routine, component identifier, stable voltage, temperature window, or exact service sequence.",
+    ],
+    notice: ["Do Not Guess the Procedure", "Use current service information for the exact VIN and installed component. A procedure from another year, controller, transmission family, or software level may not apply."],
+    cardsTitle: "The electronic work that may follow transmission replacement.",
+    cardsLead: "Determine which operations apply before the vehicle is returned to service or a shift-quality concern is judged as an internal failure.",
+    cards: [
+      { title: "Software Programming", text: "A replaced or updated controller may require approved software written through the manufacturer process. Programming should use stable battery support and the correct communication interface.", items: ["Exact VIN and module", "Current approved calibration", "Stable voltage and network"] },
+      { title: "Vehicle Configuration", text: "The controller may need vehicle option, powertrain, axle, tire, emissions, or drivetrain information so its commands agree with the rest of the network.", items: ["Build and option data", "Network compatibility", "No copied configuration guesses"] },
+      { title: "Strategy or Characterization", text: "Some applications store identifiers or flow/characterization data for a valve body, solenoid body, mechatronic assembly, or complete unit. Preserve the supplied data and packaging.", items: ["Component identifier", "Strategy or data file", "Correct controller pairing"] },
+      { title: "Initialization & Resets", text: "A scan tool may need to initialize a replacement component, reset specific learned values, complete a fast-learn routine, or verify prerequisites before driving.", items: ["Correct scan-tool function", "Fluid temperature and level", "No blocking faults"] },
+      { title: "Adaptive Learning", text: "Adaptives compensate within the control strategy for normal variation and wear. A reset does not repair a hydraulic, mechanical, electrical, fluid, cooling, or fitment problem.", items: ["Baseline setup completed", "Controlled operating conditions", "Measured improvement, not assumption"] },
+      { title: "Validation Drive", text: "The final drive should confirm commanded and actual gear, shift timing and feel, converter operation, temperatures, fault status, leaks, and safe behavior under the applicable load.", items: ["Cold and warm operation", "Scan data and fault recheck", "Documented final result"] },
+    ],
+    processTitle: "Plan the electronic work before installation day.",
+    processLead: "Correct sequencing prevents a good unit from being condemned because required setup was missed.",
+    process: [
+      ["Identify the Application", "Confirm VIN, build date, engine, drivetrain, transmission and controller type, installed component identifiers, modifications, and current software information."],
+      ["Read the Exact Procedure", "Use current manufacturer service information to identify programming, configuration, setup, fluid-temperature, voltage, scan-tool, and drive-cycle requirements."],
+      ["Complete Setup in Order", "Correct network, voltage, fluid, wiring, cooling, fitment, and diagnostic faults before performing the required programming, initialization, reset, or learn routine."],
+      ["Validate and Document", "Road test under the prescribed conditions, recheck all modules for faults, verify fluid and leaks, and retain software, strategy, scan, and final-test records for warranty support."],
+    ],
+    faqs: [
+      ["Is programming the same as a relearn?", "No. Programming writes software or calibration, while a relearn or adaptive process establishes operating values. Configuration, component characterization, and initialization can be separate steps again."],
+      ["Will disconnecting the battery reset the transmission?", "Not reliably. Some values may remain in nonvolatile memory, other modules may lose useful information, and a required scan-tool procedure will not be replaced by a battery disconnect."],
+      ["Can I drive it until it learns by itself?", "Only when the exact service procedure permits normal self-learning after all required setup is complete. Driving with the wrong calibration, missing strategy data, low fluid, faults, or harsh slip can create damage."],
+      ["Does every replacement transmission need programming?", "No. Requirements vary by controller design, component replaced, software level, and vehicle. Verify the exact application instead of assuming every unit does—or does not—need it."],
+      ["Can a relearn fix a bad shift?", "It can correct learned-value or setup-related behavior in the right situation, but it cannot repair worn clutches, valve-body leakage, damaged solenoids, wiring faults, contamination, incorrect fluid, or wrong fitment."],
+      ["What records should I keep?", "Keep the VIN, unit and component identifiers, installer invoice, programming receipt, software or strategy reference, scan results, fluid and cooler documentation, relearn completion, and final road-test notes."],
+    ],
+    related: [
+      ["/guides/how-to-identify-transmission", "Identification", "Confirm the exact unit and controller requirements"],
+      ["/guides/transmission-warranty-coverage", "Warranty", "Preserve the installation records a claim may require"],
+      ["/reman-transmissions", "Replacement", "Check VIN-matched reman options"],
+    ],
+    references: [
+      ["Ford: self-repair and Motorcraft service-information resources", "https://www.ford.com/support/how-tos/ford-services/parts-and-service/where-can-i-get-self-repair-and-technical-information/"],
+      ["GM Parts: Techline Connect diagnostic, programming, and service resources", "https://www.gmparts.com/technical-resources/diagnostic-support-resources"],
+      ["Stellantis Independent Operator Portal: official repair-information access", "https://stellantisiop.com/"],
+    ],
+    published: "2026-09-21",
+  },
+  {
+    output: "guides/identify-transfer-case.html",
+    path: "/guides/identify-transfer-case",
+    title: "How to Identify a Transfer Case Before Ordering",
+    description: "Identify a transfer case using VIN, case tag, model and assembly numbers, build codes, shift type, drivetrain, connectors, inputs, outputs, and production details.",
+    eyebrow: "Transfer Case Identification",
+    h1: "How to identify the correct transfer case before ordering a replacement.",
+    lead: "A vehicle description or a case that looks similar is not enough. Verify the VIN, case tag, build codes, shift system, connectors, input and output configuration, and drivetrain details together.",
+    hero: "/images/reman-transfer-case-assembly.webp",
+    heroAlt: "Representative remanufactured transfer case assembly showing case and connection details",
+    introTitle: "Why the tag and operating system matter as much as the bolt pattern.",
+    intro: [
+      "The same vehicle line can use different transfer cases because of engine, transmission, wheelbase, gross-weight package, axle ratio, full-time or part-time operation, manual or electronic shifting, production date, and option content.",
+      "Two cases may share a housing family yet use different input splines, output style, speed-sensor provisions, shift motors, control modules, internal ratios, front-output position, mounting, yokes, flanges, or calibrations. A visual match or model number alone can still produce the wrong order.",
+      "Start with the full VIN, then capture the original case tag and the surrounding hardware before removal. The supplier may need the model, assembly and serial numbers, option or build codes, transmission, shift type, and photographs before releasing a unit.",
+    ],
+    notice: ["Photograph the Tag Before Cleaning", "Use a gentle cleaner and clear lighting. Aggressive scraping, grinding, paint removal, or pressure washing can erase a paper label, stamped code, barcode, or evidence needed for a fitment or warranty decision."],
+    cardsTitle: "The identifiers that create a reliable transfer-case fitment packet.",
+    cardsLead: "Collect the complete set while the original case, vehicle labels, connectors, and driveline are still accessible.",
+    cards: [
+      { title: "VIN & Vehicle Build", text: "The VIN establishes the vehicle and basic configuration, but it may not expose every axle, transfer-case, transmission, or midyear production choice.", items: ["All 17 VIN characters", "Model and build date", "Engine, transmission, and drive type"] },
+      { title: "Case Tag or Label", text: "Record every model, assembly, serial, ratio, barcode, and date character from the metal tag, label, etched area, or case stamp.", items: ["Straight-on overview photo", "Close-up with readable characters", "Written transcription"] },
+      { title: "Build & Option Codes", text: "RPO, axle, drivetrain, towing, fleet, and other manufacturer build information can separate cases installed in otherwise similar vehicles.", items: ["Door or option label", "Manufacturer build data", "Axle ratio and package"] },
+      { title: "Shift System", text: "Identify manual lever, electric motor, vacuum, encoder, full-time AWD, automatic four-wheel drive, or other control hardware and preserve connector details.", items: ["Selector and dash controls", "Motor/actuator and connector", "Control module and wiring"] },
+      { title: "Input & Outputs", text: "Compare transmission interface, input spline, front and rear output position, slip-yoke or fixed flange, yokes, adapters, mounts, sensors, and speed provisions.", items: ["Transmission-to-case adapter", "Front and rear output type", "Sensor and mounting locations"] },
+      { title: "Vehicle Use & Driveline", text: "Tire size and matching, axle ratios, modifications, suspension, towing, prior swaps, and driveline condition matter for diagnosis and replacement planning.", items: ["Matching tire circumference", "Front and rear axle ratio", "Nonfactory changes or previous repairs"] },
+    ],
+    processTitle: "Identify the case before price, removal, or return freight.",
+    processLead: "A complete packet protects the schedule and reduces the chance of ordering a case that bolts up but does not operate correctly.",
+    process: [
+      ["Capture the Vehicle", "Record VIN, year, make, model, build date, engine, transmission, drivetrain, axle/build codes, tire size, modifications, and intended use."],
+      ["Capture the Original Case", "Photograph the tag, stamps, complete housing, input, outputs, adapters, mounts, sensors, motor or lever, connectors, and any prior-repair evidence."],
+      ["Reconcile the Identifiers", "Use current manufacturer and supplier information to compare tag data, production splits, shift system, hardware, supersessions, and calibration requirements."],
+      ["Get Written Fitment Approval", "Make the quote identify the approved application, supplied configuration, required reused parts, programming or setup, freight, core, and warranty terms."],
+    ],
+    faqs: [
+      ["Can the VIN identify the transfer case by itself?", "Sometimes it narrows the case sufficiently, but tag, option, axle, production, shift-system, and physical details may still be required—especially after prior drivetrain swaps."],
+      ["Where is the transfer-case identification tag?", "Location varies. Look on the case halves, rear housing, near the fill plug, encoder motor, mounting area, or a flat machined or labeled surface. Use service information for the exact vehicle when access is difficult."],
+      ["Is the model number enough to order a case?", "Not always. Assembly number, input and output configuration, shift system, production split, transmission, and option content can differ within a model family."],
+      ["Does manual shift versus electric shift matter?", "Yes. The selector, actuator, internal mode system, sensors, connectors, control electronics, and calibration can differ even when housings appear related."],
+      ["Why do tire size and axle ratio matter?", "Mismatched rolling circumference or axle ratios can create driveline bind, heat, clutch wear, or symptoms blamed on the replacement case. Correct those conditions before condemning or installing a unit."],
+      ["What if the tag is missing?", "Send the VIN and build information plus detailed photographs, casting and stamped numbers, transmission interface, outputs, controls, connectors, and measurements requested by the supplier. Do not guess from an online photo."],
+    ],
+    related: [
+      ["/reman-transfer-cases", "Nationwide Quote", "Request a VIN- and tag-verified transfer case"],
+      ["/guides/how-to-identify-transmission", "Transmission ID", "Build the matching transmission fitment packet"],
+      ["/services/transfer-case", "Local Service", "Review transfer-case diagnosis and repair options"],
+    ],
+    references: [
+      ["NHTSA vPIC: official VIN decoding and manufacturer-reported vehicle data", "https://vpic.nhtsa.dot.gov/"],
+      ["Ford: self-repair and Motorcraft service-information resources", "https://www.ford.com/support/how-tos/ford-services/parts-and-service/where-can-i-get-self-repair-and-technical-information/"],
+      ["Stellantis Independent Operator Portal: official repair-information access", "https://stellantisiop.com/"],
+    ],
+    published: "2026-09-21",
+  },
 ];
 
 const escapeHtml = (value) => String(value)
@@ -775,7 +887,10 @@ ${header}
       <div class="seo-faq-grid">${page.faqs.map(([question, answer]) => `<article class="seo-faq-item"><h3>${escapeHtml(question)}</h3><p>${escapeHtml(answer)}</p></article>`).join("")}</div>
     </div></section>
 
-    <section class="section section-soft"><div class="container seo-final"><p class="eyebrow">Ready for a Verified Quote?</p><h2>Start with the VIN and delivery details.</h2><p>Send the full VIN, mileage, drivetrain, unit tag or build codes when available, delivery ZIP code and delivery type. Integrity will confirm supported fitment, current options, freight, core, and written warranty terms.</p><div class="seo-final__actions"><a href="/reman-transmissions#vin-quote" class="btn btn-primary">Check Reman Options</a><a href="/contact#quote-form" class="btn btn-dark">Request Help</a><a href="/guides" class="btn btn-secondary">All Buying Guides</a></div></div></section>
+${page.references ? `    <section class="section" id="references"><div class="container seo-intro-grid">
+      <div><p class="eyebrow">Technical References</p><h2>Official resources used to define the verification process.</h2></div>
+      <div class="seo-intro-copy">${page.references.map(([title, href]) => `<p><a href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer">${escapeHtml(title)}</a></p>`).join("")}<p>These resources establish the need for application-specific vehicle and service information. The current procedure for the exact VIN and installed component controls.</p></div>
+    </div></section>\n\n` : ""}    <section class="section section-soft"><div class="container seo-final"><p class="eyebrow">Ready for a Verified Quote?</p><h2>Start with the VIN and delivery details.</h2><p>Send the full VIN, mileage, drivetrain, unit tag or build codes when available, delivery ZIP code and delivery type. Integrity will confirm supported fitment, current options, freight, core, and written warranty terms.</p><div class="seo-final__actions"><a href="/reman-transmissions#vin-quote" class="btn btn-primary">Check Reman Options</a><a href="/contact#quote-form" class="btn btn-dark">Request Help</a><a href="/guides" class="btn btn-secondary">All Buying Guides</a></div></div></section>
   </main>
 
   <!-- SITE_FOOTER_START -->

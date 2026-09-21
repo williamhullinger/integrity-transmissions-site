@@ -6,6 +6,27 @@ import { fileURLToPath } from "node:url";
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const siteRoot = path.resolve(scriptDir, "..");
 const repositoryRoot = path.resolve(siteRoot, "../..");
+const sitemapPath = path.join(siteRoot, "sitemap.xml");
+const existingLastmod = new Map();
+
+const retainLastmod = (sitemap) => {
+  for (const match of sitemap.matchAll(/<url>\s*<loc>([^<]+)<\/loc>\s*<lastmod>(\d{4}-\d{2}-\d{2})<\/lastmod>\s*<\/url>/g)) {
+    const retained = existingLastmod.get(match[1]);
+    if (!retained || match[2] > retained) existingLastmod.set(match[1], match[2]);
+  }
+};
+
+if (fs.existsSync(sitemapPath)) retainLastmod(fs.readFileSync(sitemapPath, "utf8"));
+
+try {
+  const committedSitemap = execFileSync("git", ["show", "HEAD:projects/hullinger-transmission/sitemap.xml"], {
+    cwd: repositoryRoot,
+    encoding: "utf8",
+  });
+  retainLastmod(committedSitemap);
+} catch {
+  // A source archive without Git history can still preserve the local sitemap values.
+}
 
 const walk = (directory) => fs.readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
   const fullPath = path.join(directory, entry.name);
@@ -53,6 +74,8 @@ const preferredOrder = [
   "https://integritydrivetrain.com/guides/shipping-transmission",
   "https://integritydrivetrain.com/guides/transmission-warranty-coverage",
   "https://integritydrivetrain.com/guides/how-to-identify-transmission",
+  "https://integritydrivetrain.com/guides/identify-transfer-case",
+  "https://integritydrivetrain.com/guides/transmission-programming-relearn",
   "https://integritydrivetrain.com/guides/transmission-problems",
   "https://integritydrivetrain.com/guides/cvt-transmission-problems",
   "https://integritydrivetrain.com/rebuild-guide",
@@ -88,7 +111,14 @@ const urls = walk(siteRoot).flatMap((filePath) => {
   if (/name="robots"\s+content="[^"]*noindex/i.test(html)) return [];
   if (path.basename(filePath) === "404.html") return [];
   const canonical = html.match(/<link\s+rel="canonical"\s+href="([^"]+)"/i)?.[1];
-  return canonical ? [{ url: canonical, filePath, lastmod: lastModified(filePath) }] : [];
+  if (!canonical) return [];
+  const computedLastmod = lastModified(filePath);
+  const previousLastmod = existingLastmod.get(canonical);
+  return [{
+    url: canonical,
+    filePath,
+    lastmod: previousLastmod && previousLastmod > computedLastmod ? previousLastmod : computedLastmod,
+  }];
 });
 
 const uniqueUrls = [...new Map(urls.map((entry) => [entry.url, entry])).values()].sort((left, right) => {
@@ -109,5 +139,5 @@ ${uniqueUrls.map((entry) => `  <url>
 </urlset>
 `;
 
-fs.writeFileSync(path.join(siteRoot, "sitemap.xml"), xml, "utf8");
+fs.writeFileSync(sitemapPath, xml, "utf8");
 console.log(`Generated sitemap.xml with ${uniqueUrls.length} URLs.`);

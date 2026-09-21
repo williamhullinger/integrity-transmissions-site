@@ -39,7 +39,7 @@ No public page, case study, testimonial, inventory statement, warranty claim, pr
 
 ### 2. Convert existing search visibility into qualified traffic
 
-- [x] Fifty-three canonical indexable pages, XML sitemap and IndexNow support
+- [x] Fifty-five canonical indexable pages, XML sitemap and IndexNow support
 - [x] Unique metadata, social cards, breadcrumbs, structured data and internal links
 - [x] Thirteen transmission-family sales pages
 - [x] Seven-page transmission buying-guide cluster
@@ -56,6 +56,7 @@ No public page, case study, testimonial, inventory statement, warranty claim, pr
 - [x] Editorial quality, privacy and case-study rules
 - [x] Initial buying-guide and symptom content
 - [x] Publish the first symptom series: slipping, delayed engagement, shudder versus misfire and no reverse
+- [x] Publish programming/relearn and transfer-case identification guides with application-specific boundaries and official reference paths
 - [ ] Add make-specific CVT guides only after application details and technical review are documented
 - [ ] Capture real jobs through the case-study intake process
 - [ ] Repurpose each published guide into an approved social/video/email package that links to the canonical page
@@ -126,6 +127,7 @@ No public page, case study, testimonial, inventory statement, warranty claim, pr
 
 - `SEO_CAMPAIGN_STATUS.md` — current public search/release baseline
 - `SEO_CONTENT_ROADMAP.md` — demand, editorial queue and measurement
+- `CONTENT_OPERATIONS.md` — repeatable article, video, social, approval and performance workflow
 - `CASE_STUDY_WORKFLOW.md` — evidence capture, redaction and publication controls
 - `BACKLINK_CAMPAIGN.md` — authority-building process
 - `REMAN_COMMERCE_ROADMAP.md` — storefront delivery and operating limits
